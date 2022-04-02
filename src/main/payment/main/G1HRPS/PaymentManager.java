@@ -21,7 +21,6 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 
 		InitializeDB();
 
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -32,7 +31,6 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 
 		payment_list_.add(payment);
 
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -47,18 +45,16 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 	}
 
 	@Override
-	public Payment SearchList(String payment_id) {
+	public void SearchList(String payment_id) {
 		// TODO - implement PaymentManager.SearchList
 
 		for(Payment payment : payment_list_){
 			if(payment_id.equals(payment.GetPaymentID())){
-				return payment;
+				
 			}
 		}
 
-		return null;
-
-		// throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();
 	}
 
 	public List<Payment> GetList() {
@@ -124,81 +120,81 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 		return prefix + String.valueOf(stamp);
 	}
 
-	public static List<Payment> readGuests(String filename) throws IOException {
-		List<String> stringArray = read(filename);
-		List<Payment> guestList = new ArrayList<>();
+	// public static List<Payment> readGuests(String filename) throws IOException {
+	// 	List<String> stringArray = read(filename);
+	// 	List<Payment> guestList = new ArrayList<>();
 
-		for(String st : stringArray){
-			StringTokenizer star = new StringTokenizer(st, SEPARATOR);
+	// 	for(String st : stringArray){
+	// 		StringTokenizer star = new StringTokenizer(st, SEPARATOR);
 			
-			String payment_id = star.nextToken().trim();
-			int guest_id = Integer.parseInt(star.nextToken().trim());
-			float discounts = Float.parseFloat(star.nextToken().trim());
-			float tax = Float.parseFloat(star.nextToken().trim());
-			float bill_total = Float.parseFloat(star.nextToken().trim());
-			PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
+	// 		String payment_id = star.nextToken().trim();
+	// 		int guest_id = Integer.parseInt(star.nextToken().trim());
+	// 		float discounts = Float.parseFloat(star.nextToken().trim());
+	// 		float tax = Float.parseFloat(star.nextToken().trim());
+	// 		float bill_total = Float.parseFloat(star.nextToken().trim());
+	// 		PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
 			
-			Payment payment = new Payment(discounts, bill_total, payment_id);
+	// 		Payment payment = new Payment(discounts, bill_total, payment_id);
 
-			payment.SetTax(tax);
-			payment.SetGuestId(guest_id);
-			payment.SetStatus(status);
+	// 		payment.SetTax(tax);
+	// 		payment.SetGuestId(guest_id);
+	// 		payment.SetStatus(status);
 
-			guestList.add(payment);
-		}
+	// 		guestList.add(payment);
+	// 	}
 
-		return guestList;
-	}
+	// 	return guestList;
+	// }
 
-	public static void savePayments(String fileName, List<Payment> paymentList) throws IOException {
-		List<String> paymentData = new ArrayList<>();
+	// public static void savePayments(String fileName, List<Payment> paymentList) throws IOException {
+	// 	List<String> paymentData = new ArrayList<>();
 
-		for(Payment payment : paymentList){
-			StringBuilder st = new StringBuilder();
+	// 	for(Payment payment : paymentList){
+	// 		StringBuilder st = new StringBuilder();
 
-			st.append(payment.GetPaymentID());
-			st.append(SEPARATOR);
-			st.append(payment.GetGuestId());
-			st.append(SEPARATOR);
-			st.append(payment.GetDiscount());
-			st.append(SEPARATOR);
-			st.append(payment.GetTax());
-			st.append(SEPARATOR);
-			st.append(payment.GetTotalBill());
-			st.append(SEPARATOR);
-			st.append(payment.GetStatus().toString());
-			st.append(SEPARATOR);
+	// 		st.append(payment.GetPaymentID());
+	// 		st.append(SEPARATOR);
+	// 		st.append(payment.GetGuestId());
+	// 		st.append(SEPARATOR);
+	// 		st.append(payment.GetDiscount());
+	// 		st.append(SEPARATOR);
+	// 		st.append(payment.GetTax());
+	// 		st.append(SEPARATOR);
+	// 		st.append(payment.GetTotalBill());
+	// 		st.append(SEPARATOR);
+	// 		st.append(payment.GetStatus().toString());
+	// 		st.append(SEPARATOR);
 
-			paymentData.add(st.toString());
-		}
-		write(fileName, paymentData);
-	}
+	// 		paymentData.add(st.toString());
+	// 	}
+	// 	write(fileName, paymentData);
+	// }
 
-	public static List<String> read(String fileName) throws IOException {
-		List<String> data = new ArrayList<>();
-		Scanner sc = new Scanner(new FileInputStream(fileName));
-		try{
-			while(sc.hasNextLine()){
-				data.add(sc.nextLine());
-			}
-		}		
-		finally{
-			sc.close();
-		}
+	// public static List<String> read(String fileName) throws IOException {
+	// 	List<String> data = new ArrayList<>();
+	// 	Scanner sc = new Scanner(new FileInputStream(fileName));
+	// 	try{
+	// 		while(sc.hasNextLine()){
+	// 			data.add(sc.nextLine());
+	// 		}
+	// 	}		
+	// 	finally{
+	// 		sc.close();
+	// 	}
 
-		return data;
-	}
+	// 	return data;
+	// }
 
-	public static void write(String fileName, List<String> data) throws IOException {
-		PrintWriter out = new PrintWriter(fileName);
+	// public static void write(String fileName, List<String> data) throws IOException {
+	// 	PrintWriter out = new PrintWriter(fileName);
 
-		try{
-			for(int i = 0; i < data.size(); i++){
-				out.println(data.get(i));
-			}
-		}
-		finally{
-			out.close();
-		}
-	}
+	// 	try{
+	// 		for(int i = 0; i < data.size(); i++){
+	// 			out.println(data.get(i));
+	// 		}
+	// 	}
+	// 	finally{
+	// 		out.close();
+	// 	}
+	// }
 }
