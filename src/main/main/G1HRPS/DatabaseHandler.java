@@ -50,7 +50,7 @@ public class DatabaseHandler {
 
     /** Write fixed content to the given file. */
     public void write(String fileName, List data) throws IOException {
-        PrintWriter out = new PrintWriter(new FileWriter(fileName));
+        PrintWriter out = new PrintWriter(new FileWriter(DB_PATH + fileName));
 
         try {
             for (int i = 0; i < data.size(); i++) {
