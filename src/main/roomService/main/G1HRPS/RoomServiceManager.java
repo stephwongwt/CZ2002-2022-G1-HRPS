@@ -11,8 +11,6 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	private List<RoomServiceOrder> room_service_order_list;
 
 	public RoomServiceManager() {
-		// TODO - implement RoomServiceManager.RoomServiceManager
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -46,12 +44,10 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 
 	public void InitializeDB() {
 		// TODO - implement RoomServiceManager.InitializeDB
-		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement RoomServiceManager.SaveDB
-		throw new UnsupportedOperationException();
 	}
 
 	/**
