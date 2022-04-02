@@ -1,5 +1,6 @@
 package main.G1HRPS;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface Supermanager<T> {
@@ -24,8 +25,8 @@ public interface Supermanager<T> {
 
 	List<T> GetList();
 
-	void InitializeDB();
+	void InitializeDB() throws IOException;
 
-	void SaveDB();
+	void SaveDB() throws IOException;
 
 }

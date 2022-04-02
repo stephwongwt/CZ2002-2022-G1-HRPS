@@ -1,6 +1,7 @@
 package main.G1HRPS;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 
@@ -67,7 +68,7 @@ public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 	}
 
 	@Override
-	public String GenerateCode(String prefix) {
+	public UUID GenerateCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
