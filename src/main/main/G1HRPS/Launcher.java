@@ -5,5 +5,6 @@ public class Launcher {
 		AppManager appmanager = new AppManager();
 		appmanager.Initialize();
 		appmanager.Run();
+		System.exit(0);
 	}
 }

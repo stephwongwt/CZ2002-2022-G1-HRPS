@@ -33,7 +33,7 @@ public interface Supermanager<T> {
 	List<T> GetList();
 
 	/**
-	 * Initialize list from database file.
+	 * Initialize list from database file or create file if it does not exist.
 	 */
 	void InitializeDB();
 
