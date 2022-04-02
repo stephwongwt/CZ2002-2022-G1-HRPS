@@ -16,11 +16,15 @@ public class AppManager {
 	private MenuItemManager menu_item_manager_;
 
 	/**
-	 * Loads from database
+	 * Call InitializeDB for all managers.
 	 */
 	public void Initialize() {
-		// TODO - implement AppManager.Initialize
-		throw new UnsupportedOperationException();
+		reservation_manager_.InitializeDB();
+		guest_manager_.InitializeDB();
+		payment_manager_.InitializeDB();
+		room_service_manager_.InitializeDB();
+		room_manager_.InitializeDB();
+		menu_item_manager_.InitializeDB();
 	}
 
 	/**
@@ -31,17 +35,25 @@ public class AppManager {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private AppMenuItem PrintMenu() {
 		// TODO - implement AppManager.PrintMenu
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * Will backup to database
+	 * Calls SaveDB for all managers.
 	 */
 	private void Quit() {
-		// TODO - implement AppManager.Quit
-		throw new UnsupportedOperationException();
+		reservation_manager_.SaveDB();
+		guest_manager_.SaveDB();
+		payment_manager_.SaveDB();
+		room_service_manager_.SaveDB();
+		room_manager_.SaveDB();
+		menu_item_manager_.SaveDB();
 	}
 
 }
