@@ -1,4 +1,4 @@
-package main.G1HRPS;
+package main.guest.main.G1HRPS;
 
 public enum Gender {
 	Female,
