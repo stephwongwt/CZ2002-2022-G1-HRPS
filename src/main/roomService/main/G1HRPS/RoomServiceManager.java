@@ -1,6 +1,7 @@
 package main.G1HRPS;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Manages room service orders from guests
@@ -11,28 +12,37 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 
 	public RoomServiceManager() {
 		// TODO - implement RoomServiceManager.RoomServiceManager
-		throw new UnsupportedOperationException();
+		this.room_service_order_list = new ArrayList<RoomServiceOrder>();
+		InitializeDB();
 	}
 
 	/**
 	 * Takes in an class object and list to add the object into.
 	 */
-	public void AddToList(RoomServiceOrder rooms_ervice_order) {
+	public void AddToList(RoomServiceOrder room_service_order) {
 		// TODO - implement RoomServiceManager.AddToList
-		throw new UnsupportedOperationException();
+		this.room_service_order_list.add(room_service_order);
 	}
 
 	/**
 	 * Takes in an class object and list to remove the object from the given list.
 	 */
-	public void RemoveFromList(RoomServiceOrder rooms_ervice_order) {
+	public void RemoveFromList(RoomServiceOrder rooms_service_order) {
 		// TODO - implement RoomServiceManager.RemoveFromList
-		throw new UnsupportedOperationException();
+		this.room_service_order_list.remove(rooms_service_order);
 	}
 
 	public void SearchList(String search_text) {
 		// TODO - implement RoomServiceManager.SearchList
-		throw new UnsupportedOperationException();
+		for (int i = 0; i < this.room_service_order_list.size(); i++)
+		{
+			if (this.room_service_order_list.get(i).getGuest_id() == search_text)
+			{
+				System.out.println(this.room_service_order_list.get(i));
+				return;
+			}
+		}
+		
 	}
 
 	/**
@@ -40,7 +50,7 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 */
 	public List<RoomServiceOrder> GetList() {
 		// TODO - implement RoomServiceManager.GetList
-		throw new UnsupportedOperationException();
+		return this.room_service_order_list;
 	}
 
 	public void InitializeDB() {
@@ -60,7 +70,8 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 */
 	public void SetRsoStatus(RoomServiceOrder rso, OrderStatus new_status) {
 		// TODO - implement RoomServiceManager.SetRsoStatus
-		throw new UnsupportedOperationException();
+		rso.SetStatus(new_status);
+		
 	}
 
 	/**
@@ -69,7 +80,7 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 */
 	public OrderStatus GetRsoStatus(RoomServiceOrder rso) {
 		// TODO - implement RoomServiceManager.GetRsoStatus
-		throw new UnsupportedOperationException();
+		return rso.GetStatus();
 	}
 
 	/**
@@ -78,16 +89,41 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 */
 	public void GetOrderedItemsByRoom(int room_id) {
 		// TODO - implement RoomServiceManager.GetOrderedItemsByRoom
-		throw new UnsupportedOperationException();
+		for (RoomServiceOrder rso : room_service_order_list)
+		{
+			if (rso.GetRoomNum() == room_id)
+			{
+				System.out.println("Ordered items for room " + room_id);
+				for (MenuItem m : rso.GetOrderedItemList())
+				{
+					System.out.println(m);
+				}
+				return;
+			}
+		}
+		System.out.println("No room number of " + room_id);
+		
 	}
 
 	/**
 	 * 
 	 * @param guest_id
 	 */
-	public void GetOrderedItemsByGuest(int guest_id) {
+	public void GetOrderedItemsByGuest(String guest_id) {
 		// TODO - implement RoomServiceManager.GetOrderedItemsByGuest
-		throw new UnsupportedOperationException();
+		for (RoomServiceOrder rso : room_service_order_list)
+		{
+			if (rso.getGuest_id() == guest_id)
+			{
+				System.out.println("Ordered items for guest " + guest_id);
+				for (MenuItem m : rso.GetOrderedItemList())
+				{
+					System.out.println(m);
+				}
+				return;
+			}
+		}
+		System.out.println("No room number of " + guest_id);
 	}
 
 	private int GenerateCode() {

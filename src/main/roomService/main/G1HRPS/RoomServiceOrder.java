@@ -2,10 +2,13 @@ package main.G1HRPS;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.ArrayList;
+
 
 public class RoomServiceOrder {
 
 	private final String room_service_order_code_;
+	private String guest_id_;
 	private int room_num_;
 	private final Timestamp time_created_;
 	private Timestamp time_completed_;
@@ -23,54 +26,62 @@ public class RoomServiceOrder {
 	 */
 	public RoomServiceOrder(String room_service_order_code, String guest_id, int room_id, List<MenuItem> ordered_item_list, String remarks) {
 		// TODO - implement RoomServiceOrder.RoomServiceOrder
-		throw new UnsupportedOperationException();
+		this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
+		this.guest_id_ = guest_id;
+		this.room_service_order_code_ = room_service_order_code;
+		this.time_created_ = new Timestamp(System.currentTimeMillis());
+		this.remarks_ = remarks;
+		this.status_ = OrderStatus.Preparing;
 	}
 
 	public String GetRsoCode() {
 		// TODO - implement RoomServiceOrder.GetRsoCode
-		throw new UnsupportedOperationException();
+		return this.room_service_order_code_;
 	}
 
 	/**
 	 * 
 	 * @param room_service_order_code_
 	 */
+	//May not be required??
 	public void SetRsoCode(String room_service_order_code_) {
 		// TODO - implement RoomServiceOrder.SetRsoCode
-		throw new UnsupportedOperationException();
+		//this.room_service_order_code_ = room_service_order_code_;
+		
 	}
 
 	public Timestamp GetTimeCreated() {
 		// TODO - implement RoomServiceOrder.GetTimeCreated
-		throw new UnsupportedOperationException();
+		return this.time_created_;
 	}
 
 	/**
 	 * 
 	 * @param time_created_
 	 */
-	public void SetTimeCreated(Timestamp time_created_) {
+	// Not needed i think
+	public void SetTimeCreated() {
 		// TODO - implement RoomServiceOrder.SetTimeCreated
-		throw new UnsupportedOperationException();
 	}
 
 	public Timestamp GetTimeCompleted() {
 		// TODO - implement RoomServiceOrder.GetTimeCompleted
-		throw new UnsupportedOperationException();
+		return this.time_completed_;
+		
 	}
 
 	/**
 	 * 
 	 * @param time_completed_
 	 */
-	public void SetTimeCompleted(Timestamp time_completed_) {
+	public void SetTimeCompleted(Timestamp time_completed) {
 		// TODO - implement RoomServiceOrder.SetTimeCompleted
-		throw new UnsupportedOperationException();
+		this.time_completed_ = time_completed;
 	}
 
 	public List<MenuItem> GetOrderedItemList() {
 		// TODO - implement RoomServiceOrder.GetOrderedItemList
-		throw new UnsupportedOperationException();
+		return this.ordered_item_list_;
 	}
 
 	/**
@@ -84,7 +95,7 @@ public class RoomServiceOrder {
 
 	public int GetRoomNum() {
 		// TODO - implement RoomServiceOrder.GetRoomNum
-		throw new UnsupportedOperationException();
+		return this.room_num_;
 	}
 
 	/**
@@ -93,12 +104,12 @@ public class RoomServiceOrder {
 	 */
 	public void SetRoomNum(int room_num) {
 		// TODO - implement RoomServiceOrder.SetRoomNum
-		throw new UnsupportedOperationException();
+		this.room_num_ = room_num;
 	}
 
 	public String GetRemarks() {
 		// TODO - implement RoomServiceOrder.GetRemarks
-		throw new UnsupportedOperationException();
+		return this.remarks_;
 	}
 
 	/**
@@ -107,12 +118,12 @@ public class RoomServiceOrder {
 	 */
 	public void SetRemarks(String remarks) {
 		// TODO - implement RoomServiceOrder.SetRemarks
-		throw new UnsupportedOperationException();
+		this.remarks_ = remarks;
 	}
 
 	public OrderStatus GetStatus() {
 		// TODO - implement RoomServiceOrder.GetStatus
-		throw new UnsupportedOperationException();
+		return this.status_;
 	}
 
 	/**
@@ -121,7 +132,24 @@ public class RoomServiceOrder {
 	 */
 	public void SetStatus(OrderStatus status) {
 		// TODO - implement RoomServiceOrder.SetStatus
-		throw new UnsupportedOperationException();
+		this.status_ = status;
+	}
+	// To be worked out. This is still a simple version
+	public String toString()
+	{
+		return ("RSO code: "+ this.room_service_order_code_ + " Remarks: " + this.remarks_);
 	}
 
+	public String getGuest_id() {
+		return guest_id_;
+	}
+	public float CalTotalPrice()
+	{
+		float total_price = 0.0f;
+		for (int i = 0; i < this.ordered_item_list_.size(); i++)
+		{
+			total_price += this.ordered_item_list_.get(i).getPrice(); 
+		}
+		return total_price;
+	}
 }
