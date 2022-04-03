@@ -9,7 +9,6 @@ public class GuestManager implements Supermanager<Guest> {
 	private List<Guest> guest_list_;
 
 	public GuestManager() {
-		// TODO - implement GuestManager.GuestManager
 
 		InitializeDB();
 
@@ -19,58 +18,60 @@ public class GuestManager implements Supermanager<Guest> {
 	 * Takes in an class object and list to add the object into.
 	 */
 	public void AddToList(Guest guest) {
-		// TODO - implement GuestManager.AddToList
 
-		guest_list_.add(guest);
+		try{
+			guest_list_.add(guest);
+		}
+		catch(NullPointerException ex){
+			System.out.println("Guest List not initialized");
+		}
 
-		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * Takes in an class object and list to remove the object from the given list.
 	 */
 	public void RemoveFromList(Guest guest) {
-		// TODO - implement GuestManager.RemoveFromList
 
-		guest_list_.remove(guest);
+		try{
+			guest_list_.remove(guest);
+		}
+		catch(NullPointerException ex){
+			System.out.println("Guest List not initialized");
+		}
 
-		throw new UnsupportedOperationException();
 	}
 
 	public void SearchList(String search_text) {
-		// TODO - implement GuestManager.SearchList
 
-		for(Guest guest : guest_list_){
-			if(search_text.equals(guest.GetIdentity())){
-				
+		try{
+			for(Guest guest : guest_list_){
+				if(search_text.equals(guest.GetIdentity())){
+					guest.printGuestInfo();
+				}
 			}
 		}
+		catch(NullPointerException ex){
+			System.out.println("Guest List not initialized");
+		}
 
-		throw new UnsupportedOperationException();
 	}
 
 	public List<Guest> GetList() {
-		// TODO - implement GuestManager.GetList
 
 		return guest_list_;
 
-		// throw new UnsupportedOperationException();
 	}
 
 	public void InitializeDB() {
-		// TODO - implement GuestManager.InitializeDB
 
-		guest_list_ = new ArrayList<Guest>();
 
-		throw new UnsupportedOperationException();
+
 	}
 
 	public void SaveDB() {
-		// TODO - implement GuestManager.SaveDB
 
 		
-
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -79,24 +80,11 @@ public class GuestManager implements Supermanager<Guest> {
 	 * @param Guest
 	 */
 	public boolean CheckInGuest(int room_num, Guest guest) {
-		// TODO - implement GuestManager.CheckedInGuest
-		// CheckInGuest? is int[] Guest necessary
 
 		guest.SetRoomNum(room_num);
-
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * 
-	 * @param guest
-	 * @param guestStatus
-	 */
-	public void SetGuestStatus(Guest guest, int guestStatus) {
-		// TODO - implement GuestManager.SetGuestStatus
+		guest.SetBillingAddress(billing_address);
+		guest.SetCcNumber(cc_number);
+		guest.setPaymentId(payment_id);
 		
-		
-
-		throw new UnsupportedOperationException();
 	}
 }
