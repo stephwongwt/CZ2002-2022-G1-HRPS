@@ -1,7 +1,5 @@
 package main.G1HRPS;
 
-import javax.management.InvalidAttributeValueException;
-
 public class Guest {
 
 	private final int MIN_CC_NUMLEN = 8;

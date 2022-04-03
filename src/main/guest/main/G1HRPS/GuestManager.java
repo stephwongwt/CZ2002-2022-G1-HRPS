@@ -1,16 +1,12 @@
-package main.guest.main.G1HRPS;
+package main.G1HRPS;
 
 import java.util.List;
-import java.util.ArrayList;
-import main.main.G1HRPS.*;
 
 public class GuestManager implements Supermanager<Guest> {
 
 	private List<Guest> guest_list_;
 
 	public GuestManager() {
-
-		InitializeDB();
 
 	}
 
@@ -42,12 +38,12 @@ public class GuestManager implements Supermanager<Guest> {
 
 	}
 
-	public void SearchList(String search_text) {
+	public Guest SearchList(String search_text) {
 
 		try{
 			for(Guest guest : guest_list_){
 				if(search_text.equals(guest.GetIdentity())){
-					guest.printGuestInfo();
+					return guest;
 				}
 			}
 		}
@@ -55,8 +51,13 @@ public class GuestManager implements Supermanager<Guest> {
 			System.out.println("Guest List not initialized");
 		}
 
+		return null;
+
 	}
 
+	/**
+	 * 
+	 */
 	public List<Guest> GetList() {
 
 		return guest_list_;
@@ -65,21 +66,25 @@ public class GuestManager implements Supermanager<Guest> {
 
 	public void InitializeDB() {
 
-
+		
 
 	}
 
 	public void SaveDB() {
 
 		
+		
 	}
 
 	/**
 	 * 
-	 * @param Room
-	 * @param Guest
+	 * @param guest
+	 * @param room_num
+	 * @param payment_id
+	 * @param billing_address
+	 * @param cc_number
 	 */
-	public boolean CheckInGuest(int room_num, Guest guest) {
+	public void CheckInGuest(Guest guest, int room_num, String payment_id, String billing_address, String cc_number) {
 
 		guest.SetRoomNum(room_num);
 		guest.SetBillingAddress(billing_address);
