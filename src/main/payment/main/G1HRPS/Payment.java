@@ -1,11 +1,15 @@
-package main.payment.main.G1HRPS;
+package main.G1HRPS;
+
+import java.util.List;
 
 public class Payment {
 
 	private final String payment_id_;
-	private int guest_id;
+	private int room_num_;
 	private float discounts_;
 	private float tax_;
+	private float room_charges_;
+	private float rs_charges_;
 	/**
 	 * After discounts
 	 */
@@ -17,66 +21,61 @@ public class Payment {
 	 * @param discount
 	 * @param room_charges
 	 */
-	public Payment(float discount, float room_charges, String payment_id) {
-		// TODO - implement Payment.Payment
+	public Payment(int room_num, float room_charges, String payment_id) {
 
-		this.discounts_ = discount;
-		this.bill_total_ = room_charges;
-
-		this.payment_id_ = payment_id;
-		this.guest_id = -1;
-		this.tax_ = (float)-1;
-		this.status_ = PaymentStatus.Pending;
-
-		throw new UnsupportedOperationException();
+		payment_id_ = payment_id;
+		room_num_ = room_num;
+		discounts_ = 0;
+		tax_ = 0;
+		room_charges_ = 0;
+		rs_charges_ = 0;
+		status_ = PaymentStatus.Pending;
 	}
 
 	/**
 	 * 
 	 * @param guest_id
 	 */
-	public void SetGuestId(int guest_id) {
-		// TODO - implement Payment.SetGuestId
+	public void SetRoomNum(int room_num) {
 
-		this.guest_id = guest_id;
+		room_num_ = room_num;
 
-		throw new UnsupportedOperationException();
 	}
 
 	public void SetDiscount(float discount) {
-		// TODO - implement Payment.SetDiscount
 
-		this.discounts_ = discount;
+		discounts_ = discount;
 
-		throw new UnsupportedOperationException();
 	}
 
-	public void SetRoomCharges() {
-		// TODO - implement Payment.SetRoomCharges
+	public void SetRoomCharges(float room_charges) {
 
+		room_charges_ = room_charges;
 
-
-		throw new UnsupportedOperationException();
 	}
 
-	public void SetRoomServices() {
-		// TODO - implement Payment.SetRoomServices
+	public void SetRoomServices(List<RoomServiceOrder> room_service_order_list) {
+		// TODO - Find a straightforward way to get total cost of each rso
 
+		int room_num;
 
+		for(RoomServiceOrder rsOrder : room_service_order_list){
+			room_num = rsOrder.GetRoomNum();
+			if(this.room_num_ == room_num){
+				// rs_charges_ += rsOrder.
+			}
+		}
 
-		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * 
 	 * @param Tax
 	 */
-	public void SetTax(float Tax) {
-		// TODO - implement Payment.SetTax
+	public void SetTax(float tax) {
 
-		this.tax_ = Tax;
+		tax_ = tax;
 
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -84,11 +83,9 @@ public class Payment {
 	 * @param bill_total
 	 */
 	public void SetBillTotal(float bill_total) {
-		// TODO - implement Payment.SetBillTotal
 
-		this.bill_total_ = bill_total;
+		bill_total_ = bill_total;
 
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -96,76 +93,64 @@ public class Payment {
 	 * @param status
 	 */
 	public void SetStatus(PaymentStatus status) {
-		// TODO - implement Payment.SetStatus
 
-		this.status_ = status;
+		status_ = status;
 
-		throw new UnsupportedOperationException();
 	}
 
-	public int GetGuestId() {
-		// TODO - implement Payment.GetGuestId
+	public int GetRoomNum() {
 
-		return guest_id;
-
-		// throw new UnsupportedOperationException();
+		return room_num_;
+		
 	}
 
 	public float GetDiscount() {
-		// TODO - implement Payment.GetDiscount
 
-		return this.discounts_;
+		return discounts_;
 
-		// throw new UnsupportedOperationException();
 	}
 
-	public void GetRoomCharges() {
-		// TODO - implement Payment.GetRoomCharges
+	public float GetRoomCharges() {
 		
-		
+		return room_charges_;
 
-		throw new UnsupportedOperationException();
 	}
 
-	public void GetRoomServices() {
-		// TODO - implement Payment.GetRoomServices
+	public float GetRsCharges() {
 
-		throw new UnsupportedOperationException();
+		return rs_charges_;
+
 	}
 
 	public float GetTax() {
-		// TODO - implement Payment.GetTax
 
-		return this.tax_;
+		return tax_;
 		
-		// throw new UnsupportedOperationException();
 	}
 
 	public float SetBillTotal() {
-		// TODO - implement Payment.SetBillTotal
 
+		bill_total_ = ((room_charges_ + rs_charges_) * (1-discounts_)) * (1 + tax_);
 
+		return bill_total_;
 
-		throw new UnsupportedOperationException();
 	}
 
 	public PaymentStatus GetStatus() {
-		// TODO - implement Payment.GetStatus
 
-		return this.status_;
+		return status_;
 
-		// throw new UnsupportedOperationException();
 	}
 
 	public String GetPaymentID(){
-		// TODO - implement Payment.GetPaymentID
 
-		return this.payment_id_;
+		return payment_id_;
+
 	}
 
 	public float GetTotalBill(){
-		// TODO - implement Payment.GetTotalBill
 
-		return this.bill_total_;
+		return bill_total_;
+
 	}
 }
