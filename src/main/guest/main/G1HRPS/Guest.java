@@ -1,4 +1,4 @@
-package main.guest.main.G1HRPS;
+package main.G1HRPS;
 
 import javax.management.InvalidAttributeValueException;
 
@@ -77,7 +77,6 @@ public class Guest {
 
 		this.name_ = name;
 
-		throw new UnsupportedOperationException();
 	}
 
 	public String GetCcNumber() {
@@ -90,12 +89,13 @@ public class Guest {
 	 * 
 	 * @param cc_number
 	 */
-	public void SetCcNumber(String cc_number) throws InvalidAttributeValueException {
+	public void SetCcNumber(String cc_number) {
+		String noSpace_ccNum = cc_number.replaceAll("\\s+", "");
 
-		if(cc_number.length() >= MIN_CC_NUMLEN && cc_number.length() <= MAX_CC_NUMLEN)
+		if(noSpace_ccNum.matches("[0-9]+") && noSpace_ccNum.length() >= MIN_CC_NUMLEN && noSpace_ccNum.length() <= MAX_CC_NUMLEN)
 			this.cc_number_ = cc_number;
 		else
-			throw new InvalidAttributeValueException("Invalid credit card # format");
+			System.out.println("Invalid credit card number");
 	}
 
 	public String GetBillingAddress() {
