@@ -7,8 +7,6 @@ public class RoomManager implements Supermanager<Room> {
 	private List<Room> room_list_;
 
 	public RoomManager() {
-		// TODO - implement RoomManager.RoomManager
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -39,12 +37,10 @@ public class RoomManager implements Supermanager<Room> {
 
 	public void InitializeDB() {
 		// TODO - implement RoomManager.InitializeDB
-		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement RoomManager.SaveDB
-		throw new UnsupportedOperationException();
 	}
 
 	/**

@@ -7,7 +7,6 @@ public class GuestManager implements Supermanager<Guest> {
 	private List<Guest> guest_list_;
 
 	public GuestManager() {
-
 	}
 
 	/**
@@ -65,15 +64,11 @@ public class GuestManager implements Supermanager<Guest> {
 	}
 
 	public void InitializeDB() {
-
-		
-
+		// TODO - implement GuestManager.InitializeDB
 	}
 
 	public void SaveDB() {
-
-		
-		
+		// TODO - implement GuestManager.SaveDB
 	}
 
 	/**
