@@ -6,27 +6,41 @@ import java.util.List;
 public interface Supermanager<T> {
 
 	/**
-	 * Takes in an class object and list to add the object into.
-	 * @param t
+	 * Add given object to list.
+	 * 
+	 * @param t object to be added
 	 */
 	void AddToList(T t);
 
 	/**
-	 * Takes in an class object and list to remove the object from the given list.
-	 * @param t
+	 * Remove given object from list.
+	 * 
+	 * @param t object to be removed
 	 */
 	void RemoveFromList(T t);
 
 	/**
+	 * Search list using given search text.
 	 * 
-	 * @param search_text
+	 * @param search_text keyword to search for.
 	 */
 	void SearchList(String search_text);
 
+	/**
+	 * Gets list.
+	 * 
+	 * @return List of object
+	 */
 	List<T> GetList();
 
-	void InitializeDB() throws IOException;
+	/**
+	 * Initialize list from database file or create file if it does not exist.
+	 */
+	void InitializeDB();
 
-	void SaveDB() throws IOException;
+	/**
+	 * Save list to database file.
+	 */
+	void SaveDB();
 
 }
