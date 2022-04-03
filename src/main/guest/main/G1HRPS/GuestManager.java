@@ -7,8 +7,6 @@ public class GuestManager implements Supermanager<Guest> {
 	private List<Guest> guest_list_;
 
 	public GuestManager() {
-		// TODO - implement GuestManager.GuestManager
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -39,12 +37,10 @@ public class GuestManager implements Supermanager<Guest> {
 
 	public void InitializeDB() {
 		// TODO - implement GuestManager.InitializeDB
-		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement GuestManager.SaveDB
-		throw new UnsupportedOperationException();
 	}
 
 	/**

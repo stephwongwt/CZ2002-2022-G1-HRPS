@@ -1,14 +1,13 @@
 package main.G1HRPS;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 
 	private List<Reservation> reservation_list_;
 
 	public ReservationManager() {
-		// TODO - implement ReservationManager.ReservationManager
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -39,12 +38,10 @@ public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 
 	public void InitializeDB() {
 		// TODO - implement ReservationManager.InitializeDB
-		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement ReservationManager.SaveDB
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -67,7 +64,7 @@ public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 	}
 
 	@Override
-	public String GenerateCode(String prefix) {
+	public UUID GenerateCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

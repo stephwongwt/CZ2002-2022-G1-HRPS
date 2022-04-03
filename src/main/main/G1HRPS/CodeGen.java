@@ -1,8 +1,10 @@
 package main.G1HRPS;
 
+import java.util.UUID;
+
 /**
  * CodeGen
  */
 public interface CodeGen {
-    String GenerateCode(String prefix);
+    UUID GenerateCode();
 }

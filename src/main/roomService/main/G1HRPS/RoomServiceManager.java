@@ -1,6 +1,7 @@
 package main.G1HRPS;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Manages room service orders from guests
@@ -10,8 +11,6 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	private List<RoomServiceOrder> room_service_order_list;
 
 	public RoomServiceManager() {
-		// TODO - implement RoomServiceManager.RoomServiceManager
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -45,12 +44,10 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 
 	public void InitializeDB() {
 		// TODO - implement RoomServiceManager.InitializeDB
-		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement RoomServiceManager.SaveDB
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -90,13 +87,8 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 		throw new UnsupportedOperationException();
 	}
 
-	private int GenerateCode() {
-		// TODO - implement RoomServiceManager.GenerateCode
-		throw new UnsupportedOperationException();
-	}
-
 	@Override
-	public String GenerateCode(String prefix) {
+	public UUID GenerateCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}

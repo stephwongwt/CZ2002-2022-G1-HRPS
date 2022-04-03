@@ -10,8 +10,6 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 	public List<MenuItem> menu_item_list_;
 
 	public MenuItemManager() {
-		// TODO - implement MenuItemManager.MenuItemManager
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -45,12 +43,10 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 
 	public void InitializeDB() {
 		// TODO - implement MenuItemManager.InitializeDB
-		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement MenuItemManager.SaveDB
-		throw new UnsupportedOperationException();
 	}
 
 	/**
