@@ -54,6 +54,11 @@ public class Payment {
 
 	}
 
+	/**
+	 * 
+	 * @param room_service_order_list
+	 */
+
 	public void SetRoomServices(List<RoomServiceOrder> room_service_order_list) {
 		// TODO - Find a straightforward way to get total cost of each rso
 

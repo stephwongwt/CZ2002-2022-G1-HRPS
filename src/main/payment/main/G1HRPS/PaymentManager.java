@@ -1,9 +1,8 @@
 package main.G1HRPS;
 
 import java.util.List;
-import java.sql.Timestamp;
-import G1HRPS.CodeGen;
-import G1HRPS.Supermanager;
+import main.G1HRPS.CodeGen;
+import main.G1HRPS.Supermanager;
 
 public class PaymentManager implements Supermanager<Payment>, CodeGen {
 
@@ -43,6 +42,11 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 
 	}
 
+	/**
+	 * 
+	 * @param payment_id
+	 */
+
 	@Override
 	public void SearchList(String payment_id) {
 		// TODO - implement PaymentManager.SearchList
@@ -74,7 +78,11 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 
 
 	}
-
+	/**
+	 * 
+	 * @param payment
+	 * @param status
+	 */
 	public void SetPaymentStatus(Payment payment, PaymentStatus status) {
 
 		payment.SetStatus(status);
@@ -82,7 +90,6 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 	}
 
 	public PaymentStatus GetPaymentStatus(Payment payment) {
-		// TODO - implement PaymentManager.GetPaymentStatus
 
 		return payment.GetStatus();
 
@@ -91,8 +98,17 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 	/**
 	 * Get linked items from room service and room charges and print the list
 	 */
-	public void GenerateAndPrintBill() {
-		// TODO - implement PaymentManager.GenerateAndPrintBill
+	public void GenerateAndPrintBill(int room_num) {
+
+
+
+		System.out.println();
+		
+	}
+
+	public void GenerateAndPrintBill(Payment payment) {
+
+		
 
 		System.out.println();
 		
@@ -102,6 +118,7 @@ public class PaymentManager implements Supermanager<Payment>, CodeGen {
 	public String GenerateCode(String prefix) {
 		// TODO Auto-generated method stub
 		
+
 
 		throw new UnsupportedOperationException();
 	}
