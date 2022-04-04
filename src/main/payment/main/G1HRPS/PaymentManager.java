@@ -26,8 +26,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		try{
 			payment_list_.add(payment);
 		}
-		catch(NullPointerException ex){
+		catch(NullPointerException e){
 			System.out.println("Payment List not initialized");
+			e.printStackTrace();
 		}
 
 	}
@@ -40,8 +41,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		try{
 			payment_list_.remove(payment);
 		}
-		catch(NullPointerException ex){
+		catch(NullPointerException e){
 			System.out.println("Payment List not initialized");
+			e.printStackTrace();
 		}
 
 	}
@@ -55,8 +57,10 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	public Payment SearchList(String payment_id) {
 		// TODO - implement PaymentManager.SearchList
 
+		UUID uuid = UUID.fromString(payment_id);
+
 		for(Payment payment : payment_list_){
-			if(payment_id.equals(payment.GetPaymentID())){
+			if(uuid.equals(payment.GetPaymentID())){
 				return payment;
 			}
 		}
@@ -80,13 +84,14 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
 
 			UUID id = UUID.fromString(star.nextToken().trim()); // first token
-			int guest_id = Integer.parseInt(star.nextToken().trim()); // second token
+			String guest_id = star.nextToken().trim(); // second token
+			int room_num = Integer.parseInt(star.nextToken().trim());
 			float discounts = Float.parseFloat(star.nextToken().trim());
 			float tax = Float.parseFloat(star.nextToken().trim());
 			float bill_total = Float.parseFloat(star.nextToken().trim());
 			PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
 			// create object from file data
-			Payment obj = new Payment(id, guest_id, discounts, tax, bill_total, status);
+			Payment obj = new Payment(id, guest_id, room_num, discounts, tax, bill_total, status);
 			// add to Professors list
 			dataList.add(obj);
 		}
@@ -100,6 +105,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			StringBuilder st = new StringBuilder();
 			st.append(payment.GetPaymentID());
 			st.append(SEPARATOR);
+			st.append(payment.GetGuestID());
+			st.append(SEPARATOR);
 			st.append(payment.GetRoomNum());
 			st.append(SEPARATOR);
 			st.append(payment.GetDiscount());
@@ -108,7 +115,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			st.append(SEPARATOR);
 			st.append(payment.GetTotalBill());
 			st.append(SEPARATOR);
-			st.append(payment.GetStatus().toString());
+			st.append(payment.GetStatus());
 			st.append(SEPARATOR);
 
 			paymentData.add(st.toString());
@@ -140,19 +147,19 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	/**
 	 * Get linked items from room service and room charges and print the list
 	 */
-	public void GenerateAndPrintBill(int room_num) {
-
-
-
-		System.out.println();
-		
-	}
-
 	public void GenerateAndPrintBill(Payment payment) {
-
 		
+		payment.SetBillTotal();
 
-		System.out.println();
+		System.out.println("-------Payment-------");
+		System.out.println("- Days of Stay : ");
+		System.out.println("-- Cost of Stay : " + payment.GetRoomCharges());
+
+		// TODO - Print list of all ordered items in room
+
+		System.out.println("-- Cost of Room Service : " + payment.GetRsCharges());
+		System.out.println("- Tax : " + payment.GetTax() + "%");
+		System.out.println("- Total : " + payment.GetTotalBill());
 		
 	}
 
