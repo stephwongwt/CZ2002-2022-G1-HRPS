@@ -1,6 +1,5 @@
 package main.G1HRPS;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface Supermanager<T> {

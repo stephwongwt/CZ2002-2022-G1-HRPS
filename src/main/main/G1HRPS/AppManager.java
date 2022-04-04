@@ -1,16 +1,12 @@
 package main.G1HRPS;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 /**
  * Manager that handles running the app
  */
 public class AppManager {
-
 	public Scanner sc_;
 	private ReservationManager reservation_manager_;
 	private GuestManager guest_manager_;
@@ -18,6 +14,7 @@ public class AppManager {
 	private RoomServiceManager room_service_manager_;
 	private RoomManager room_manager_;
 	private MenuItemManager menu_item_manager_;
+	private final List<AppMenuItem> app_menu_list;
 
 	public AppManager() {
 		System.out.println("Application Start");
@@ -28,6 +25,7 @@ public class AppManager {
 		room_service_manager_ = new RoomServiceManager();
 		room_manager_ = new RoomManager();
 		menu_item_manager_ = new MenuItemManager();
+		app_menu_list = java.util.Arrays.asList(AppMenuItem.values());
 	}
 
 	/**
@@ -49,30 +47,8 @@ public class AppManager {
 	 */
 	public void Run() {
 		boolean running = true;
-		List<AppMenuItem> app_menu_list = java.util.Arrays.asList(AppMenuItem.values());
 		while (running) {
-			System.out.println("\r\n|--------|Choose an option|--------|");
-			for (AppMenuItem app_menu_item : app_menu_list) {
-				System.out.printf("[%d] %s\r\n", app_menu_item.getValue(), app_menu_item.toString());
-			}
-			int option = 0;
-			
-			while (true) {
-				try {
-					option = sc_.nextInt();
-					if ((option >= 0) && (option < app_menu_list.size())) {
-						break;
-					}
-					else
-					{
-						System.out.println("Unavailable, please select another option.");
-					}
-				} catch (Exception e) {
-					sc_.nextLine();
-					System.out.println("Unavailable, please select another option.");
-				}
-			}
-			AppMenuItem selection = AppMenuItem.values()[option];
+			AppMenuItem selection = PrintMenu();
 			switch (selection) {
 				case Quit:
 					Quit();
@@ -80,7 +56,7 @@ public class AppManager {
 					running = false;
 					break;
 				case AddGuest:
-					System.out.println("AddGuest");
+					Guest new_guest = CreateNewGuest();
 					break;
 				case AddRoom:
 					System.out.println("AddRoom");
@@ -106,11 +82,75 @@ public class AppManager {
 
 	/**
 	 * 
-	 * @return
+	 * @return selected menu option
 	 */
 	private AppMenuItem PrintMenu() {
-		// TODO - implement AppManager.PrintMenu
-		throw new UnsupportedOperationException();
+		System.out.println("\r\n|--------|Choose an option|--------|");
+		for (AppMenuItem app_menu_item : app_menu_list) {
+			System.out.printf("[%d] %s\r\n", app_menu_item.getValue(), app_menu_item.toString());
+		}
+		int option = 0;
+		
+		while (true) {
+			try {
+				option = sc_.nextInt();
+				if ((option >= 0) && (option < app_menu_list.size())) {
+					break;
+				}
+				else
+				{
+					System.out.println("Unavailable, please select another option.");
+				}
+			} catch (Exception e) {
+				sc_.nextLine();
+				System.out.println("Unavailable, please select another option.");
+			}
+		}
+		return AppMenuItem.values()[option];
+	}
+
+	private void CreateNewGuest() {
+		String identity = null;
+		String name = null;
+		String cc_number = null;
+		String address = null;
+		String contact = null;
+		String country = null;
+		Gender gender = null;
+		String nationality = null;
+		
+		sc_.nextLine();
+		System.out.println("Enter Identification/Driving License Number (e.g. S1234567A):");
+		identity = sc_.nextLine().toUpperCase();
+		System.out.println("Enter Name (e.g. John Smith):");
+		name = sc_.nextLine().toUpperCase();
+		System.out.println("Enter Credit Card Number (e.g. 4605100120021234):");
+		cc_number = sc_.nextLine().toUpperCase();
+		System.out.println("Enter Address (e.g. 50 Nanyang Ave, S639798):");
+		address = sc_.nextLine().toUpperCase();
+		System.out.println("Enter Contact (e.g. +6590001000):");
+		contact = sc_.nextLine().toUpperCase();
+		System.out.println("Enter Name (e.g. Singapore):");
+		country = sc_.nextLine().toUpperCase();
+		System.out.println("Enter Gender (e.g. Female/Male/Other):");
+		while (true) {
+			try {
+				gender = Gender.valueOf(sc_.next().toUpperCase());
+				if (gender != null)
+				{
+					sc_.nextLine();
+					break;
+				}
+			} catch (Exception e) {
+				sc_.nextLine();
+				System.out.println("Unavailable, please try again.");
+			}
+		}
+		
+		System.out.println("Enter Name (e.g. Singaporean):");
+		nationality = sc_.nextLine().toUpperCase();
+		
+		guest_manager.AddNewGuest(identity, name, cc_number, address, contact, country, gender, nationality);
 	}
 
 	/**
