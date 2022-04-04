@@ -208,7 +208,6 @@ public class Guest {
 	
 	}
 
-
 	public void printGuestInfo() {
 		if(this.payment_id_ != null)
 			System.out.printf(
