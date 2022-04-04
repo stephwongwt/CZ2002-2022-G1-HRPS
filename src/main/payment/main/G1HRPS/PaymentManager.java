@@ -18,8 +18,19 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		
 	}
 
+
+	public void AddNewObject(UUID id, String guest_id, int room_num, float discounts, float tax, float bill_total, PaymentStatus status) {
+
+		Payment new_payment = new Payment(id, room_num, discounts, tax, bill_total, status);
+
+		AddToList(new_payment);
+
+	}
+
 	/**
 	 * Takes in an class object and list to add the object into.
+	 * 
+	 * @param payment
 	 */
 	public void AddToList(Payment payment) {
 
@@ -35,6 +46,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 	/**
 	 * Takes in an class object and list to remove the object from the given list.
+	 * 
+	 * @param payment
 	 */
 	public void RemoveFromList(Payment payment) {
 
@@ -49,8 +62,15 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
+	 * Method overrides the <T> SearchList(String search_text)
+	 * in Supermanager interface and returns a payment with
+	 * matching search text
 	 * 
-	 * @param payment_id
+	 * @param 	payment_id	parameter is given as String and
+	 * 						is used to get the corresponding
+	 * 						UUID of payment
+	 * 
+	 * @return	payment with the matching payment_id
 	 */
 
 	@Override
@@ -69,9 +89,79 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 	}
 
+	/**
+	 * 
+	 * @return the list of all payments
+	 */
+
 	public List<Payment> GetList() {
 		return payment_list_;
 	}
+
+	/**
+	 * Takes new payment status and assigns it to the given payment
+	 * 
+	 * @param payment
+	 * @param status
+	 */
+	public void SetPaymentStatus(Payment payment, PaymentStatus status) {
+
+		payment.SetStatus(status);
+
+	}
+
+	/**
+	 *
+	 * @param payment
+	 * @return	PaymentStatus of the given payment
+	 */
+
+	public PaymentStatus GetPaymentStatus(Payment payment) {
+
+		return payment.GetStatus();
+
+	}
+
+	/**
+	 * Get linked items from room service and room charges and print the list
+	 * 
+	 * @param payment
+	 * @param rs_order_list
+	 */
+	public void GenerateAndPrintBill(Payment payment, List<RoomServiceOrder> rs_order_list) {
+		
+		payment.SetRsCharges(rs_order_list);
+		payment.SetBillTotal();
+
+		// TODO #7 - Where to get days of stay (From check-in to check-out)??
+
+		System.out.println("-------Payment-------");
+		System.out.println("- Days of Stay : ");
+		System.out.println("-- Cost of Stay : " + payment.GetRoomCharges());
+
+		// TODO - Need to print room service order items and their totals
+
+		System.out.println("-- Cost of Room Service : " + payment.GetRsCharges());
+		System.out.println("- Tax : " + payment.GetTax() + "%");
+		System.out.println("- Total : " + payment.GetTotalBill());
+		
+	}
+
+	/**
+	 * Used to generate the payment_id of a new payment
+	 */
+
+	@Override
+	public UUID GenerateCode() {
+		UUID uuid = UUID.randomUUID();
+		return uuid;
+	}
+
+	/**
+	 * Payment data read as list of Strings are converted to list of payment class
+	 * 
+	 *
+	 */
 
 	public void InitializeDB() {
 		// read String from text file
@@ -83,20 +173,24 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			// get individual 'fields' of the string separated by SEPARATOR
 			StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
 
-			UUID id = UUID.fromString(star.nextToken().trim()); // first token
-			String guest_id = star.nextToken().trim(); // second token
-			int room_num = Integer.parseInt(star.nextToken().trim());
+			UUID id = UUID.fromString(star.nextToken().trim()); // first token 
+			int room_num = Integer.parseInt(star.nextToken().trim()); // second token
 			float discounts = Float.parseFloat(star.nextToken().trim());
 			float tax = Float.parseFloat(star.nextToken().trim());
 			float bill_total = Float.parseFloat(star.nextToken().trim());
 			PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
 			// create object from file data
-			Payment obj = new Payment(id, guest_id, room_num, discounts, tax, bill_total, status);
+			Payment obj = new Payment(id, room_num, discounts, tax, bill_total, status);
 			// add to Professors list
 			dataList.add(obj);
 		}
 		payment_list_ = dataList;
 	}
+
+	/**
+	 * Each payment data in the list is turned into formatted String and
+	 * written into each line of file named "payment_db.txt"
+	 */
 
 	public void SaveDB() {
 		List<String> paymentData = new ArrayList<String>();
@@ -104,8 +198,6 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		for (Payment payment : payment_list_) {
 			StringBuilder st = new StringBuilder();
 			st.append(payment.GetPaymentID());
-			st.append(SEPARATOR);
-			st.append(payment.GetGuestID());
 			st.append(SEPARATOR);
 			st.append(payment.GetRoomNum());
 			st.append(SEPARATOR);
@@ -126,46 +218,5 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	/**
-	 * 
-	 * @param payment
-	 * @param status
-	 */
-	public void SetPaymentStatus(Payment payment, PaymentStatus status) {
-
-		payment.SetStatus(status);
-
-	}
-
-	public PaymentStatus GetPaymentStatus(Payment payment) {
-
-		return payment.GetStatus();
-
-	}
-
-	/**
-	 * Get linked items from room service and room charges and print the list
-	 */
-	public void GenerateAndPrintBill(Payment payment) {
-		
-		payment.SetBillTotal();
-
-		System.out.println("-------Payment-------");
-		System.out.println("- Days of Stay : ");
-		System.out.println("-- Cost of Stay : " + payment.GetRoomCharges());
-
-		// TODO - Print list of all ordered items in room
-
-		System.out.println("-- Cost of Room Service : " + payment.GetRsCharges());
-		System.out.println("- Tax : " + payment.GetTax() + "%");
-		System.out.println("- Total : " + payment.GetTotalBill());
-		
-	}
-
-	@Override
-	public UUID GenerateCode() {
-		UUID uuid = UUID.randomUUID();
-		return uuid;
 	}
 }
