@@ -101,6 +101,25 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 	/**
 	 * 
+	 * @param room_num
+	 * @return pending payment on the room with matching room number
+	 */
+
+	public Payment SearchList(int room_num) {
+
+		for(Payment payment : payment_list_){
+			if((room_num == payment.GetRoomNum()) && 
+				(payment.GetStatus() == PaymentStatus.Pending)){
+				return payment;
+			}
+		}
+
+		return null;
+
+	}
+
+	/**
+	 * 
 	 * @return the list of all payments
 	 */
 
