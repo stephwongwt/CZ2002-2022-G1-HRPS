@@ -32,7 +32,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 	public void AddNewObject(UUID id, String guest_id, int room_num, float discounts, float tax, float bill_total, PaymentStatus status) {
 
-		Payment new_payment = new Payment(id, room_num, discounts, tax, bill_total, status);
+		Payment new_payment = new Payment(id, guest_id, room_num, discounts, tax, bill_total, status);
 
 		AddToList(new_payment);
 
@@ -202,13 +202,14 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
 
 			UUID id = UUID.fromString(star.nextToken().trim()); // first token 
-			int room_num = Integer.parseInt(star.nextToken().trim()); // second token
+			String guest_id = star.nextToken().trim(); 			// second token
+			int room_num = Integer.parseInt(star.nextToken().trim()); 
 			float discounts = Float.parseFloat(star.nextToken().trim());
 			float tax = Float.parseFloat(star.nextToken().trim());
 			float bill_total = Float.parseFloat(star.nextToken().trim());
 			PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
 			// create object from file data
-			Payment obj = new Payment(id, room_num, discounts, tax, bill_total, status);
+			Payment obj = new Payment(id, guest_id, room_num, discounts, tax, bill_total, status);
 			// add to Professors list
 			dataList.add(obj);
 		}
@@ -226,6 +227,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		for (Payment payment : payment_list_) {
 			StringBuilder st = new StringBuilder();
 			st.append(payment.GetPaymentID());
+			st.append(SEPARATOR);
+			st.append(payment.GetGuestID());
 			st.append(SEPARATOR);
 			st.append(payment.GetRoomNum());
 			st.append(SEPARATOR);
