@@ -85,18 +85,14 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 */
 
 	@Override
-	public Payment SearchList(Object key) {
+	public Payment SearchList(String key) {
 
-		if(key instanceof UUID){
-			key = (UUID)key;
-			for(Payment payment : payment_list_){
-				if(key.equals(payment.GetPaymentID())){
-					return payment;
-				}
+		UUID uuid = UUID.fromString(key);
+
+		for(Payment payment : payment_list_){
+			if(uuid.equals(payment.GetPaymentID())){
+				return payment;
 			}
-		}
-		else{
-			System.out.println("Incorrect key type!");
 		}
 
 		return null;
