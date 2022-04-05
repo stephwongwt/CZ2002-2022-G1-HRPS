@@ -18,6 +18,17 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		
 	}
 
+	/**
+	 * Creates a new object related to the manager type ands add it to list
+	 * 
+	 * @param id
+	 * @param guest_id
+	 * @param room_num
+	 * @param discounts
+	 * @param tax
+	 * @param bill_total
+	 * @param status
+	 */
 
 	public void AddNewObject(UUID id, String guest_id, int room_num, float discounts, float tax, float bill_total, PaymentStatus status) {
 
@@ -74,15 +85,18 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 */
 
 	@Override
-	public Payment SearchList(String payment_id) {
-		// TODO - implement PaymentManager.SearchList
+	public Payment SearchList(Object key) {
 
-		UUID uuid = UUID.fromString(payment_id);
-
-		for(Payment payment : payment_list_){
-			if(uuid.equals(payment.GetPaymentID())){
-				return payment;
+		if(key instanceof UUID){
+			key = (UUID)key;
+			for(Payment payment : payment_list_){
+				if(key.equals(payment.GetPaymentID())){
+					return payment;
+				}
 			}
+		}
+		else{
+			System.out.println("Incorrect key type!");
 		}
 
 		return null;
@@ -126,20 +140,19 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 * Get linked items from room service and room charges and print the list
 	 * 
 	 * @param payment
+	 * @param days_of_stay
 	 * @param rs_order_list
 	 */
-	public void GenerateAndPrintBill(Payment payment, List<RoomServiceOrder> rs_order_list) {
+	public void GenerateAndPrintBill(Payment payment, int days_of_stay, List<RoomServiceOrder> rs_order_list) {
 		
 		payment.SetRsCharges(rs_order_list);
 		payment.SetBillTotal();
 
-		// TODO #7 - Where to get days of stay (From check-in to check-out)??
-
 		System.out.println("-------Payment-------");
-		System.out.println("- Days of Stay : ");
+		System.out.println("- Days of Stay : " + days_of_stay);
 		System.out.println("-- Cost of Stay : " + payment.GetRoomCharges());
 
-		// TODO - Need to print room service order items and their totals
+		// TODO #9 - Need to print room service order items and their totals
 
 		System.out.println("-- Cost of Room Service : " + payment.GetRsCharges());
 		System.out.println("- Tax : " + payment.GetTax() + "%");

@@ -8,7 +8,7 @@ public class Payment {
 	 * Unique generated ID
 	 */
 	private final UUID payment_id_;
-	private int room_num_;
+	private int room_num_; 
 	private float discounts_;
 	private float tax_;
 	private float room_charges_;

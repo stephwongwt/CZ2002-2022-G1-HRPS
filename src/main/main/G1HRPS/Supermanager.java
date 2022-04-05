@@ -25,7 +25,7 @@ public interface Supermanager<T> {
 	 * @param search_text keyword to search for.
 	 * @return object or null if not found.
 	 */
-	T SearchList(String search_text);
+	T SearchList(Object search_text);
 
 	/**
 	 * Gets list.
