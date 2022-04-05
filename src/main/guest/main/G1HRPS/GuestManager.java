@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 public class GuestManager extends DatabaseHandler implements Supermanager<Guest> {
 
@@ -11,24 +12,53 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	private final String db_filename = "guest_db.txt";
 
 	public GuestManager() {
+
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param identity
+	 * @param payment_id
+	 * @param room_num
+	 * @param name
+	 * @param cc_number
+	 * @param address
+	 * @param contact
+	 * @param country
+	 * @param gender
+	 * @param nationality
+	 */
+
+	public void AddNewObject(String identity, UUID payment_id, int room_num, String name, String cc_number, String address, String contact, String country, Gender gender, String nationality) {
+
+		Guest new_guest = new Guest(identity, payment_id, room_num, name, cc_number, address, contact, country, gender, nationality);
+
+		AddToList(new_guest);
 	}
 
 	/**
 	 * Takes in an class object and list to add the object into.
+	 * 
+	 * @param guest
 	 */
+
 	public void AddToList(Guest guest) {
 
 		try{
 			guest_list_.add(guest);
 		}
-		catch(NullPointerException ex){
+		catch(NullPointerException e){
 			System.out.println("Guest List not initialized");
+			e.printStackTrace();
 		}
 
 	}
 
 	/**
 	 * Takes in an class object and list to remove the object from the given list.
+	 * 
+	 * @param guest
 	 */
 	public void RemoveFromList(Guest guest) {
 
@@ -41,6 +71,14 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 		}
 
 	}
+
+	/**
+	 * Takes search text as a key to search for Guest class object
+	 * in the list.
+	 * 
+	 * @param	search_text
+	 * @return	guest object with matching search text as guest ID
+	 */
 
 	public Guest SearchList(String search_text) {
 
@@ -62,6 +100,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 
 	/**
 	 * 
+	 * @return	list of guests
 	 */
 	public List<Guest> GetList() {
 
@@ -69,8 +108,13 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 
 	}
 
+	/**
+	 * Read guest data as list of String objects and create
+	 * a list of Guest class objects with corresponding data.
+	 * 
+	 */
+
 	public void InitializeDB() {
-		// TODO - implement GuestManager.InitializeDB
 
 		ArrayList<String> dbArray = (ArrayList) read(db_filename);
 		ArrayList<Guest> dataList = new ArrayList<>();
@@ -79,7 +123,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 			StringTokenizer star = new StringTokenizer(st, SEPARATOR);
 
 			String identity = star.nextToken().trim();
-			String payment_id = star.nextToken().trim();
+			UUID payment_id = UUID.fromString(star.nextToken().trim());
 			int room_num = Integer.parseInt(star.nextToken().trim());
 			String name = star.nextToken().trim();
 			String cc_number = star.nextToken().trim();
@@ -89,9 +133,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 			Gender gender = Gender.valueOf(star.nextToken().trim());
 			String nationality = star.nextToken().trim();
 
-			Guest guest = new Guest(identity, name, cc_number, address, contact, country, gender, nationality);
-			guest.setPaymentId(payment_id);
-			guest.SetRoomNum(room_num);
+			Guest guest = new Guest(identity, payment_id, room_num, name, cc_number, address, contact, country, gender, nationality);
 
 			dataList.add(guest);
 		}
@@ -99,8 +141,14 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 		guest_list_ = dataList;
 	}
 
+	/**
+	 * Save each guest object from guest list by converting the
+	 * attributes to one String object and writing to each line
+	 * of the save file.
+	 * 
+	 */
+
 	public void SaveDB() {
-		// TODO - implement GuestManager.SaveDB
 
 		List<String> guestData = new ArrayList<>();
 
@@ -146,7 +194,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * @param billing_address
 	 * @param cc_number
 	 */
-	public void CheckInGuest(Guest guest, int room_num, String payment_id, String billing_address, String cc_number) {
+	public void CheckInGuest(Guest guest, int room_num, UUID payment_id, String billing_address, String cc_number) {
 
 		guest.SetRoomNum(room_num);
 		guest.SetBillingAddress(billing_address);
