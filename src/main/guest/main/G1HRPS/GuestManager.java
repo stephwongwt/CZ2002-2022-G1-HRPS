@@ -30,11 +30,24 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * @param nationality
 	 */
 
-	public void AddNewObject(String identity, UUID payment_id, int room_num, String name, String cc_number, String address, String contact, String country, Gender gender, String nationality) {
+	public boolean AddNewObject(String identity, UUID payment_id, int room_num, String name, String cc_number, String address, String contact, String country, Gender gender, String nationality) {
+
+		for(Guest guest : guest_list_) {
+			if(guest.GetIdentity().equals(identity)) {
+				System.out.println("There exists guest with same ID");
+				return false;
+			}
+			else if(guest.getPaymentId().equals(payment_id)) {
+				System.out.println("There exists guest with same payment ID");
+				return false;
+			}
+		}
 
 		Guest new_guest = new Guest(identity, payment_id, room_num, name, cc_number, address, contact, country, gender, nationality);
 
 		AddToList(new_guest);
+
+		return true;
 	}
 
 	/**
@@ -202,4 +215,5 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 		guest.setPaymentId(payment_id);
 		
 	}
+
 }
