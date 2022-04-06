@@ -275,12 +275,13 @@ public class Guest {
 	 * corresponding guest object
 	 * 
 	 */
-
+	
 	@Override
 	public String toString() {
 		
 		String output = String.format(
-			"|ID: %s|Name: %s|Room #: %d|Payment ID: %s|Credit Card #: %d|\n" +
+			"|ID: %s|Name: %s|Room #: %d|Payment ID: %s|\n" +
+			"|Credit Card #: %s|\n" +
 			"|Billing Address: %s|\n" +
 			"|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n",
 			this.identity_, this.name_, this.room_num_, this.payment_id_.toString(), this.cc_number_,
