@@ -1,6 +1,10 @@
 package main.G1HRPS;
 
 import java.io.IOException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.FileInputStream;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -16,7 +20,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	}
 
 	/**
-	 * 
+	 * Adds a unique new guest object with given attribute values and
+	 * add it to the guest list.
 	 * 
 	 * @param identity
 	 * @param payment_id
@@ -28,6 +33,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * @param country
 	 * @param gender
 	 * @param nationality
+	 * @return	false: if object exist with identical key values(identity, payment_id).
+	 * 			true: if new guest is successfully added to list.
 	 */
 
 	public boolean AddNewObject(String identity, UUID payment_id, int room_num, String name, String cc_number, String address, String contact, String country, Gender gender, String nationality) {
@@ -93,11 +100,12 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * @return	guest object with matching search text as guest ID
 	 */
 
-	public Guest SearchList(String search_text) {
+	@Override
+	public Guest SearchList(String guest_id) {
 
 		try{
 			for(Guest guest : guest_list_){
-				if(search_text.equals(guest.GetIdentity())){
+				if(guest_id.equals(guest.GetIdentity())){
 					return guest;
 				}
 			}
