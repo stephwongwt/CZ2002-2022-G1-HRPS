@@ -276,12 +276,17 @@ public class Guest {
 	 * 
 	 */
 
-	public void printGuestInfo() {
-		System.out.printf(
-			"|ID: %s|Name: %s|Room #: %d|Payment ID: %s|Credit Card #: %d|%n" +
-			"|Billing Address: %s|Contact: %s|Country: %s|Gender: %s|Nationality: %s|%n",
-			this.identity_, this.name_, this.room_num_, this.payment_id_, this.cc_number_,
+	@Override
+	public String toString() {
+		
+		String output = String.format(
+			"|ID: %s|Name: %s|Room #: %d|Payment ID: %s|Credit Card #: %d|\n" +
+			"|Billing Address: %s|\n" +
+			"|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n",
+			this.identity_, this.name_, this.room_num_, this.payment_id_.toString(), this.cc_number_,
 			this.billing_address_, this.contact_, this.country_, this.gender_.toString(), this.nationality_
 		);
+
+		return output;
 	}
 }
