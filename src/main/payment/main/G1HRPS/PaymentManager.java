@@ -160,15 +160,27 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 */
 	public void GenerateAndPrintBill(Payment payment, int days_of_stay, List<RoomServiceOrder> rs_order_list) {
 		
-		payment.SetRsCharges(rs_order_list);
+		int room_num = payment.GetRoomNum();
+		int rso_idx = 1;
+		float rs_charges = 0;
+
 		payment.SetBillTotal();
 
 		System.out.println("-------Payment-------");
 		System.out.println("- Days of Stay : " + days_of_stay);
 		System.out.println("-- Cost of Stay : " + payment.GetRoomCharges());
-
-		// TODO #9 - Need to print room service order items and their totals
-
+		System.out.println("- Room services ordered");
+		for(RoomServiceOrder rso : rs_order_list) {
+			if(rso.GetRoomNum() == room_num) {
+				rs_charges += rso.CalTotalPrice();
+				System.out.println("Room Service Order (" + rso_idx + ")");
+				for(MenuItem mItem : rso.GetOrderedItemList()) {
+					System.out.println(mItem);
+				}
+			}
+		}
+		payment.SetRsCharges(rs_charges);
+	
 		System.out.println("-- Cost of Room Service : " + payment.GetRsCharges());
 		System.out.println("- Tax : " + payment.GetTax() + "%");
 		System.out.println("- Total : " + payment.GetTotalBill());
