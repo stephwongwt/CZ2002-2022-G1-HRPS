@@ -15,58 +15,32 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	private List<Guest> guest_list_;
 	private final String db_filename = "guest_db.txt";
 
-	public GuestManager() {
-
-	}
-
 	/**
-	 * Adds a unique new guest object with given attribute values and
-	 * add it to the guest list.
-	 * 
-	 * @param identity
-	 * @param payment_id
-	 * @param room_num
-	 * @param name
-	 * @param cc_number
-	 * @param address
-	 * @param contact
-	 * @param country
-	 * @param gender
-	 * @param nationality
-	 * @return	false: if object exist with identical key values(identity, payment_id).
-	 * 			true: if new guest is successfully added to list.
+	 * Creates a Guest Manager.
 	 */
 
-	public boolean AddNewObject(String identity, UUID payment_id, int room_num, String name, String cc_number, String address, String contact, String country, Gender gender, String nationality) {
-
-		for(Guest guest : guest_list_) {
-			if(guest.GetIdentity().equals(identity)) {
-				System.out.println("There exists guest with same ID");
-				return false;
-			}
-			else if(guest.getPaymentId().equals(payment_id)) {
-				System.out.println("There exists guest with same payment ID");
-				return false;
-			}
-		}
-
-		Guest new_guest = new Guest(identity, payment_id, room_num, name, cc_number, address, contact, country, gender, nationality);
-
-		AddToList(new_guest);
-
-		return true;
+	public GuestManager() {
+		guest_list_ = new ArrayList<Guest>();
 	}
 
 	/**
-	 * Takes in an class object and list to add the object into.
+	 * Adds a new guest object into guest list.
 	 * 
-	 * @param guest
+	 * @param guest	Guest object to be added.
 	 */
 
 	public void AddToList(Guest guest) {
+		boolean success;
 
 		try{
-			guest_list_.add(guest);
+			success = guest_list_.add(guest);
+			if(success){
+				System.out.println("Guest added to list");
+			}
+			else{
+				System.out.println("Guest of Name: " + guest.GetName() +
+				" and ID: " + guest.GetIdentity() + " not added to list");
+			}
 		}
 		catch(NullPointerException e){
 			System.out.println("Guest List not initialized");
@@ -76,14 +50,22 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	}
 
 	/**
-	 * Takes in an class object and list to remove the object from the given list.
+	 * Removes a given guest from the guest list.
 	 * 
-	 * @param guest
+	 * @param guest	Guest object to be removed.
 	 */
 	public void RemoveFromList(Guest guest) {
+		boolean success;
 
 		try{
-			guest_list_.remove(guest);
+			success = guest_list_.remove(guest);
+			if(success) {
+				System.out.println("Guest removed from list");
+			}
+			else {
+				System.out.println("Guest of Name: " + guest.GetName() +
+				" and ID: " + guest.GetIdentity() + " not removed from list");
+			}
 		}
 		catch(NullPointerException e){
 			System.out.println("Guest List not initialized");
@@ -93,26 +75,20 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	}
 
 	/**
-	 * Takes search text as a key to search for Guest class object
+	 * Uses guest ID as a key to search for corresponding guest
 	 * in the list.
 	 * 
 	 * @param	search_text
-	 * @return	guest object with matching search text as guest ID
+	 * @return	Guest object with matching guest ID.
 	 */
 
 	@Override
 	public Guest SearchList(String guest_id) {
 
-		try{
-			for(Guest guest : guest_list_){
-				if(guest_id.equals(guest.GetIdentity())){
-					return guest;
-				}
+		for(Guest guest : guest_list_){
+			if(guest_id.equals(guest.GetIdentity())){
+				return guest;
 			}
-		}
-		catch(NullPointerException e){
-			System.out.println("Guest List not initialized");
-			e.printStackTrace();
 		}
 
 		return null;
@@ -120,19 +96,54 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	}
 
 	/**
+	 * Gets a list of current guests.
 	 * 
-	 * @return	list of guests
+	 * @return	List of guests objects.
 	 */
 	public List<Guest> GetList() {
 
 		return guest_list_;
 
 	}
+	
+	/**
+	 * Checks-in a guest by setting
+	 * <ol>
+	 * 	<li> Room number
+	 * 	<li> Billing address
+	 * 	<li> Credit card number
+	 * </ol>
+	 * 
+	 * @param guest
+	 * @param room_num
+	 * @param billing_address
+	 * @param credit_card_number
+	 */
+	public void CheckInGuest(Guest guest, int room_num, String billing_address, String credit_card_number) {
+
+		guest.SetRoomNum(room_num);
+		guest.SetBillingAddress(billing_address);
+		guest.SetCreditCardNumber(credit_card_number);
+		
+	}
+
+	/**
+	 * Checks-out a guest by setting payment ID.
+	 * 
+	 * @param guest
+	 * @param payment_id
+	 */
+
+	public void CheckOutGuest(Guest guest, UUID payment_id) {
+
+		guest.SetPaymentId(payment_id);
+		
+	}
 
 	/**
 	 * Read guest data as list of String objects and create
-	 * a list of Guest class objects with corresponding data.
-	 * 
+	 * a list of Guest class objects.
+	 * Each String object is parsed to create each of the guests.
 	 */
 
 	public void InitializeDB() {
@@ -164,8 +175,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 
 	/**
 	 * Save each guest object from guest list by converting the
-	 * attributes to one String object and writing to each line
-	 * of the save file.
+	 * attributes to a String object and saving to each line of the
+	 * save file.
 	 * 
 	 */
 
@@ -178,9 +189,9 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 
 			st.append(guest.GetIdentity());
 			st.append(SEPARATOR);
-			st.append(guest.getPaymentId());
+			st.append(guest.GetPaymentId());
 			st.append(SEPARATOR);
-			st.append(guest.getRoomNum());
+			st.append(guest.GetRoomNum());
 			st.append(SEPARATOR);
 			st.append(guest.GetName());
 			st.append(SEPARATOR);
@@ -206,22 +217,4 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * 
-	 * @param guest
-	 * @param room_num
-	 * @param payment_id
-	 * @param billing_address
-	 * @param cc_number
-	 */
-	public void CheckInGuest(Guest guest, int room_num, UUID payment_id, String billing_address, String cc_number) {
-
-		guest.SetRoomNum(room_num);
-		guest.SetBillingAddress(billing_address);
-		guest.SetCcNumber(cc_number);
-		guest.setPaymentId(payment_id);
-		
-	}
-
 }

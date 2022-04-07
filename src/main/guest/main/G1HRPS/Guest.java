@@ -6,12 +6,15 @@ public class Guest {
 
 	private static final int MIN_CC_NUMLEN = 8;
 	private static final int MAX_CC_NUMLEN = 19;
+	private static final String EMPTY_STRING = "EMPTY";
+	private static final UUID EMPTY_UUID = null;
+	private static final int EMPTY_ROOM = 0;
 
 	private String identity_;
 	private UUID payment_id_;
 	private int room_num_;
 	private String name_;
-	private String cc_number_;
+	private String credit_card_number_;
 	private String billing_address_;
 	private String contact_;
 	private String country_;
@@ -19,155 +22,169 @@ public class Guest {
 	private String nationality_;
 
 	/**
+	 * Creates a new guest object.
 	 * 
 	 * @param identity
 	 * @param payment_id
 	 * @param room_num
 	 * @param name
-	 * @param cc_number
-	 * @param address
+	 * @param credit_card_number
+	 * @param address Billing address
 	 * @param contact
 	 * @param country
 	 * @param gender
 	 * @param nationality
 	 */
 
-	public Guest(String identity, UUID payment_id, int room_num, String name, String cc_number, String address, String contact, String country, Gender gender, String nationality) {
+	public Guest(String identity, UUID payment_id, int room_num, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
 
-		this.identity_ = identity;
-		this.payment_id_ = payment_id;
-		this.room_num_ = room_num;
-		this.name_ = name;
-		this.cc_number_ = cc_number;
-		this.billing_address_ = address;
-		this.contact_ = contact;
-		this.country_ = country;
-		this.gender_ = gender;
-		this.nationality_ = nationality;
+		identity_ = identity;
+		payment_id_ = payment_id;
+		room_num_ = room_num;
+		name_ = name;
+		credit_card_number_ = credit_card_number;
+		billing_address_ = address;
+		contact_ = contact;
+		country_ = country;
+		gender_ = gender;
+		nationality_ = nationality;
 
 	}
 
 	/**
+	 * Gets the identification of this guest.
 	 * 
-	 * @return	Guest identity
+	 * @return	String containing identity of this guest.
 	 */
 
 	public String GetIdentity() {
 
-		return this.identity_;
+		return identity_;
 
 	}
 
 	/**
-	 * Set new identity to this guest
+	 * Sets new identity information of this guest.
 	 * 
-	 * @param identity
+	 * @param identity	String containing guest's identification.
 	 */
 	public void SetIdentity(String identity) {
 
-		this.identity_ = identity;
+		identity_ = identity;
 
 	}
 
 	/**
+	 * Gets the name of this guest.
 	 * 
-	 * @return	Name of this guest
+	 * @return	String with name of this guest.
 	 */
 
 	public String GetName() {
 
-		return this.name_;
+		return name_;
 
 	}
 
 	/**
-	 * Set new name to this guest
+	 * Sets new name to this guest.
 	 * 
 	 * @param name
 	 */
 	public void SetName(String name) {
 
-		this.name_ = name;
+		name_ = name;
 
 	}
 
 	/**
+	 * Gets a credit card number of this guest.
 	 * 
-	 * @return	Credit card number of this guest
+	 * @return	String containing credit card number.
 	 */
 
 	public String GetCcNumber() {
 
-		return this.cc_number_;
+		return credit_card_number_;
 
 	}
 
 	/**
-	 * Set new credit card number to this guest
+	 * Sets new credit card number to this guest.
 	 * 
-	 * @param cc_number
+	 * @param 	credit_card_number
+	 * @return	<code>true</code>	if the entered credit card number is valid.
+	 * 			</p>
+	 * 			<code>false</code>	if the entered credit card number is invalid.
 	 */
-	public void SetCcNumber(String cc_number) {
-		String noSpace_ccNum = cc_number.replaceAll("\\s+", "");
+	public boolean SetCreditCardNumber(String credit_card_number) {
+		String noSpace_CreditCardNum = credit_card_number.replaceAll("\\s+", "");
 
-		if(noSpace_ccNum.matches("[0-9]+") && noSpace_ccNum.length() >= MIN_CC_NUMLEN && noSpace_ccNum.length() <= MAX_CC_NUMLEN)
-			this.cc_number_ = cc_number;
-		else
+		if(noSpace_CreditCardNum.matches("[0-9]+") && (noSpace_CreditCardNum.length() >= MIN_CC_NUMLEN) && (noSpace_CreditCardNum.length() <= MAX_CC_NUMLEN)) {
+			credit_card_number_ = credit_card_number;
+			return true;
+		}
+		else{
 			System.out.println("Invalid credit card number");
+			return false;
+		}
 	}
 
 	/**
+	 * Gets the billing address of this guest.
 	 * 
-	 * @return	Billing address of this guest
+	 * @return	String containing billing address of this guest.
 	 */
 
 	public String GetBillingAddress() {
 
-		return this.billing_address_;
+		return billing_address_;
 
 	}
 
 	/**
-	 * Set new billing address of this guest
+	 * Sets new billing address of this guest.
 	 * 
 	 * @param billing_address
 	 */
 	public void SetBillingAddress(String billing_address) {
 
-		this.billing_address_ = billing_address;
+		billing_address_ = billing_address;
 
 	}
 
 	/**
+	 * Gets the contact information of this guest.
 	 * 
-	 * @return	Contact information of this guest
+	 * @return	String with contact information of this guest
 	 */
 
 	public String GetContact() {
 
-		return this.contact_;
+		return contact_;
 
 	}
 
 	/**
-	 * Set new contact information of this guest
+	 * Sets new contact information of this guest.
 	 * 
 	 * @param contact
 	 */
 	public void SetContact(String contact) {
 
-		this.contact_ = contact;
+		contact_ = contact;
 
 	}
 
 	/**
+	 * Gets country of residence of this guest.
 	 * 
-	 * @return	Country of residence of this guest
+	 * @return	String containing country of residence of this guest.
 	 */
 
 	public String GetCountry() {
 
-		return this.country_;
+		return country_;
 
 	}
 
@@ -178,13 +195,14 @@ public class Guest {
 	 */
 	public void SetCountry(String country) {
 
-		this.country_ = country;
+		country_ = country;
 
 	}
 
 	/**
+	 * Gets the gender of this guest.
 	 * 
-	 * @return	Gender of this guest
+	 * @return	Gender object of this guest.
 	 */
 
 	public Gender GetGender() {
@@ -194,19 +212,20 @@ public class Guest {
 	}
 
 	/**
-	 * Set new gender information of this guest
+	 * Sets new gender information of this guest.
 	 * 
 	 * @param gender
 	 */
 	public void SetGender(Gender gender) {
 
-		this.gender_ = gender;
+		gender_ = gender;
 
 	}
 
 	/**
+	 * Gets the nationality of this guest.
 	 * 
-	 * @return	Nationality of this guest
+	 * @return	String containing nationality of this guest.
 	 */
 
 	public String GetNationality() {
@@ -216,76 +235,79 @@ public class Guest {
 	}
 
 	/**
-	 * Set new nationality of this guest
+	 * Sets new nationality of this guest.
 	 * 
 	 * @param nationality
 	 */
 	public void SetNationality(String nationality) {
 
-		this.nationality_ = nationality;
+		nationality_ = nationality;
 
 	}
 
 	/**
+	 * Gets room number of room this guest is staying at.
 	 * 
-	 * @return	Room number this guest is staying at
+	 * @return	An int containing room number of this guest.
 	 */
 
-	public int getRoomNum() {
+	public int GetRoomNum() {
 
 		return room_num_;
 
 	}
 
 	/**
-	 * Set a new room number this guest is staying at
+	 * Sets a new room number to this guest.
 	 * 
 	 * @param room_num
 	 */
 	public void SetRoomNum(int room_num) {
 
-		this.room_num_ = room_num;
+		room_num_ = room_num;
 
 	}
 
 	/**
+	 * Gets the payment ID of this guest.
 	 * 
-	 * @return	Payment ID of this guest
+	 * @return	UUID object with payment ID of this guest.
 	 */
 
-	public UUID getPaymentId() {
+	public UUID GetPaymentId() {
 
-		return this.payment_id_;
+		return payment_id_;
 
 	}
 
 	/**
-	 * Set new payment ID of this guest
+	 * Sets new payment ID to this guest.
 	 * 
 	 * @param payment_id
 	 */
-	public void setPaymentId(UUID payment_id) {
+	public void SetPaymentId(UUID payment_id) {
 
-		this.payment_id_ = payment_id;
+		payment_id_ = payment_id;
 	
 	}
 
 	/**
-	 * Prints guest information, which are all the attributes of the
-	 * corresponding guest object
-	 * 
+	 * Used to print guest information.
 	 */
-	
 	@Override
 	public String toString() {
+		String room_num = (room_num_ == EMPTY_ROOM) ? EMPTY_STRING : String.valueOf(room_num_);
+		String payment_id = (payment_id_ == EMPTY_UUID) ? EMPTY_STRING : payment_id_.toString();
 		
 		String output = String.format(
-			"|ID: %s|Name: %s|Room #: %d|Payment ID: %s|\n" +
+			"|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" +
 			"|Credit Card #: %s|\n" +
 			"|Billing Address: %s|\n" +
 			"|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n",
-			this.identity_, this.name_, this.room_num_, this.payment_id_.toString(), this.cc_number_,
-			this.billing_address_, this.contact_, this.country_, this.gender_.toString(), this.nationality_
+			identity_, name_, room_num, payment_id,
+			credit_card_number_,
+			billing_address_,
+			contact_, country_, gender_.toString(), nationality_
 		);
 
 		return output;
