@@ -14,39 +14,29 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	private List<Payment> payment_list_;
 	private final String db_filename = "payment_db.txt";
 
-	public PaymentManager() {
-		
-	}
-
 	/**
-	 * Creates a new object related to the manager type ands add it to list
-	 * 
-	 * @param id
-	 * @param guest_id
-	 * @param room_num
-	 * @param discounts
-	 * @param tax
-	 * @param bill_total
-	 * @param status
+	 * Create a Payment Manager.
 	 */
 
-	public void AddNewObject(UUID id, String guest_id, int room_num, float discounts, float tax, float bill_total, PaymentStatus status) {
-
-		Payment new_payment = new Payment(id, guest_id, room_num, discounts, tax, bill_total, status);
-
-		AddToList(new_payment);
-
+	public PaymentManager() {
+		payment_list_ = new ArrayList<Payment>();
 	}
 
 	/**
-	 * Takes in an class object and list to add the object into.
+	 * Takes a payment and add it to payment list.
 	 * 
-	 * @param payment
+	 * @param payment	New Payment object to be added to list of Payment objects.
 	 */
 	public void AddToList(Payment payment) {
+		boolean success;
 
 		try{
-			payment_list_.add(payment);
+			success = payment_list_.add(payment);
+			if(success)
+				System.out.println("Payment added to list");
+			else {
+				System.out.println("Payment of UUID: " + payment.GetPaymentID() + " not added to list");
+			}
 		}
 		catch(NullPointerException e){
 			System.out.println("Payment List not initialized");
@@ -56,14 +46,21 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
-	 * Takes in an class object and list to remove the object from the given list.
+	 * Removes a matching payment from the payment list.
 	 * 
-	 * @param payment
+	 * @param payment	Payment object to be removed from the list of Payment objects.
 	 */
 	public void RemoveFromList(Payment payment) {
+		boolean success;
 
 		try{
-			payment_list_.remove(payment);
+			success = payment_list_.remove(payment);
+			if(success){
+				System.out.println("Payment removed from list");
+			}
+			else{
+				System.out.println("Payment of UUID: " + payment.GetPaymentID() + " not removed from list");
+			}
 		}
 		catch(NullPointerException e){
 			System.out.println("Payment List not initialized");
@@ -75,19 +72,17 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	/**
 	 * Method overrides the <T> SearchList(String search_text)
 	 * in Supermanager interface and returns a payment with
-	 * matching search text
+	 * matching search text.
 	 * 
-	 * @param 	payment_id	parameter is given as String and
-	 * 						is used to get the corresponding
-	 * 						UUID of payment
+	 * @param 	payment_id	String converted payment ID that was originally of type UUID.
 	 * 
-	 * @return	payment with the matching payment_id
+	 * @return	payment with the matching payment ID.
 	 */
-
+	
 	@Override
-	public Payment SearchList(String key) {
+	public Payment SearchList(String payment_id) {
 
-		UUID uuid = UUID.fromString(key);
+		UUID uuid = UUID.fromString(payment_id);
 
 		for(Payment payment : payment_list_){
 			if(uuid.equals(payment.GetPaymentID())){
@@ -100,9 +95,11 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
+	 * Search for any pending payment of a room with given room number.
+	 * Any such room is currently occupied and not checked-out.
 	 * 
 	 * @param room_num
-	 * @return pending payment on the room with matching room number
+	 * @return	Payment pending on the room.
 	 */
 
 	public Payment SearchList(int room_num) {
@@ -119,8 +116,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
+	 * Gets payment list.
 	 * 
-	 * @return the list of all payments
+	 * @return List containing all payments.
 	 */
 
 	public List<Payment> GetList() {
@@ -128,21 +126,22 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
-	 * Takes new payment status and assigns it to the given payment
+	 * Sets a new payment status to the given payment.
 	 * 
-	 * @param payment
-	 * @param status
+	 * @param payment	
+	 * @param new_status	
 	 */
-	public void SetPaymentStatus(Payment payment, PaymentStatus status) {
+	public void SetPaymentStatus(Payment payment, PaymentStatus new_status) {
 
-		payment.SetStatus(status);
+		payment.SetStatus(new_status);
 
 	}
 
 	/**
+	 * Gets the current payment status of the given payment.
 	 *
 	 * @param payment
-	 * @return	PaymentStatus of the given payment
+	 * @return	PaymentStatus of the payment.
 	 */
 
 	public PaymentStatus GetPaymentStatus(Payment payment) {
@@ -152,38 +151,58 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
-	 * Get linked items from room service and room charges and print the list
 	 * 
-	 * @param payment
+	 * 
+	 * @param guest_id
+	 * @param room_num
 	 * @param days_of_stay
-	 * @param rs_order_list
+	 * @param room_charge
+	 * @param discounts
+	 * @param tax
+	 * @param room_service_orders
+	 * @return
 	 */
-	public void GenerateAndPrintBill(Payment payment, int days_of_stay, List<RoomServiceOrder> rs_order_list) {
+
+	public Payment GenerateAndPrintBill(String guest_id, int room_num, int days_of_stay, float room_charge, float discounts, float tax, List<RoomServiceOrder> room_service_orders) {
+	
+		int index;
+		boolean success;
+		float rate, init_total_bill;
+		float total_room_service_charges, cost_of_stay, price_of_order;
+		Scanner sc = new Scanner(System.in);
+
+		index = 1;
+		init_total_bill = 0;
+		success = false;
+		total_room_service_charges = 0;
+		cost_of_stay = days_of_stay * room_charge;
 		
-		int room_num = payment.GetRoomNum();
-		int rso_idx = 1;
-		float rs_charges = 0;
-
-		payment.SetBillTotal();
-
 		System.out.println("-------Payment-------");
 		System.out.println("- Days of Stay : " + days_of_stay);
-		System.out.println("-- Cost of Stay : " + payment.GetRoomCharges());
+		System.out.println("--- Cost of Stay : " + cost_of_stay);
 		System.out.println("- Room services ordered");
-		for(RoomServiceOrder rso : rs_order_list) {
-			if(rso.GetRoomNum() == room_num) {
-				rs_charges += rso.CalTotalPrice();
-				System.out.println("Room Service Order (" + rso_idx + ")");
-				for(MenuItem mItem : rso.GetOrderedItemList()) {
-					System.out.println(mItem);
-				}
-			}
+		for(RoomServiceOrder each_order : room_service_orders) {
+			price_of_order = each_order.CalTotalPrice();
+			System.out.println("--- Room Service Order [" + index + "]:");
+
+			// for(MenuItem menu : each_order.GetOrderedItemList()) {
+			// 	System.out.println("\t-- " + menu);
+			// }
+
+			System.out.println("---- Order Total : " + price_of_order);
+
+			total_room_service_charges += price_of_order;
+			index++;
 		}
-		payment.SetRsCharges(rs_charges);
+
+		Payment new_payment = new Payment(GenerateCode(), guest_id, room_num, discounts, tax, cost_of_stay, total_room_service_charges, init_total_bill, PaymentStatus.Pending);
+
+		new_payment.CalculateBillTotal();
 	
-		System.out.println("-- Cost of Room Service : " + payment.GetRsCharges());
-		System.out.println("- Tax : " + payment.GetTax() + "%");
-		System.out.println("- Total : " + payment.GetTotalBill());
+		System.out.println("-- Cost of Room Service : " + total_room_service_charges);
+		System.out.println("- Discounts : " + discounts + "%");
+		System.out.println("- Tax : " + tax + "%");
+		System.out.println("- Total : " + new_payment.GetTotalBill());
 		
 	}
 
@@ -198,9 +217,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
-	 * Payment data read as list of Strings are converted to list of payment class
-	 * 
-	 *
+	 * Payment data read as list of Strings are converted to a list of payment class.
+	 * </p>
+	 * Each String object data is parsed and used to create each Payment object data in list.
 	 */
 
 	public void InitializeDB() {
@@ -218,10 +237,12 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			int room_num = Integer.parseInt(star.nextToken().trim()); 
 			float discounts = Float.parseFloat(star.nextToken().trim());
 			float tax = Float.parseFloat(star.nextToken().trim());
+			float room_charges = Float.parseFloat(star.nextToken().trim());
+			float room_service_charges = Float.parseFloat(star.nextToken().trim());
 			float bill_total = Float.parseFloat(star.nextToken().trim());
 			PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
 			// create object from file data
-			Payment obj = new Payment(id, guest_id, room_num, discounts, tax, bill_total, status);
+			Payment obj = new Payment(id, guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
 			// add to Professors list
 			dataList.add(obj);
 		}
@@ -244,9 +265,13 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			st.append(SEPARATOR);
 			st.append(payment.GetRoomNum());
 			st.append(SEPARATOR);
-			st.append(payment.GetDiscount());
+			st.append(payment.GetDiscountRate());
 			st.append(SEPARATOR);
 			st.append(payment.GetTax());
+			st.append(SEPARATOR);
+			st.append(payment.GetRoomCharges());
+			st.append(SEPARATOR);
+			st.append(payment.GetRoomServiceCharges());
 			st.append(SEPARATOR);
 			st.append(payment.GetTotalBill());
 			st.append(SEPARATOR);

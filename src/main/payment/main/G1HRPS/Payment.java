@@ -109,24 +109,13 @@ public class Payment {
 
 	/**
 	 * Sets new discount rate (i.e. 25%) to this payment.
-	 * Valid range of value is [0.0-100.0].
 	 * 
-	 * @param discount	Discount rate of type float.
-	 * @return			<code>true</code> if discount rate value is valid.
-	 * 					</p>
-	 * 					<code>false</code> if discount rate value is not valid.
+	 * @param discount	A float of discount rate.
 	 */
 
-	public boolean SetDiscountRate(float discount) {
+	public void SetDiscountRate(float discount) {
 
-		if(discount <= 100 && discount >= 0) {
-			discounts_ = discount;
-			return true;
-		}
-		else {
-			System.out.println("Entered discount rate is not in valid range [0.0-100.0].");
-			return false;
-		}
+		discounts_ = discount;
 
 	}
 
@@ -194,23 +183,12 @@ public class Payment {
 
 	/**
 	 * Gets a new tax rate (i.e. 10%) of this payment.
-	 * Valid range of value is [0.0-100.0].
 	 * 
-	 * @param tax	A float with tax rate.
-	 * @return			<code>true</code> if tax rate value is valid.
-	 * 					</p>
-	 * 					<code>false</code> if tax rate value is not valid.
+	 * @param tax	A float of tax rate.
 	 */
-	public boolean SetTax(float tax) {
+	public void SetTax(float tax) {
 
-		if(tax <= 100 && tax >= 0) {
-			tax_ = tax;
-			return true;
-		}
-		else {
-			System.out.println("Entered tax rate is not in valid range [0.0-100.0].");
-			return false;
-		}
+		tax_ = tax;
 
 	}
 
