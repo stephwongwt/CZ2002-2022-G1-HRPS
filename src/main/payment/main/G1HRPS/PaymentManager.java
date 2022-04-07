@@ -227,8 +227,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 	public void InitializeDB() {
 		// read String from text file
-		ArrayList dbArray = (ArrayList) read(db_filename);
-		ArrayList dataList = new ArrayList();
+		ArrayList<String> dbArray = (ArrayList) read(db_filename);
+		ArrayList<Payment> dataList = new ArrayList<Payment>();
 
 		for (int i = 0; i < dbArray.size(); i++) {
 			String st = (String) dbArray.get(i);
