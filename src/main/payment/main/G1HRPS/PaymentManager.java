@@ -151,7 +151,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	}
 
 	/**
-	 * 
+	 * Generates a new payment with the given arguments and prints the bill.
+	 * After printing the bill, the method returns the Payment object.
 	 * 
 	 * @param guest_id
 	 * @param room_num
@@ -160,7 +161,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 * @param discounts
 	 * @param tax
 	 * @param room_service_orders
-	 * @return
+	 * @return	new Payment object created from given arguments.
 	 */
 
 	public Payment GenerateAndPrintBill(String guest_id, int room_num, int days_of_stay, float room_charge, float discounts, float tax, List<RoomServiceOrder> room_service_orders) {
@@ -169,7 +170,6 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		boolean success;
 		float rate, init_total_bill;
 		float total_room_service_charges, cost_of_stay, price_of_order;
-		Scanner sc = new Scanner(System.in);
 
 		index = 1;
 		init_total_bill = 0;
@@ -179,7 +179,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		
 		System.out.println("-------Payment-------");
 		System.out.println("- Days of Stay : " + days_of_stay);
-		System.out.println("--- Cost of Stay : " + cost_of_stay);
+		System.out.printf("--- Cost of Stay ($) : %.2f\n", cost_of_stay);
 		System.out.println("- Room services ordered");
 		for(RoomServiceOrder each_order : room_service_orders) {
 			price_of_order = each_order.CalTotalPrice();
@@ -199,15 +199,18 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 		new_payment.CalculateBillTotal();
 	
-		System.out.println("-- Cost of Room Service : " + total_room_service_charges);
-		System.out.println("- Discounts : " + discounts + "%");
-		System.out.println("- Tax : " + tax + "%");
-		System.out.println("- Total : " + new_payment.GetTotalBill());
+		System.out.printf("-- Cost of Room Service ($) : %.2f\n", total_room_service_charges);
+		System.out.printf("- Discounts : %.2f (%)\n", discounts);
+		System.out.printf("- Tax : %.2f (%)\n", tax);
+		System.out.printf("- Total ($) : %.2f\n", new_payment.GetTotalBill());
 		
+		return new_payment;
 	}
 
 	/**
-	 * Used to generate the payment_id of a new payment
+	 * Used to generate the payment_id of a new payment.
+	 * 
+	 * @return UUID unique to this payment.
 	 */
 
 	@Override
@@ -251,7 +254,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 	/**
 	 * Each payment data in the list is turned into formatted String and
-	 * written into each line of file named "payment_db.txt"
+	 * written into each line of file named "payment_db.txt".
 	 */
 
 	public void SaveDB() {
