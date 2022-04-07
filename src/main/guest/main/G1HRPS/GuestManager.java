@@ -107,9 +107,21 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	}
 	
 	/**
-	 * Checks-in a guest by setting
+	 * Checks-in a guest by setting room number.
+	 * 
+	 * @param guest
+	 * @param room_num
+	 */
+	public void CheckInGuest(Guest guest, int room_num) {
+
+		guest.SetRoomNum(room_num);
+		
+	}
+
+	/**
+	 * Checks-out a guest by setting
 	 * <ol>
-	 * 	<li> Room number
+	 * 	<li> Payment ID
 	 * 	<li> Billing address
 	 * 	<li> Credit card number
 	 * </ol>
@@ -119,23 +131,11 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * @param billing_address
 	 * @param credit_card_number
 	 */
-	public void CheckInGuest(Guest guest, int room_num, String billing_address, String credit_card_number) {
 
-		guest.SetRoomNum(room_num);
+	public void CheckOutGuest(Guest guest, UUID payment_id, String billing_address, String credit_card_number) {
+
 		guest.SetBillingAddress(billing_address);
 		guest.SetCreditCardNumber(credit_card_number);
-		
-	}
-
-	/**
-	 * Checks-out a guest by setting payment ID.
-	 * 
-	 * @param guest
-	 * @param payment_id
-	 */
-
-	public void CheckOutGuest(Guest guest, UUID payment_id) {
-
 		guest.SetPaymentId(payment_id);
 		
 	}
