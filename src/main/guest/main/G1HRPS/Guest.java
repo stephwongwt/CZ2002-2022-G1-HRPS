@@ -6,7 +6,7 @@ public class Guest {
 
 	private static final int MIN_CC_NUMLEN = 8;
 	private static final int MAX_CC_NUMLEN = 19;
-	private static final String EMPTY_STRING = "EMPTY";
+	private static final String EMPTY = "EMPTY";
 	private static final UUID EMPTY_UUID = null;
 	private static final int EMPTY_ROOM = 0;
 
@@ -296,8 +296,8 @@ public class Guest {
 	 */
 	@Override
 	public String toString() {
-		String room_num = (room_num_ == EMPTY_ROOM) ? EMPTY_STRING : String.valueOf(room_num_);
-		String payment_id = (payment_id_ == EMPTY_UUID) ? EMPTY_STRING : payment_id_.toString();
+		String room_num = (room_num_ == EMPTY_ROOM) ? EMPTY : String.valueOf(room_num_);
+		String payment_id = (payment_id_ == EMPTY_UUID) ? EMPTY : payment_id_.toString();
 		
 		String output = String.format(
 			"|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" +
