@@ -17,13 +17,18 @@ public class DatabaseHandler {
 
     /** Read the contents of the given file. */
     public List read(String fileName) {
+        File db_path = new File(DB_PATH);
         File db_file = new File(DB_PATH + fileName);
+        if (!db_path.isDirectory()) {
+            db_path.mkdirs();
+            System.out.println("Path created: " + db_path.getPath());
+        }
         List data = new ArrayList();
         Scanner scanner = null;
         if (!db_file.exists()) {
             try {
                 if (db_file.createNewFile()) {
-                    System.out.println("File created: " + db_file.getName());
+                    System.out.println("File created: " + db_file.getPath());
                 } else {
                     System.out.println("File already exists.");
                 }
