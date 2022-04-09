@@ -24,6 +24,28 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	}
 
 	/**
+	 * Creates a new guest and adds it to guest list.
+	 * 
+	 * @param identity
+	 * @param payment_id
+	 * @param room_num
+	 * @param name
+	 * @param credit_card_number
+	 * @param address Billing address
+	 * @param contact
+	 * @param country
+	 * @param gender
+	 * @param nationality
+	 */	
+	
+	public void CreateNewGuest(String identity, UUID payment_id, int room_num, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
+		
+		Guest new_guest = new Guest(identity, payment_id, room_num, name, credit_card_number, address, contact, country, gender, nationality);
+		
+		AddToList(new_guest);
+	}
+	
+	/**
 	 * Adds a new guest object into guest list.
 	 * 
 	 * @param guest	Guest object to be added.
