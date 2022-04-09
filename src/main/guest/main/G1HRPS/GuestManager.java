@@ -38,7 +38,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * @param nationality
 	 */	
 	
-	public CreateNewGuest(String identity, UUID payment_id, int room_num, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
+	public void CreateNewGuest(String identity, UUID payment_id, int room_num, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
 		
 		Guest new_guest = new Guest(identity, payment_id, room_num, name, credit_card_number, address, contact, country, gender, nationality);
 		
