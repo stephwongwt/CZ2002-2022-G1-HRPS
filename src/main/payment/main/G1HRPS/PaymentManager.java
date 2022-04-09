@@ -29,11 +29,22 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 */
 	public void RemoveFromList(Payment payment) {
 		// TODO - implement PaymentManager.RemoveFromList
+
+		payment_list_.remove(payment);
+
 		throw new UnsupportedOperationException();
 	}
 
-	public void SearchList(String search_text) {
+	@Override
+	public Payment SearchList(String payment_id) {
 		// TODO - implement PaymentManager.SearchList
+
+		for(Payment payment : payment_list_){
+			if(payment_id.equals(payment.GetPaymentID())){
+
+			}
+		}
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -93,14 +104,20 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		}
 	}
 
-	public void SetPaymentStatus() {
+	public void SetPaymentStatus(Payment payment, PaymentStatus status) {
 		// TODO - implement PaymentManager.SetPaymentStatus
+
+		payment.SetStatus(status);
+
 		throw new UnsupportedOperationException();
 	}
 
-	public void GetPaymentStatus() {
+	public PaymentStatus GetPaymentStatus(Payment payment) {
 		// TODO - implement PaymentManager.GetPaymentStatus
-		throw new UnsupportedOperationException();
+
+		return payment.GetStatus();
+
+		// throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -108,6 +125,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 */
 	public void GenerateAndPrintBill() {
 		// TODO - implement PaymentManager.GenerateAndPrintBill
+
+		
+
 		throw new UnsupportedOperationException();
 	}
 

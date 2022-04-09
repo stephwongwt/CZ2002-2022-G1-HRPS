@@ -132,7 +132,6 @@ public class Payment {
 		// TODO - implement Payment.GetTax
 
 		return this.tax_;
-
 		// throw new UnsupportedOperationException();
 	}
 
