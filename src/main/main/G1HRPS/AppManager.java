@@ -56,7 +56,7 @@ public class AppManager {
 					running = false;
 					break;
 				case AddGuest:
-					Guest new_guest = CreateNewGuest();
+					CreateNewGuest();
 					break;
 				case AddRoom:
 					System.out.println("AddRoom");
@@ -112,7 +112,7 @@ public class AppManager {
 	private void CreateNewGuest() {
 		String identity = null;
 		String name = null;
-		String cc_number = null;
+		String credit_card_number = null;
 		String address = null;
 		String contact = null;
 		String country = null;
@@ -125,7 +125,7 @@ public class AppManager {
 		System.out.println("Enter Name (e.g. John Smith):");
 		name = sc_.nextLine().toUpperCase();
 		System.out.println("Enter Credit Card Number (e.g. 4605100120021234):");
-		cc_number = sc_.nextLine().toUpperCase();
+		credit_card_number = sc_.nextLine().toUpperCase();
 		System.out.println("Enter Address (e.g. 50 Nanyang Ave, S639798):");
 		address = sc_.nextLine().toUpperCase();
 		System.out.println("Enter Contact (e.g. +6590001000):");
@@ -149,8 +149,8 @@ public class AppManager {
 		
 		System.out.println("Enter Name (e.g. Singaporean):");
 		nationality = sc_.nextLine().toUpperCase();
-		
-		guest_manager.AddNewGuest(identity, name, cc_number, address, contact, country, gender, nationality);
+
+		// TODO: Add guest to guest manager
 	}
 
 	/**
