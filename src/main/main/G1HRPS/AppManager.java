@@ -62,13 +62,53 @@ public class AppManager {
 					CreateNewRoom();
 					break;
 				case SearchGuest:
-					SearchList(guest_manager_);
+					Guest search_guest = SearchList(guest_manager_);
+					// search_guest.toString();
+
+					/// check in guest & room & reservation
+					// check if guest has reservation
+					// reservation_manager_.SearchListByGuestId(search_guest.GetIdentity());
+					// reservation exists, check in
+					// guest_manager_.CheckInGuest(search_guest, room_num);
+
+					// guest has no reservation
+					// room_manager_.GetRoomStatisticsByTypeOccupancyRate();
+					// ask for input to pick room
+					// guest_manager_.CheckInGuest(search_guest, room_num);
+
+
+					/// check out guest & room & reservation
+					// Payment checkout = payment_manager_.GenerateAndPrintBill();
+					// ask if making payment
+					// yes
+					// guest_manager_.CheckOutGuest(search_guest, checkout.GetPaymentId());
+					// room_manager_.CheckOutAllGuest(search_guest.GetRoomNum());
+					// no
+					// exit submenu
+
+					/// edit guest menu
+
+					/// Add room service order
+					// boolean success = room_service_manager_.CreateNewRoomServiceOrder();
+					// check success
+
 					break;
 				case SearchRoom:
-					SearchList(room_manager_);
+					Room search_room = SearchList(room_manager_);
+					/// complete room service order
+					// List<RoomServiceOrder> rso_list = room_service_manager_.GetOrderedItemsByRoom(search_room.GetRoomNum());
+					// for (RoomServiceOrder rso : rso_list) {
+					// 	rso.toString();
+					// }
+					// pick which rso to complete
+
+					/// edit room details
 					break;
 				case SearchReservations:
-					SearchList(reservation_manager_);
+					Reservation search_rsvp = SearchList(reservation_manager_);
+					/// check in guest & room & reservation
+					/// delete reservation
+
 					break;
 				case Display:
 					sc_.nextLine();
@@ -170,9 +210,16 @@ public class AppManager {
 		System.out.println("Enter Nationality (e.g. Singaporean):");
 		nationality = sc_.nextLine().toUpperCase();
 
-		// TODO: Add guest to guest manager
-		System.out.printf("%s, %s, %s, %s, %s, %s, %s, %s", identity, name, credit_card_number, address, contact,
-				country, gender.toString(), nationality);
+		boolean success = guest_manager_.CreateNewGuest(identity, name, credit_card_number, address, contact, country, gender, nationality);
+		if (success) {
+			System.out.printf("Guest %s successfully created", name);
+		}
+		else
+		{
+			System.out.println("Guest was not created. Some error happened.");
+		}
+
+		System.out.printf("%s, %s, %s, %s, %s, %s, %s, %s", identity, name, credit_card_number, address, contact, country, gender.toString(), nationality);
 	}
 
 	/**
@@ -231,7 +278,7 @@ public class AppManager {
 	}
 
 	/**
-	 * Present user with a list of choices from an enumset
+	 * Present user with a list of choices from an enumset.
 	 * @param <T>       the enumset
 	 * @param opt_list  an array of the enum options
 	 * @return
