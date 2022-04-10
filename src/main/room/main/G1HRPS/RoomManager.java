@@ -12,10 +12,19 @@ public RoomManager() {
 
 /**
  * Takes in a class object and list to add the object into.
+ * Will reject adding a room with room number that already exists.
  * @param room This is the room object to be added
  */
 public static void AddToList(Room room) {
-	room_list_.add(room);
+	for(var i=0; i<room_list_.size();i++) {
+		if(room_list_.get(i).GetRoomNumber==room.GetRoomNumber)
+			system.out.println("Room number already exists in database.");
+		else 
+			room_list_.add(room);
+		
+		
+			
+	}
 }
 
 /** 
@@ -23,7 +32,7 @@ public static void AddToList(Room room) {
  * to room_list_.
  * The paramaters are the same as in Room constructor.
  */
-public static void addNewRoom(RoomType room_type, float price, String room_number, BedSize bedSize, boolean wifiEnabled, boolean withView, boolean Smoking, RoomStatus status){
+public static void AddNewRoom(RoomType room_type, float price, int room_number, BedSize bedSize, boolean wifiEnabled, boolean withView, boolean Smoking, RoomStatus status){
 	Room room = new Room(room_type, price, room_number, bedSize, wifiEnabled, withView, Smoking, status);
 	AddToList(room);
 }
@@ -35,13 +44,13 @@ public static void addNewRoom(RoomType room_type, float price, String room_numbe
  */
 public Room SearchList(String search_text) {  
 	for(var i=0; i<room_list_.size();i++) { //searching for same Room Name
-		if (room_list_.get(i).getRoomNumber()==search_text) {
+		if (room_list_.get(i).GetRoomNumber()==search_text) {
 			return room_list.get(i);
 		}
 	}
 	for(var i=0; i<room_list_.size();i++) {
-		for(var j=0; j<room_list_.get(i).getGuestList().size();j++) { //searching for same Guest Name
-			if(room_list_.get(i).getGuestList().get(j).getName==search_text) {
+		for(var j=0; j<room_list_.get(i).GetGuestList().size();j++) { //searching for same Guest Name
+			if(room_list_.get(i).GetGuestList().get(j).getName==search_text) {
 				return room_list.get(i);
 			}
 		}	
@@ -49,46 +58,24 @@ public Room SearchList(String search_text) {
 	}	
 	throw new UnsupportedOperationException();
 }
+
 /**
  * Removes a room from room_list_, user's input is the room number
  * @param room_num_ Room number that user wants to remove from List.
  */
-public void RemoveFromList(String roomNumber) { // it will not work if we just make a new room with the same parameters, since it will be stored in diff address. Suggest taking in roomNumber
+public void RemoveFromList(String roomNumber) { //will never be used by staff, remove
 	Room room = SearchList(roomNumber);
 	system.out.println("Room with same room number found");
 	room_list_.remove(room);
 }
 
 /**
- * Get room details of a room number
- * @param roomNumber  This is the room number entered by user.
- */
-public void GetRoomDetailByRoomNumber(String roomNumber) {
-	Room room = SearchList(roomNumber);
-	system.out.println("Room with same room number found");
-	room.viewRoomDetails;
-		}
-	}	
-}
-
-//does not deal with same names(rare case but still possible, it will print two room's details in this case)
-// Possible workaround by adding passport/driving license, but it will cause every room detail check to require to need to enter passport which is inefficient.
-/**
- * Get room details by entering name of guest staying in that room
- * @param guestName This is the name of the guest.
- */
-public void GetRoomDetailByGuestName(String guestName) {
-	Room room = SearchList(guestName);
-	system.out.println("Room with same guest name found");
-	room.viewRoomDetails;
-
-/**
  * Checks whether a room is vacant or not.(currently)
  * @param roomNumber Room number of room to be checked.
  */
-public void CheckRoomAvailabilityByRoomNumber(String roomNumber) {// consider using room type to get max number of ppl staying in the room, and compare that to guest list of room
+public void CheckRoomAvailabilityByRoomNumber(String roomNumber) {// prob nvr gonna be used
 		for(var i=0; i<room_list_.size();i++) {
-			if (room_list_.get(i).getRoomNumber()==roomNumber) {
+			if (room_list_.get(i).GetRoomNumber()==roomNumber) {
 				room_list_.get(i).checkRoomAvailability();;
 				break;
 			}
@@ -113,9 +100,9 @@ public void SaveDB() {
  */
 public void CheckInRoom(Guest guest, String roomNumber) {//consider printing out room is occupied if user atttempts to add guest to room awlr with ppl
 	for(var i=0; i<room_list_.size();i++) {
-		if (room_list_.get(i).getRoomNumber()==roomNumber) {
-			room_list_.get(i).addGuest(guest);
-			room_list_.get(i).setStatus(Occupied);
+		if (room_list_.get(i).GetRoomNumber()==roomNumber) {
+			room_list_.get(i).AddGuest(guest);
+			room_list_.get(i).SetStatus(Occupied);
 			break;
 		}
 		else
@@ -129,9 +116,9 @@ public void CheckInRoom(Guest guest, String roomNumber) {//consider printing out
  */
 public void CheckOutAllGuest(String roomNumber) {
 	for(var i=0; i<room_list_.size();i++) {
-		if (room_list_.get(i).getRoomNumber()==roomNumber) {
-			room_list_.get(i).clearGuests();
-			room_list_.get(i).setStatus(Vacant);		
+		if (room_list_.get(i).GetRoomNumber()==roomNumber) {
+			room_list_.get(i).ClearGuests();
+			room_list_.get(i).SetStatus(Vacant);		
 			break;
 		}
 		else
@@ -146,14 +133,14 @@ public void CheckOutAllGuest(String roomNumber) {
  */
 public void CheckOutOneGuest(String roomNumber,String guestName) {//note: guest Name required from user is full name of guest
 	for(var i=0; i<room_list_.size();i++) { 
-		if (room_list_.get(i).getRoomNumber()==roomNumber) {   //if room matches room number
-			for(var j=0; j<room_list_.get(i).getGuestList().size();j++) {
-				if(room_list_.get(i).getGuestList().get(j).getName==guestName) { // if guest name matches guest
-					room_list_.get(i).checkOutGuest(guestName);
+		if (room_list_.get(i).GetRoomNumber()==roomNumber) {   //if room matches room number
+			for(var j=0; j<room_list_.get(i).GetGuestList().size();j++) {
+				if(room_list_.get(i).GetGuestList().get(j).getName==guestName) { // if guest name matches guest
+					room_list_.get(i).CheckOutGuest(guestName);
 					break;
 				}
-				if (room_list_.get(i).getGuestList().size()==0) { // if guest list is empty, set room status to vacant
-					room_list_.get(i).setStatus(Vacant);
+				if (room_list_.get(i).GetGuestList().size()==0) { // if guest list is empty, set room status to vacant
+					room_list_.get(i).SetStatus(Vacant);
 				}
 			}
 		
@@ -169,72 +156,72 @@ public void CheckOutOneGuest(String roomNumber,String guestName) {//note: guest 
  */
 public void SetRoomStatus(String roomNumber, RoomStatus status) {
 	for(var i=0; i<room_list_.size();i++) {
-		if (room_list_.get(i).getRoomNumber()==roomNumber) {
-			room_list_.get(i).setStatus(status);
+		if (room_list_.get(i).GetRoomNumber()==roomNumber) {
+			room_list_.get(i).SetStatus(status);
 		}
 	throw new UnsupportedOperationException();
 }
 }
 
 /**
- * All room numbers in room_list_, organized by room type .
- * e.g. Standard: Number: 2 out of 15 occupied 
- * 				  Rooms: 02-21,02-22,02-33,02-44,02-55
- * 		VIP:      Number: 3 out of 5 occupied
+ * Vacant room numbers in room_list_, organized by room type .
+ * e.g. Standard: Number: 2 out of 15 vacant
+ * 				  Available Rooms: 0221 , 0222, 0233, 0244, 0255
+ * 		VIP:      Number: 3 out of 5 vacant
  */
 public void GetRoomStatisticsByTypeOccupancyRate() {
 	int singleTotalCount;
 	int singleVacantCount;
-	String singleRoomNumber="";
+	String singleVacantRoomNumber="";
 	int standardTotalCount;
 	int standardVacantCount;
-	String standardRoomNumber="";
+	String standardVacantRoomNumber="";
 	int deluxeTotalCount;
 	int deluxeVacantCount;
-	String deluxeRoomNumber="";
+	String deluxeVacantRoomNumber="";
 	int suiteTotalCount;
 	int suiteVacantCount;
-	String suiteRoomNumber="";
+	String suiteVacantRoomNumber="";
 	int VIPTotalCount;
 	int VIPVacantCount;
-	String VIPRoomNumber="";
+	String VIPVacantRoomNumber="";
 	
 	for(var i=0; i<room_list_.size();i++) {
-		RoomType type = room_list_.get(i).getRoomType();
+		RoomType type = room_list_.get(i).GetRoomType();
 		switch(type) { //This switch block acts as a counter for different room types
 		
 		case Single:
 			singleTotalCount+=1;
-			singleRoomNumber=singleRoomNumber+room_list_.get(i).getRoomNumber()+",";
-			if(room_list_.get(i).getStatus()==RoomStatus.Vacant) {
+			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
+				singleVacantRoomNumber=singleVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
 				singleVacantCount+=1;
 			}
 			break;	
 		case Standard:
 			standardTotalCount+=1;
-			if(room_list_.get(i).getStatus()==RoomStatus.Vacant) {
+			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
+				standardVacantRoomNumber=standardVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
 				standardVacantCount+=1;
-				standardRoomNumber=singleRoomNumber+room_list_.get(i).getRoomNumber()+",";
 			}
 			break;
 		case Deluxe:
 			deluxeTotalCount+=1;
-			deluxeRoomNumber=deluxeRoomNumber+room_list_.get(i).getRoomNumber()+",";
-			if(room_list_.get(i).getStatus()==RoomStatus.Vacant) {
+			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
+				deluxeVacantRoomNumber=deluxeVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
 				deluxeVacantCount+=1;
 			}
 			break;
 		case Suite:
 			suiteTotalCount+=1;
-			suiteRoomNumber=suiteRoomNumber+room_list_.get(i).getRoomNumber()+",";
-			if(room_list_.get(i).getStatus()==RoomStatus.Vacant) {
+			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
+				suiteVacantRoomNumber=suiteVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
 				suiteVacantCount+=1;
 			}
 			break;
 		case VIP:
 			VIPTotalCount+=1;
-			VIPRoomNumber=VIPRoomNumber+room_list_.get(i).getRoomNumber()+",";
-			if(room_list_.get(i).getStatus()==RoomStatus.Vacant) {
+			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
+				VIPVacantRoomNumber=VIPVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
 				VIPVacantCount+=1;
 			}
 			break;
@@ -243,21 +230,21 @@ public void GetRoomStatisticsByTypeOccupancyRate() {
 
 			
 		}
-	singleRoomNumber =singleRoomNumber.substring(1,singleRoomNumber.length()-1); // removes the last comma in this String
-	standardRoomNumber =standardRoomNumber.substring(1,standardRoomNumber.length()-1);
-	suiteRoomNumber =suiteRoomNumber.substring(1,suiteRoomNumber.length()-1);
-	VIPRoomNumber =VIPRoomNumber.substring(1,VIPRoomNumber.length()-1);
-	deluxeRoomNumber =deluxeRoomNumber.substring(1,deluxeRoomNumber.length()-1);
-	System.out.println("Single: Number: "+ singleVacantCount +" out of "+singleTotalCount+" occupied");
-	System.out.println("        Rooms: "+singleRoomNumber);
-	System.out.println("Standard: Number: "+ standardVacantCount +" out of "+standardTotalCount+" occupied");
-	System.out.println("        Rooms: "+standardRoomNumber);
-	System.out.println("Deluxe: Number: "+ deluxeVacantCount +" out of "+deluxeTotalCount+" occupied");
-	System.out.println("        Rooms: "+deluxeRoomNumber);
-	System.out.println("Suite: Number: "+ suiteVacantCount +" out of "+suiteTotalCount+" occupied");
-	System.out.println("        Rooms: "+suiteRoomNumber);
-	System.out.println("VIP: Number: "+ VIPVacantCount +" out of "+VIPTotalCount+" occupied");
-	System.out.println("        Rooms: "+VIPRoomNumber);
+	singleVacantRoomNumber =singleVacantRoomNumber.substring(1,singleVacantRoomNumber.length()-1); // removes the last comma in this String
+	standardVacantRoomNumber =standardVacantRoomNumber.substring(1,standardVacantRoomNumber.length()-1);
+	suiteVacantRoomNumber =suiteVacantRoomNumber.substring(1,suiteVacantRoomNumber.length()-1);
+	VIPVacantRoomNumber =VIPVacantRoomNumber.substring(1,VIPVacantRoomNumber.length()-1);
+	deluxeVacantRoomNumber =deluxeVacantRoomNumber.substring(1,deluxeVacantRoomNumber.length()-1);
+	System.out.println("Single: Number: "+ singleVacantCount +" out of "+singleTotalCount+" vacant");
+	System.out.println("        Available Rooms: "+singleVacantRoomNumber);
+	System.out.println("Standard: Number: "+ standardVacantCount +" out of "+standardTotalCount+" vacant");
+	System.out.println("        Available Rooms: "+standardVacantRoomNumber);
+	System.out.println("Deluxe: Number: "+ deluxeVacantCount +" out of "+deluxeTotalCount+" vacant");
+	System.out.println("        Available Rooms: "+deluxeVacantRoomNumber);
+	System.out.println("Suite: Number: "+ suiteVacantCount +" out of "+suiteTotalCount+" vacant");
+	System.out.println("        Available Rooms: "+suiteVacantRoomNumber);
+	System.out.println("VIP: Number: "+ VIPVacantCount +" out of "+VIPTotalCount+" vacant");
+	System.out.println("        Available Rooms: "+VIPVacantRoomNumber);
 	
 	}
 }
@@ -273,20 +260,20 @@ public void GetRoomStatisticsByStatus() {
 	String reservedRoomNumbers;
 	String maintenanceRoomNumbers;
 	for(var i=0; i<room_list_.size();i++) {
-		RoomStatus status= room_list_.get(i).getStatus();
+		RoomStatus status= room_list_.get(i).GetStatus();
 		switch(status) {
 		
 		case Vacant:
-			vacantRoomNumbers= vacantRoomNumbers+room_list_.get(i).getRoomNumber()+",";
+			vacantRoomNumbers= vacantRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
 			break;
 		case Occupied:
-			occupiedRoomNumbers=occupiedRoomNumbers+room_list_.get(i).getRoomNumber()+",";
+			occupiedRoomNumbers=occupiedRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
 			break;
 		case Reserved:
-			reservedRoomNumbers=reservedRoomNumbers+room_list_.get(i).getRoomNumber()+",";
+			reservedRoomNumbers=reservedRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
 			break;
 		case Maintenance:
-			maintenanceRoomNumbers=maintenanceRoomNumbers+room_list_.get(i).getRoomNumber()+",";
+			maintenanceRoomNumbers=maintenanceRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
 			break;
 		
 		}
