@@ -1,13 +1,14 @@
 package main.G1HRPS;
-private static ArrayList<Room> room_list_;
+import java.util.ArrayList;
 /**
  * A manager class that stores the Room Object as elements in a list. Search methods
  * parses through the list of rooms, comparing instance variables of each room object with the arguments passed in.
  * @author LiangHee
  *
  */
+public class RoomManager{
+private static ArrayList<Room> room_list_;
 public RoomManager() {
-
 }
 
 /**
@@ -17,20 +18,19 @@ public RoomManager() {
  */
 public static void AddToList(Room room) {
 	for(var i=0; i<room_list_.size();i++) {
-		if(room_list_.get(i).GetRoomNumber==room.GetRoomNumber)
-			system.out.println("Room number already exists in database.");
-		else 
+		if(room_list_.get(i).GetRoomNumber()==room.GetRoomNumber()) {
+			System.out.println("Room number already exists in database.");
+		}
+		else {
 			room_list_.add(room);
-		
-		
-			
+		}
 	}
 }
 
 /** 
  * This method takes in input info about room from the menu, creates a new room object, and adds that new object 
  * to room_list_.
- * The paramaters are the same as in Room constructor.
+ * The parameters are the same as in Room constructor.
  */
 public static void AddNewRoom(RoomType room_type, float price, int room_number, BedSize bedSize, boolean wifiEnabled, boolean withView, boolean Smoking, RoomStatus status){
 	Room room = new Room(room_type, price, room_number, bedSize, wifiEnabled, withView, Smoking, status);
@@ -38,50 +38,42 @@ public static void AddNewRoom(RoomType room_type, float price, int room_number, 
 }
 
 /**
- * Takes in user input from menu and searches for the same string in room number and guestname details of room list.
+ * Takes in user input from menu and searches 
+ * through room_list_ for guest name with the same string. 
  * If same string found, returns object room
  * @param search_text This is the input that user keys in
  */
 public Room SearchList(String search_text) {  
-	for(var i=0; i<room_list_.size();i++) { //searching for same Room Name
-		if (room_list_.get(i).GetRoomNumber()==search_text) {
-			return room_list.get(i);
-		}
-	}
+	
 	for(var i=0; i<room_list_.size();i++) {
 		for(var j=0; j<room_list_.get(i).GetGuestList().size();j++) { //searching for same Guest Name
 			if(room_list_.get(i).GetGuestList().get(j).getName==search_text) {
-				return room_list.get(i);
+				return room_list_.get(i);
 			}
 		}	
-	system.out.println("No room with details entered was found");
 	}	
 	throw new UnsupportedOperationException();
 }
-
+/**
+ * Takes in user input from menu and searches through
+ *  room_list_ for room number with the same integer.
+ *  If same Integer found, returns object room 
+ */
+public Room SearchList(int search_int) {
+	for(var i=0; i<room_list_.size();i++) { //searching for same Room Name
+		if (room_list_.get(i).GetRoomNumber()==search_int) {
+			return room_list_.get(i);
+		}
+	}
+}
 /**
  * Removes a room from room_list_, user's input is the room number
  * @param room_num_ Room number that user wants to remove from List.
  */
-public void RemoveFromList(String roomNumber) { //will never be used by staff, remove
+public void RemoveFromList(String roomNumber) { 
 	Room room = SearchList(roomNumber);
-	system.out.println("Room with same room number found");
 	room_list_.remove(room);
 }
-
-/**
- * Checks whether a room is vacant or not.(currently)
- * @param roomNumber Room number of room to be checked.
- */
-public void CheckRoomAvailabilityByRoomNumber(String roomNumber) {// prob nvr gonna be used
-		for(var i=0; i<room_list_.size();i++) {
-			if (room_list_.get(i).GetRoomNumber()==roomNumber) {
-				room_list_.get(i).checkRoomAvailability();;
-				break;
-			}
-		}
-}		
-
 
 public void InitializeDB() {
 	// TODO - implement RoomManager.InitializeDB
@@ -98,11 +90,11 @@ public void SaveDB() {
  * @param guest This is the guest to be added
  * @param roomNumber This is the room number of the room that the guest will be added to
  */
-public void CheckInRoom(Guest guest, String roomNumber) {//consider printing out room is occupied if user atttempts to add guest to room awlr with ppl
+public void CheckInRoom(Guest guest, String roomNumber) {
 	for(var i=0; i<room_list_.size();i++) {
 		if (room_list_.get(i).GetRoomNumber()==roomNumber) {
 			room_list_.get(i).AddGuest(guest);
-			room_list_.get(i).SetStatus(Occupied);
+			room_list_.get(i).SetStatus(RoomStatus.Occupied);
 			break;
 		}
 		else
@@ -114,11 +106,11 @@ public void CheckInRoom(Guest guest, String roomNumber) {//consider printing out
  * removes all guests elements from the guest list of a room
  * @param roomNumber This is the room number to remove guest elements from.
  */
-public void CheckOutAllGuest(String roomNumber) {
+public void CheckOutAllGuest(int roomNumber) {
 	for(var i=0; i<room_list_.size();i++) {
 		if (room_list_.get(i).GetRoomNumber()==roomNumber) {
 			room_list_.get(i).ClearGuests();
-			room_list_.get(i).SetStatus(Vacant);		
+			room_list_.get(i).SetStatus(RoomStatus.Vacant);		
 			break;
 		}
 		else
@@ -131,7 +123,7 @@ public void CheckOutAllGuest(String roomNumber) {
  * @param roomNumber This is the room number to remove guest element from
  * @param guestName This is the guest name of guest element to be removed
  */
-public void CheckOutOneGuest(String roomNumber,String guestName) {//note: guest Name required from user is full name of guest
+public void CheckOutOneGuest(int roomNumber,String guestName) {//note: guest Name required from user is full name of guest
 	for(var i=0; i<room_list_.size();i++) { 
 		if (room_list_.get(i).GetRoomNumber()==roomNumber) {   //if room matches room number
 			for(var j=0; j<room_list_.get(i).GetGuestList().size();j++) {
@@ -140,7 +132,7 @@ public void CheckOutOneGuest(String roomNumber,String guestName) {//note: guest 
 					break;
 				}
 				if (room_list_.get(i).GetGuestList().size()==0) { // if guest list is empty, set room status to vacant
-					room_list_.get(i).SetStatus(Vacant);
+					room_list_.get(i).SetStatus(RoomStatus.Vacant);
 				}
 			}
 		
@@ -154,7 +146,7 @@ public void CheckOutOneGuest(String roomNumber,String guestName) {//note: guest 
  * @param roomNumber This is room number of the room that status will be changed
  * @param status This is the status to be changed into
  */
-public void SetRoomStatus(String roomNumber, RoomStatus status) {
+public void SetRoomStatus(int roomNumber, RoomStatus status) {
 	for(var i=0; i<room_list_.size();i++) {
 		if (room_list_.get(i).GetRoomNumber()==roomNumber) {
 			room_list_.get(i).SetStatus(status);
@@ -170,20 +162,20 @@ public void SetRoomStatus(String roomNumber, RoomStatus status) {
  * 		VIP:      Number: 3 out of 5 vacant
  */
 public void GetRoomStatisticsByTypeOccupancyRate() {
-	int singleTotalCount;
-	int singleVacantCount;
+	int singleTotalCount = 0;
+	int singleVacantCount = 0;
 	String singleVacantRoomNumber="";
-	int standardTotalCount;
-	int standardVacantCount;
+	int standardTotalCount = 0;
+	int standardVacantCount = 0;
 	String standardVacantRoomNumber="";
-	int deluxeTotalCount;
-	int deluxeVacantCount;
+	int deluxeTotalCount = 0;
+	int deluxeVacantCount = 0;
 	String deluxeVacantRoomNumber="";
-	int suiteTotalCount;
-	int suiteVacantCount;
+	int suiteTotalCount = 0;
+	int suiteVacantCount = 0;
 	String suiteVacantRoomNumber="";
-	int VIPTotalCount;
-	int VIPVacantCount;
+	int VIPTotalCount = 0;
+	int VIPVacantCount = 0;
 	String VIPVacantRoomNumber="";
 	
 	for(var i=0; i<room_list_.size();i++) {
@@ -193,42 +185,40 @@ public void GetRoomStatisticsByTypeOccupancyRate() {
 		case Single:
 			singleTotalCount+=1;
 			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
-				singleVacantRoomNumber=singleVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
+				singleVacantRoomNumber=singleVacantRoomNumber+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 				singleVacantCount+=1;
 			}
 			break;	
 		case Standard:
 			standardTotalCount+=1;
 			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
-				standardVacantRoomNumber=standardVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
+				standardVacantRoomNumber=standardVacantRoomNumber+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 				standardVacantCount+=1;
 			}
 			break;
 		case Deluxe:
 			deluxeTotalCount+=1;
 			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
-				deluxeVacantRoomNumber=deluxeVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
+				deluxeVacantRoomNumber=deluxeVacantRoomNumber+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 				deluxeVacantCount+=1;
 			}
 			break;
 		case Suite:
 			suiteTotalCount+=1;
 			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
-				suiteVacantRoomNumber=suiteVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
+				suiteVacantRoomNumber=suiteVacantRoomNumber+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 				suiteVacantCount+=1;
 			}
 			break;
 		case VIP:
 			VIPTotalCount+=1;
 			if(room_list_.get(i).GetStatus()==RoomStatus.Vacant) {
-				VIPVacantRoomNumber=VIPVacantRoomNumber+room_list_.get(i).GetRoomNumber()+",";
+				VIPVacantRoomNumber=VIPVacantRoomNumber+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 				VIPVacantCount+=1;
 			}
 			break;
 		default:
-			break;
-
-			
+			break;	
 		}
 	singleVacantRoomNumber =singleVacantRoomNumber.substring(1,singleVacantRoomNumber.length()-1); // removes the last comma in this String
 	standardVacantRoomNumber =standardVacantRoomNumber.substring(1,standardVacantRoomNumber.length()-1);
@@ -264,20 +254,20 @@ public void GetRoomStatisticsByStatus() {
 		switch(status) {
 		
 		case Vacant:
-			vacantRoomNumbers= vacantRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
+			vacantRoomNumbers= vacantRoomNumbers+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 			break;
 		case Occupied:
-			occupiedRoomNumbers=occupiedRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
+			occupiedRoomNumbers=occupiedRoomNumbers+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 			break;
 		case Reserved:
-			reservedRoomNumbers=reservedRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
+			reservedRoomNumbers=reservedRoomNumbers+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 			break;
 		case Maintenance:
-			maintenanceRoomNumbers=maintenanceRoomNumbers+room_list_.get(i).GetRoomNumber()+",";
+			maintenanceRoomNumbers=maintenanceRoomNumbers+Integer.toString(room_list_.get(i).GetRoomNumber())+",";
 			break;
-		
+		default:
+			break;
 		}
-		
 	}
 	System.out.println("Vacant: ");
 	System.out.println("       Rooms:"+vacantRoomNumbers.substring(1,vacantRoomNumbers.length()-1));
