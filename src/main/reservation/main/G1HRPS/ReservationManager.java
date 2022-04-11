@@ -3,12 +3,14 @@ package main.G1HRPS;
 import java.util.List;
 import java.util.UUID;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 
 	private List<Reservation> reservation_list_;
 
 	public ReservationManager() {
+		reservation_list_ = new ArrayList<Reservation>();
 	}
 	/**
 	 * Takes in an class object and list to add the object into.
@@ -69,6 +71,10 @@ public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 	 * @param reservation
 	 * @param new_status
 	 */
+
+	 //change to check in
+
+	 //add "to check out//
 	public boolean SetReservationStatus(Reservation reservation, ReservationStatus new_status) {
 		Reservation res = SearchList(reservation.GetReservationCode());
 		if (res != null){
