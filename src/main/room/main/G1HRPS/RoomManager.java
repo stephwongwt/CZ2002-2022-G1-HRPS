@@ -75,6 +75,14 @@ public void RemoveFromList(String roomNumber) {
 	room_list_.remove(room);
 }
 
+/**
+ * Returns an arrayList List<Room>, room_list
+ * @return room_list_  arrayList that is returned.
+ */
+public List<Room> GetList() {
+	return room_list_;
+}
+}
 public void InitializeDB() {
 	// TODO - implement RoomManager.InitializeDB
 	throw new UnsupportedOperationException();
