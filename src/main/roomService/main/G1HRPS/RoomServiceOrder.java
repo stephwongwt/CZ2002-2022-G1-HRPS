@@ -3,11 +3,11 @@ package main.G1HRPS;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.UUID;
 
 public class RoomServiceOrder {
 
-	private final String room_service_order_code_;
+	private UUID room_service_order_code_;
 	private String guest_id_;
 	private int room_num_;
 	private final Timestamp time_created_;
@@ -15,8 +15,10 @@ public class RoomServiceOrder {
 	private List<MenuItem> ordered_item_list_;
 	private String remarks_;
 	private OrderStatus status_;
+	private final String db_filename = "roomserviceorder_db.txt";
 
 	/**
+	 * Constructor for room service order
 	 * 
 	 * @param room_service_order_code
 	 * @param guest_id
@@ -24,125 +26,180 @@ public class RoomServiceOrder {
 	 * @param ordered_item_list
 	 * @param remarks
 	 */
-	public RoomServiceOrder(String room_service_order_code, String guest_id, int room_id, List<MenuItem> ordered_item_list, String remarks) {
+	public RoomServiceOrder(UUID room_service_order_code, String guest_id, int room_id, List<MenuItem> ordered_item_list, String remarks) {
 		// TODO - implement RoomServiceOrder.RoomServiceOrder
 		this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
 		this.guest_id_ = guest_id;
 		this.room_service_order_code_ = room_service_order_code;
 		this.time_created_ = new Timestamp(System.currentTimeMillis());
 		this.remarks_ = remarks;
-		this.status_ = OrderStatus.Preparing;
+		this.status_ = OrderStatus.Confirmed;
 	}
 
-	public String GetRsoCode() {
-		// TODO - implement RoomServiceOrder.GetRsoCode
+	/**
+	 * Gets the room service order code
+	 * 
+	 * @return UUID on the code for the room service order
+	 */
+	public UUID GetRsoCode() {
 		return this.room_service_order_code_;
 	}
 
 	/**
+	 * Sets the ID for room service_order_code
 	 * 
 	 * @param room_service_order_code_
 	 */
-	//May not be required??
-	public void SetRsoCode(String room_service_order_code_) {
-		// TODO - implement RoomServiceOrder.SetRsoCode
-		//this.room_service_order_code_ = room_service_order_code_;
-		
+	public void SetRsoCode(UUID room_service_order_code) {
+		this.room_service_order_code_ = room_service_order_code;
 	}
 
+	/**
+	 * Get the time stamp when order was delivered
+	 * 
+	 * @return Timestamp when order was created
+	 */
 	public Timestamp GetTimeCreated() {
-		// TODO - implement RoomServiceOrder.GetTimeCreated
 		return this.time_created_;
 	}
 
 	/**
+	 * Gets the time stamp when order was delivered
 	 * 
-	 * @param time_created_
+	 * @return Timestamp when order was delivered
 	 */
-	// Not needed i think
-	public void SetTimeCreated() {
-		// TODO - implement RoomServiceOrder.SetTimeCreated
-	}
-
 	public Timestamp GetTimeCompleted() {
-		// TODO - implement RoomServiceOrder.GetTimeCompleted
 		return this.time_completed_;
-		
 	}
 
 	/**
+	 * Sets the time completed for the room service order
 	 * 
-	 * @param time_completed_
+	 * @param time_completed
 	 */
 	public void SetTimeCompleted(Timestamp time_completed) {
-		// TODO - implement RoomServiceOrder.SetTimeCompleted
 		this.time_completed_ = time_completed;
 	}
 
+	/**
+	 * Gets the list of ordered menu items
+	 * 
+	 * @return List containing the list of MenuItem
+	 */
 	public List<MenuItem> GetOrderedItemList() {
-		// TODO - implement RoomServiceOrder.GetOrderedItemList
 		return this.ordered_item_list_;
 	}
 
 	/**
+	 * Sets the ordered item list
 	 * 
 	 * @param item_list
 	 */
 	public void SetOrderedItemList(List<MenuItem> item_list) {
-		// TODO - implement RoomServiceOrder.SetOrderedItemList
-		throw new UnsupportedOperationException();
+		this.ordered_item_list_ = item_list;
 	}
 
+	/**
+	 * Gets the room number
+	 * 
+	 * @return int containing the room number
+	 */
 	public int GetRoomNum() {
-		// TODO - implement RoomServiceOrder.GetRoomNum
 		return this.room_num_;
 	}
 
 	/**
+	 * Sets the room number for the room service order
 	 * 
-	 * @param room_num
+	 * @param room_num 
 	 */
 	public void SetRoomNum(int room_num) {
-		// TODO - implement RoomServiceOrder.SetRoomNum
 		this.room_num_ = room_num;
 	}
 
+	/**
+	 * Return remarks for the room service order
+	 * 
+	 * @return String containing remarks for the room service order
+	 */
 	public String GetRemarks() {
-		// TODO - implement RoomServiceOrder.GetRemarks
 		return this.remarks_;
 	}
 
 	/**
+	 * Sets remarks for the room service order
 	 * 
-	 * @param remarks
+	 * @param remarks String for the remarks
 	 */
 	public void SetRemarks(String remarks) {
-		// TODO - implement RoomServiceOrder.SetRemarks
 		this.remarks_ = remarks;
 	}
 
+	/**
+	 * Gets the order status of the room service order
+	 * 
+	 * @return OrderStatus status of the order
+	 */
 	public OrderStatus GetStatus() {
-		// TODO - implement RoomServiceOrder.GetStatus
 		return this.status_;
 	}
 
 	/**
+	 * Set the order status of the room service order. Updates time stamp when order is delivered.
 	 * 
-	 * @param status
+	 * @param status enum OrderStatus on the status
 	 */
 	public void SetStatus(OrderStatus status) {
-		// TODO - implement RoomServiceOrder.SetStatus
 		this.status_ = status;
+		if (this.status_ == OrderStatus.Delivered)
+		{
+			// create only first time
+			if (this.time_completed_ != null)
+			{
+				this.time_completed_ = new Timestamp(System.currentTimeMillis());
+			}
+		}		
 	}
-	// To be worked out. This is still a simple version
+	
+	/**
+	 * Generates string for all the menu items for the room service order in separate lines
+	 * 
+	 * @return String containing the list of menu items
+	 */
+	public String MenuItemstoString()
+	{
+		String Textout = "";
+		for (int i = 0; i < this.ordered_item_list_.size(); i++)
+		{
+			Textout += this.ordered_item_list_.get(i).toString() + "\n";
+		}
+		return Textout;
+	}
+	
+	
+	/**
+	 * Generate string for printing room service order at search menu
+	 */
 	public String toString()
 	{
-		return ("RSO code: "+ this.room_service_order_code_ + " Remarks: " + this.remarks_);
+		//return ("RSO code: "+ this.room_service_order_code_ + " created at " + this.time_created_ + "\nMenu Items :\n" + MenuItemstoString() +  "\nRemarks: " + this.remarks_);
+		return ("RSO code: "+ this.room_service_order_code_ + " created at " + this.time_created_ +  " Remarks: " + this.remarks_);
 	}
 
+	/**
+	 * Returns String for guest ID
+	 * 
+	 * @return String guest ID
+	 */
 	public String getGuest_id() {
 		return guest_id_;
 	}
+	
+	/**
+	 * Calculates price of all the menu items in the room service order
+	 * 
+	 * @return float containing the total price
+	 */
 	public float CalTotalPrice()
 	{
 		float total_price = 0.0f;

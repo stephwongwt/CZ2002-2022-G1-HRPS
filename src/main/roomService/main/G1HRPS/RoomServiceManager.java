@@ -10,44 +10,43 @@ import java.util.UUID;
 public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeGen {
 
 	private List<RoomServiceOrder> room_service_order_list;
-
+	
+	/**
+	 * Constructor for room service manager
+	 * 
+	 */
 	public RoomServiceManager() {
-		// TODO - implement RoomServiceManager.RoomServiceManager
 		this.room_service_order_list = new ArrayList<RoomServiceOrder>();
-		InitializeDB();
 	}
 
 	/**
-	 * Takes in an class object and list to add the object into.
+	 * Adds a room service order to the order list
+	 * 
+	 * @param room_service_order
 	 */
 	public void AddToList(RoomServiceOrder room_service_order) {
-		// TODO - implement RoomServiceManager.AddToList
 		this.room_service_order_list.add(room_service_order);
 	}
 
 	/**
-	 * Takes in an class object and list to remove the object from the given list.
+	 * Removes a room service order to the order list
+	 * 
+	 * @param room_service_order the order to be removed
 	 */
 	public void RemoveFromList(RoomServiceOrder rooms_service_order) {
-		// TODO - implement RoomServiceManager.RemoveFromList
 		this.room_service_order_list.remove(rooms_service_order);
 	}
 
-	public void SearchList(String search_text) {
+	public RoomServiceOrder SearchList(String search_text) {
 		// TODO - implement RoomServiceManager.SearchList
-		for (int i = 0; i < this.room_service_order_list.size(); i++)
-		{
-			if (this.room_service_order_list.get(i).getGuest_id() == search_text)
-			{
-				System.out.println(this.room_service_order_list.get(i));
-				return;
-			}
-		}
-		
+		throw new UnsupportedOperationException();
 	}
 
+	
 	/**
-	 * Print a full list of room service orders
+	 * Returns the full list of room service orders
+	 * 
+	 * @return List of room service orders
 	 */
 	public List<RoomServiceOrder> GetList() {
 		// TODO - implement RoomServiceManager.GetList
@@ -56,78 +55,79 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 
 	public void InitializeDB() {
 		// TODO - implement RoomServiceManager.InitializeDB
+		throw new UnsupportedOperationException();
 	}
 
 	public void SaveDB() {
 		// TODO - implement RoomServiceManager.SaveDB
+		throw new UnsupportedOperationException();
+		
 	}
 
 	/**
+	 * Sets order status for the room service order
 	 * 
 	 * @param rso
 	 * @param new_status
 	 */
 	public void SetRsoStatus(RoomServiceOrder rso, OrderStatus new_status) {
-		// TODO - implement RoomServiceManager.SetRsoStatus
 		rso.SetStatus(new_status);
 		
 	}
 
 	/**
+	 * Gets the Order status of the room service order
 	 * 
 	 * @param rso
+	 * @return OrderStatus on the service order status 
 	 */
 	public OrderStatus GetRsoStatus(RoomServiceOrder rso) {
-		// TODO - implement RoomServiceManager.GetRsoStatus
+		
 		return rso.GetStatus();
 	}
 
 	/**
+	 * Returns the room service order object based on room id
 	 * 
 	 * @param room_id
+	 * @return RoomServiceOrder of interest
 	 */
-	public void GetOrderedItemsByRoom(int room_id) {
+	public RoomServiceOrder GetOrderedItemsByRoom(int room_id) {
 		// TODO - implement RoomServiceManager.GetOrderedItemsByRoom
 		for (RoomServiceOrder rso : room_service_order_list)
 		{
 			if (rso.GetRoomNum() == room_id)
 			{
-				System.out.println("Ordered items for room " + room_id);
-				for (MenuItem m : rso.GetOrderedItemList())
-				{
-					System.out.println(m);
-				}
-				return;
+				return rso;
 			}
 		}
-		System.out.println("No room number of " + room_id);
-		
+		System.out.println("No order from room number of " + room_id);
+		return null;
 	}
 
 	/**
+	 * Returns the room service order object based on guest id
 	 * 
 	 * @param guest_id
+	 * @return RoomServiceOrder of interest
 	 */
-	public void GetOrderedItemsByGuest(String guest_id) {
+	public RoomServiceOrder GetOrderedItemsByGuest(String guest_id) {
 		// TODO - implement RoomServiceManager.GetOrderedItemsByGuest
 		for (RoomServiceOrder rso : room_service_order_list)
 		{
 			if (rso.getGuest_id() == guest_id)
 			{
-				System.out.println("Ordered items for guest " + guest_id);
-				for (MenuItem m : rso.GetOrderedItemList())
-				{
-					System.out.println(m);
-				}
-				return;
+				return rso;
 			}
 		}
 		System.out.println("No room number of " + guest_id);
+		return null;
 	}
 
 	@Override
 	public UUID GenerateCode() {
 		// TODO Auto-generated method stub
-		return null;
+		UUID uuid = UUID.randomUUID();
+		return uuid;
 	}
 }

@@ -7,20 +7,23 @@ import java.util.ArrayList;
  */
 public class MenuItemManager implements Supermanager<MenuItem> {
 
+	private final String db_filename = "menuitem_db.txt";
 	public List<MenuItem> menu_item_list_;
 
+	/**
+	 * Constructor for Menu Item Manager
+	 */
 	public MenuItemManager() {
-		// TODO - implement MenuItemManager.MenuItemManager
 		this.menu_item_list_ = new ArrayList<MenuItem>();
 		InitializeDB();
 	}
 
 	/**
-	 * Takes in an class object and list to add the object into.
+	 * Adds a new menu item object into menu item list.
+	 * 
+	 * @param MenuItem MenuItem to be added
 	 */
-	// User is asked for 3 inputs on Meny before this method is called
 	public void AddToList(MenuItem menu_item) {
-		// TODO - implement MenuItemManager.AddToList
 		for (int i = 0; i < this.menu_item_list_.size(); i++)
 		{
 			if (this.menu_item_list_.get(i).getName() == menu_item.getName())
@@ -34,7 +37,7 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 	}
 
 	/**
-	 * Takes in an class object and list to remove the object from the given list.
+	 * Removes a menu item from menu item list.
 	 */
 	public void RemoveFromList(MenuItem menu_item) {
 		// TODO - implement MenuItemManager.RemoveFromList
@@ -50,33 +53,60 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 		System.out.println("Item to be removed not found in Menu!");
 		
 	}
-	// What is this for exactly ?????
-	public void SearchList(String search_text) {
+	
+	/**
+	 * Returns menu item object from search for name of item
+	 * 
+	 * @return MenuItem searched for
+	 */
+	public MenuItem SearchList(String search_text) {
 		// TODO - implement MenuItemManager.SearchList
 		for (int i = 0; i < this.menu_item_list_.size(); i++)
 		{
-			if (this.menu_item_list_.get(i).getName() == search_text)
+			if (this.menu_item_list_.get(i).getName().toUpperCase() == search_text.toUpperCase())
 			{
-				System.out.println(this.menu_item_list_.get(i));
-				return;
+				 return this.menu_item_list_.get(i);
 			}
 		}
+		return null; 
 	}
 
 	/**
-	 * Prints the menu items with price and description
+	 * Get List of menu items
+	 * 
+	 * @return List containing all menu items
 	 */
 	public List<MenuItem> GetList() {
-		// TODO - implement MenuItemManager.GetList
-		System.out.println("========= Menu List =========");
-		for (int i = 0; i < this.menu_item_list_.size(); i++)
-		{
-			System.out.println(this.menu_item_list_.get(i));
-		}
-		System.out.println("========= End of Menu =========");
 		return this.menu_item_list_;
 	}
-
+	
+	/**
+	 * Prints the list of menu items with price and description
+	 */
+	public void DisplayItemMenu()
+	{
+		System.out.println("============ Item Menu =============");
+		for (int i = 0; i < this.menu_item_list_.size(); i++)
+		{
+			System.out.println("Index: " + i+1 + this.menu_item_list_.get(i));
+		}
+		System.out.println("============ End of Menu =============");
+	}
+	
+	/**
+	 * Returns MenuItem based on index of item menu
+	 * 
+	 * @param index
+	 * @return MenuItem
+	 */
+	public MenuItem GetItemByMenuIndex(int index)
+	{
+		if (index > 0 && (index-1) < this.menu_item_list_.size())
+		{
+			return this.menu_item_list_.get(index-1);
+		}
+		return null;
+	}
 	public void InitializeDB() {
 		// TODO - implement MenuItemManager.InitializeDB
 	}
@@ -86,6 +116,7 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 	}
 
 	/**
+	 * Edit price of menu item from menu item list to new value
 	 * 
 	 * @param item_name
 	 * @param new_price
