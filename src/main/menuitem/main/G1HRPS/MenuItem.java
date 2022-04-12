@@ -36,7 +36,6 @@ public class MenuItem {
 		return name_;
 	}
 	
-	
 	/**
 	 * Sets the name of the menu item
 	 * 
@@ -56,7 +55,7 @@ public class MenuItem {
 	}
 	
 	/**
-	 * Gets the price of the menu item
+	 * Sets the price of the menu item
 	 * 
 	 * @param price
 	 */
@@ -64,5 +63,21 @@ public class MenuItem {
 		this.price_ = price;
 	}
 	
+	/**
+	 * Gets the description of the menu item
+	 * 
+	 * @return String containing the description
+	 */
+	public String getDescription() {
+		return description_;
+	}
 
+	/**
+	 * Sets the description of the menu item
+	 * 
+	 * @param description
+	 */
+	public void setDescription(String description) {
+		this.description_ = description;
+	}
 }

@@ -3,11 +3,10 @@ package main.G1HRPS;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class RoomServiceOrder {
 
-	private UUID room_service_order_code_;
+	private String room_service_order_code_;
 	private String guest_id_;
 	private int room_num_;
 	private final Timestamp time_created_;
@@ -15,8 +14,8 @@ public class RoomServiceOrder {
 	private List<MenuItem> ordered_item_list_;
 	private String remarks_;
 	private OrderStatus status_;
-	private final String db_filename = "roomserviceorder_db.txt";
-
+	private int order_quantity_;
+	
 	/**
 	 * Constructor for room service order
 	 * 
@@ -26,9 +25,10 @@ public class RoomServiceOrder {
 	 * @param ordered_item_list
 	 * @param remarks
 	 */
-	public RoomServiceOrder(UUID room_service_order_code, String guest_id, int room_id, List<MenuItem> ordered_item_list, String remarks) {
+	public RoomServiceOrder(String room_service_order_code, String guest_id, int room_id, List<MenuItem> ordered_item_list, String remarks) {
 		// TODO - implement RoomServiceOrder.RoomServiceOrder
 		this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
+		order_quantity_ = this.ordered_item_list_.size();
 		this.guest_id_ = guest_id;
 		this.room_service_order_code_ = room_service_order_code;
 		this.time_created_ = new Timestamp(System.currentTimeMillis());
@@ -41,7 +41,7 @@ public class RoomServiceOrder {
 	 * 
 	 * @return UUID on the code for the room service order
 	 */
-	public UUID GetRsoCode() {
+	public String GetRsoCode() {
 		return this.room_service_order_code_;
 	}
 
@@ -50,7 +50,7 @@ public class RoomServiceOrder {
 	 * 
 	 * @param room_service_order_code_
 	 */
-	public void SetRsoCode(UUID room_service_order_code) {
+	public void SetRsoCode(String room_service_order_code) {
 		this.room_service_order_code_ = room_service_order_code;
 	}
 
@@ -182,7 +182,6 @@ public class RoomServiceOrder {
 	 */
 	public String toString()
 	{
-		//return ("RSO code: "+ this.room_service_order_code_ + " created at " + this.time_created_ + "\nMenu Items :\n" + MenuItemstoString() +  "\nRemarks: " + this.remarks_);
 		return ("RSO code: "+ this.room_service_order_code_ + " created at " + this.time_created_ +  " Remarks: " + this.remarks_);
 	}
 
@@ -197,6 +196,21 @@ public class RoomServiceOrder {
 	
 	/**
 	 * Calculates price of all the menu items in the room service order
+	 * 
+	 * @return float containing the total price
+	 */
+	
+	/**
+	 * Gets number of orders for the room service order
+	 * 
+	 * @return int containing number of orders
+	 */
+	public int getOrderQuantity() {
+		return order_quantity_;
+	}
+	
+	/**
+	 * Gets total price of room service order based on all the menu items in the ordered list
 	 * 
 	 * @return float containing the total price
 	 */

@@ -2,21 +2,23 @@ package main.G1HRPS;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
 import java.util.UUID;
+import java.util.StringTokenizer;
 
 /**
  * Manages room service orders from guests
  */
-public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeGen {
+public class RoomServiceManager extends DatabaseHandler implements Supermanager<RoomServiceOrder>, CodeGen {
 
-	private List<RoomServiceOrder> room_service_order_list;
+	private final String db_filename = "roomserviceorder_db.txt";
+	private List<RoomServiceOrder> room_service_order_list_;
 	
 	/**
 	 * Constructor for room service manager
 	 * 
 	 */
 	public RoomServiceManager() {
-		this.room_service_order_list = new ArrayList<RoomServiceOrder>();
 	}
 
 	/**
@@ -25,7 +27,7 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 * @param room_service_order
 	 */
 	public void AddToList(RoomServiceOrder room_service_order) {
-		this.room_service_order_list.add(room_service_order);
+		this.room_service_order_list_.add(room_service_order);
 	}
 
 	/**
@@ -34,7 +36,7 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 * @param room_service_order the order to be removed
 	 */
 	public void RemoveFromList(RoomServiceOrder rooms_service_order) {
-		this.room_service_order_list.remove(rooms_service_order);
+		this.room_service_order_list_.remove(rooms_service_order);
 	}
 
 	public RoomServiceOrder SearchList(String search_text) {
@@ -49,18 +51,76 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 * @return List of room service orders
 	 */
 	public List<RoomServiceOrder> GetList() {
-		// TODO - implement RoomServiceManager.GetList
-		return this.room_service_order_list;
+		return this.room_service_order_list_;
 	}
 
 	public void InitializeDB() {
-		// TODO - implement RoomServiceManager.InitializeDB
-		throw new UnsupportedOperationException();
+		// read String from text file
+		ArrayList dbArray = (ArrayList) read(db_filename);
+		ArrayList dataList = new ArrayList();
+		
+
+		for (int i = 0; i < dbArray.size(); i++) {
+			String st = (String) dbArray.get(i);
+			// get individual 'fields' of the string separated by SEPARATOR
+			StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
+			
+			String rso_code = star.nextToken().trim(); // first token
+			String guest_id = star.nextToken().trim(); // second token
+			int room_id = Integer.parseInt(star.nextToken().trim());
+			String remarks = star.nextToken().trim();
+			int quantity = Integer.parseInt(star.nextToken().trim());
+			List<MenuItem> rso_items = new ArrayList<MenuItem>();
+			for (int j = 0; j < quantity; j++)
+			{
+				String name = star.nextToken().trim(); 
+				float price = Float.parseFloat(star.nextToken().trim());
+				String description = star.nextToken().trim();
+				MenuItem m = new MenuItem(name, price, description);
+				rso_items.add(m);
+			}
+			
+			// create object from file data
+			RoomServiceOrder obj = new RoomServiceOrder(rso_code, guest_id, room_id, rso_items, remarks);
+			// add to Room service order list
+			dataList.add(obj);
+		}
+		this.room_service_order_list_ = dataList;
 	}
 
 	public void SaveDB() {
-		// TODO - implement RoomServiceManager.SaveDB
-		throw new UnsupportedOperationException();
+		List<String> rsoData = new ArrayList<String>();
+
+		for (RoomServiceOrder rso : room_service_order_list_) {
+			StringBuilder st = new StringBuilder();
+			int quantity = rso.getOrderQuantity();
+			st.append(rso.GetRsoCode());
+			st.append(SEPARATOR);
+			st.append(rso.getGuest_id());
+			st.append(SEPARATOR);
+			st.append(rso.GetRoomNum());
+			st.append(SEPARATOR);
+			st.append(rso.GetRemarks());
+			st.append(SEPARATOR);
+			st.append(quantity);
+			st.append(SEPARATOR);
+			for(int i = 0; i < quantity; i++)
+			{
+				st.append(rso.GetOrderedItemList().get(i).getName());
+				st.append(SEPARATOR);
+				st.append(rso.GetOrderedItemList().get(i).getPrice());
+				st.append(SEPARATOR);
+				st.append(rso.GetOrderedItemList().get(i).getDescription());
+				st.append(SEPARATOR);
+			}
+			rsoData.add(st.toString());
+		}
+
+		try {
+			write(db_filename, rsoData);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -82,7 +142,6 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 * @return OrderStatus on the service order status 
 	 */
 	public OrderStatus GetRsoStatus(RoomServiceOrder rso) {
-		
 		return rso.GetStatus();
 	}
 
@@ -93,8 +152,7 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 * @return RoomServiceOrder of interest
 	 */
 	public RoomServiceOrder GetOrderedItemsByRoom(int room_id) {
-		// TODO - implement RoomServiceManager.GetOrderedItemsByRoom
-		for (RoomServiceOrder rso : room_service_order_list)
+		for (RoomServiceOrder rso : room_service_order_list_)
 		{
 			if (rso.GetRoomNum() == room_id)
 			{
@@ -112,8 +170,7 @@ public class RoomServiceManager implements Supermanager<RoomServiceOrder>, CodeG
 	 * @return RoomServiceOrder of interest
 	 */
 	public RoomServiceOrder GetOrderedItemsByGuest(String guest_id) {
-		// TODO - implement RoomServiceManager.GetOrderedItemsByGuest
-		for (RoomServiceOrder rso : room_service_order_list)
+		for (RoomServiceOrder rso : room_service_order_list_)
 		{
 			if (rso.getGuest_id() == guest_id)
 			{

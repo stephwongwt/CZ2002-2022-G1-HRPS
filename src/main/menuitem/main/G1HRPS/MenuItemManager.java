@@ -2,10 +2,12 @@ package main.G1HRPS;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.util.StringTokenizer;
 /**
  * Manages the available menu items for room service
  */
-public class MenuItemManager implements Supermanager<MenuItem> {
+public class MenuItemManager extends DatabaseHandler implements Supermanager<MenuItem> {
 
 	private final String db_filename = "menuitem_db.txt";
 	public List<MenuItem> menu_item_list_;
@@ -14,8 +16,6 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 	 * Constructor for Menu Item Manager
 	 */
 	public MenuItemManager() {
-		this.menu_item_list_ = new ArrayList<MenuItem>();
-		InitializeDB();
 	}
 
 	/**
@@ -108,11 +108,46 @@ public class MenuItemManager implements Supermanager<MenuItem> {
 		return null;
 	}
 	public void InitializeDB() {
-		// TODO - implement MenuItemManager.InitializeDB
+		ArrayList dbArray = (ArrayList) read(db_filename);
+		ArrayList dataList = new ArrayList();
+
+		for (int i = 0; i < dbArray.size(); i++) {
+			String st = (String) dbArray.get(i);
+			// get individual 'fields' of the string separated by SEPARATOR
+			StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
+
+			String name = star.nextToken().trim(); // first token
+			float price = Float.parseFloat(star.nextToken().trim()); // second token
+			String description = star.nextToken().trim();
+			
+			// create object from file data
+			MenuItem obj = new MenuItem(name, price, description);
+			// add to Menu list
+			dataList.add(obj);
+		}
+		 this.menu_item_list_ = dataList;
 	}
 
 	public void SaveDB() {
-		// TODO - implement MenuItemManager.SaveDB
+		List<String> menuItemData = new ArrayList<String>();
+
+		for (MenuItem item : menu_item_list_) {
+			StringBuilder st = new StringBuilder();
+			st.append(item.getName());
+			st.append(SEPARATOR);
+			st.append(item.getPrice());
+			st.append(SEPARATOR);
+			st.append(item.getDescription());
+			st.append(SEPARATOR);
+			
+			menuItemData.add(st.toString());
+		}
+
+		try {
+			write(db_filename, menuItemData);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
