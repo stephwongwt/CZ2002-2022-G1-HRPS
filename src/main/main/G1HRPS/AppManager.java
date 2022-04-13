@@ -150,7 +150,7 @@ public class AppManager {
 	private AppMenuItem PrintMenu() {
 		System.out.println("\r\n|--------|Choose an option|--------|");
 		for (AppMenuItem app_menu_item : app_menu_list) {
-			System.out.printf("[%d] %s\r\n", app_menu_item.getValue(), app_menu_item.toString());
+			System.out.printf("[%d] %s\r\n", app_menu_item.GetValue(), app_menu_item.toString());
 		}
 		int option = 0;
 		while (true) {

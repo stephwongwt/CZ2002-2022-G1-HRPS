@@ -46,21 +46,6 @@ public class Room {
 	}
 
 	/**
-	 * Prints out general information of the room
-	 */
-	public String toString(){
-		String output = "room number: "+room_num_ + 
-						"\nroom price: "+room_price_+
-						"\nbedsize: "+bedsize_+
-						"\nwifi enabled: "+wifi_enabled_+
-						"\nwith view: "+w_view_+
-						"\nwith smoking: "+w_smoking_+
-						"\nroom status: "+status_+
-						"\nguest staying: "+guest_list_
-		return output;					
-	}
-
-	/**
 	 * Prints out whether a room is available or not
 	 */
 	public void CheckRoomAvailability() {
@@ -95,7 +80,7 @@ public class Room {
 	 */
 	public void CheckOutGuest(String guestName) {
 		for(var j=0; j<getGuestList().size();j++) {
-			if(guest_list_.get(j).getName==guestName)){
+			if(guest_list_.get(j).GetName==guestName)){
 				guest_list_.remove(j);
 			}
 		}
@@ -139,5 +124,21 @@ public class Room {
 	 */
 	public ArrayList<Guest> GetGuestList() {
 		return guest_list_;
+	}
+
+	/**
+	 * Prints out general information of the room
+	 */
+	@Override
+	public String toString(){
+		String output = "room number: "+room_num_ + 
+						"\nroom price: "+room_price_+
+						"\nbedsize: "+bedsize_+
+						"\nwifi enabled: "+wifi_enabled_+
+						"\nwith view: "+w_view_+
+						"\nwith smoking: "+w_smoking_+
+						"\nroom status: "+status_+
+						"\nguest staying: "+guest_list_
+		return output;					
 	}
 }

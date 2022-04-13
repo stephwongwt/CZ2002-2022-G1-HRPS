@@ -85,10 +85,10 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 		List<String> rsoData = new ArrayList<String>();
 		for (RoomServiceOrder rso : room_service_order_list_) {
 			StringBuilder st = new StringBuilder();
-			int quantity = rso.getOrderQuantity();
+			int quantity = rso.GetOrderQuantity();
 			st.append(rso.GetRsoCode());
 			st.append(SEPARATOR);
-			st.append(rso.getGuest_id());
+			st.append(rso.GetGuestId());
 			st.append(SEPARATOR);
 			st.append(rso.GetRoomNum());
 			st.append(SEPARATOR);
@@ -97,11 +97,11 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 			st.append(quantity);
 			st.append(SEPARATOR);
 			for (int i = 0; i < quantity; i++) {
-				st.append(rso.GetOrderedItemList().get(i).getName());
+				st.append(rso.GetOrderedItemList().get(i).GetName());
 				st.append(SEPARATOR);
-				st.append(rso.GetOrderedItemList().get(i).getPrice());
+				st.append(rso.GetOrderedItemList().get(i).GetPrice());
 				st.append(SEPARATOR);
-				st.append(rso.GetOrderedItemList().get(i).getDescription());
+				st.append(rso.GetOrderedItemList().get(i).GetDescription());
 				st.append(SEPARATOR);
 			}
 			rsoData.add(st.toString());
@@ -157,7 +157,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	 */
 	public RoomServiceOrder GetOrderedItemsByGuest(String guest_id) {
 		for (RoomServiceOrder rso : room_service_order_list_) {
-			if (rso.getGuest_id() == guest_id) {
+			if (rso.GetGuestId() == guest_id) {
 				return rso;
 			}
 		}

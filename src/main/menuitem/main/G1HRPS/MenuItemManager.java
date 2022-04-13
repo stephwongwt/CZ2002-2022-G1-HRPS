@@ -25,13 +25,13 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
 	 */
 	public void AddToList(MenuItem menu_item) {
 		for (int i = 0; i < this.menu_item_list_.size(); i++) {
-			if (this.menu_item_list_.get(i).getName() == menu_item.getName()) {
+			if (this.menu_item_list_.get(i).GetName() == menu_item.GetName()) {
 				System.out.println("Item with the same name already exists. This will not to be added");
 				return;
 			}
 		}
 		this.menu_item_list_.add(menu_item);
-		System.out.println("Item " + menu_item.getName() + " added");
+		System.out.println("Item " + menu_item.GetName() + " added");
 	}
 
 	/**
@@ -40,9 +40,9 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
 	public void RemoveFromList(MenuItem menu_item) {
 		// TODO - implement MenuItemManager.RemoveFromList
 		for (int i = 0; i < this.menu_item_list_.size(); i++) {
-			if (this.menu_item_list_.get(i).getName() == menu_item.getName()) {
+			if (this.menu_item_list_.get(i).GetName() == menu_item.GetName()) {
 				this.menu_item_list_.remove(i);
-				System.out.println("Item " + menu_item.getName() + " removed");
+				System.out.println("Item " + menu_item.GetName() + " removed");
 				return;
 			}
 		}
@@ -57,7 +57,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
 	public MenuItem SearchList(String search_text) {
 		// TODO - implement MenuItemManager.SearchList
 		for (int i = 0; i < this.menu_item_list_.size(); i++) {
-			if (this.menu_item_list_.get(i).getName().toUpperCase() == search_text.toUpperCase()) {
+			if (this.menu_item_list_.get(i).GetName().toUpperCase() == search_text.toUpperCase()) {
 				return this.menu_item_list_.get(i);
 			}
 		}
@@ -119,11 +119,11 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
 		List<String> menuItemData = new ArrayList<String>();
 		for (MenuItem item : menu_item_list_) {
 			StringBuilder st = new StringBuilder();
-			st.append(item.getName());
+			st.append(item.GetName());
 			st.append(SEPARATOR);
-			st.append(item.getPrice());
+			st.append(item.GetPrice());
 			st.append(SEPARATOR);
-			st.append(item.getDescription());
+			st.append(item.GetDescription());
 			st.append(SEPARATOR);
 			menuItemData.add(st.toString());
 		}
@@ -143,8 +143,8 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
 	public void EditMenuItemPrice(String item_name, float new_price) {
 		// TODO - implement MenuItemManager.EditMenuItemPrice
 		for (int i = 0; i < this.menu_item_list_.size(); i++) {
-			if (this.menu_item_list_.get(i).getName() == item_name) {
-				this.menu_item_list_.get(i).setPrice(new_price);
+			if (this.menu_item_list_.get(i).GetName() == item_name) {
+				this.menu_item_list_.get(i).SetPrice(new_price);
 				System.out.println("Price for " + item_name + " amended!");
 				return;
 			}

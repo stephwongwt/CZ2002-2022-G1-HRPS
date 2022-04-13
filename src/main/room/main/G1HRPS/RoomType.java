@@ -13,7 +13,7 @@ public enum RoomType {
         this.value = value;
     }
 
-    public int getValue() {
+    public int GetValue() {
         return value;
     }
 }

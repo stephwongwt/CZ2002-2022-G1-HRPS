@@ -175,19 +175,11 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Generate string for printing room service order at search menu
-	 */
-	public String toString() {
-		return ("RSO code: " + this.room_service_order_code_ + " created at " + this.time_created_ + " Remarks: "
-				+ this.remarks_);
-	}
-
-	/**
 	 * Returns String for guest ID
 	 * 
 	 * @return String guest ID
 	 */
-	public String getGuest_id() {
+	public String GetGuestId() {
 		return guest_id_;
 	}
 
@@ -201,7 +193,7 @@ public class RoomServiceOrder {
 	 * 
 	 * @return int containing number of orders
 	 */
-	public int getOrderQuantity() {
+	public int GetOrderQuantity() {
 		return order_quantity_;
 	}
 
@@ -214,8 +206,17 @@ public class RoomServiceOrder {
 	public float CalTotalPrice() {
 		float total_price = 0.0f;
 		for (int i = 0; i < this.ordered_item_list_.size(); i++) {
-			total_price += this.ordered_item_list_.get(i).getPrice();
+			total_price += this.ordered_item_list_.get(i).GetPrice();
 		}
 		return total_price;
+	}
+
+	/**
+	 * Generate string for printing room service order at search menu
+	 */
+	@Override
+	public String toString() {
+		return ("RSO code: " + this.room_service_order_code_ + " created at " + this.time_created_ + " Remarks: "
+				+ this.remarks_);
 	}
 }

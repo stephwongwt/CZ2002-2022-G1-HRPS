@@ -19,18 +19,11 @@ public class MenuItem {
 	}
 
 	/**
-	 * Prints menu item information
-	 */
-	public String toString() {
-		return " Item: " + this.name_ + " Price: $" + this.price_ + " Description: " + this.description_;
-	}
-
-	/**
 	 * Gets the name of the menu item
 	 * 
 	 * @return String containing name of menu item
 	 */
-	public String getName() {
+	public String GetName() {
 		return name_;
 	}
 
@@ -39,7 +32,7 @@ public class MenuItem {
 	 * 
 	 * @param name
 	 */
-	public void setName(String name) {
+	public void SetName(String name) {
 		this.name_ = name;
 	}
 
@@ -48,7 +41,7 @@ public class MenuItem {
 	 * 
 	 * @return float containing the price of the item
 	 */
-	public float getPrice() {
+	public float GetPrice() {
 		return price_;
 	}
 
@@ -57,7 +50,7 @@ public class MenuItem {
 	 * 
 	 * @param price
 	 */
-	public void setPrice(float price) {
+	public void SetPrice(float price) {
 		this.price_ = price;
 	}
 
@@ -66,7 +59,7 @@ public class MenuItem {
 	 * 
 	 * @return String containing the description
 	 */
-	public String getDescription() {
+	public String GetDescription() {
 		return description_;
 	}
 
@@ -75,7 +68,15 @@ public class MenuItem {
 	 * 
 	 * @param description
 	 */
-	public void setDescription(String description) {
+	public void SetDescription(String description) {
 		this.description_ = description;
+	}
+
+	/**
+	 * Prints menu item information
+	 */
+	@Override
+	public String toString() {
+		return " Item: " + this.name_ + " Price: $" + this.price_ + " Description: " + this.description_;
 	}
 }

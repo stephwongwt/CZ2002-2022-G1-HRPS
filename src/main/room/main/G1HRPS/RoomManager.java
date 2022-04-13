@@ -55,7 +55,7 @@ public class RoomManager {
 	public Room SearchList(String search_text) {
 		for (var i = 0; i < room_list_.size(); i++) {
 			for (var j = 0; j < room_list_.get(i).GetGuestList().size(); j++) { // searching for same Guest Name
-				if (room_list_.get(i).GetGuestList().get(j).getName == search_text) {
+				if (room_list_.get(i).GetGuestList().get(j).GetName == search_text) {
 					return room_list_.get(i);
 				}
 			}
@@ -154,7 +154,7 @@ public class RoomManager {
 		for (var i = 0; i < room_list_.size(); i++) {
 			if (room_list_.get(i).GetRoomNumber() == roomNumber) { // if room matches room number
 				for (var j = 0; j < room_list_.get(i).GetGuestList().size(); j++) {
-					if (room_list_.get(i).GetGuestList().get(j).getName == guestName) { // if guest name matches guest
+					if (room_list_.get(i).GetGuestList().get(j).GetName == guestName) { // if guest name matches guest
 						room_list_.get(i).CheckOutGuest(guestName);
 						break;
 					}
