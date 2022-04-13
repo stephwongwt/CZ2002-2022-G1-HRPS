@@ -21,26 +21,24 @@ public class Guest {
 
 	/**
 	 * Creates a new guest object.
-	 * 
-	 * @param identity
-	 * @param payment_id
-	 * @param room_num
-	 * @param name
-	 * @param credit_card_number
-	 * @param address            Billing address
-	 * @param contact
-	 * @param country
-	 * @param gender
-	 * @param nationality
+	 * Payment_id default as null, room_num default 0
+	 *
+	 * @param identity 			 Identity Number / Driving License
+	 * @param name				 First & Last Name (e.g. John Smith)
+	 * @param credit_card_number Any String
+	 * @param billing_address    Billing address
+	 * @param contact			 Any String
+	 * @param country			 Any String
+	 * @param gender			 Female/Male/Other
+	 * @param nationality		 Any String
 	 */
-	public Guest(String identity, UUID payment_id, int room_num, String name, String credit_card_number, String address,
-			String contact, String country, Gender gender, String nationality) {
+	public Guest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
 		identity_ = identity;
-		payment_id_ = payment_id;
-		room_num_ = room_num;
+		payment_id_ = null;
+		room_num_ = 0;
 		name_ = name;
 		credit_card_number_ = credit_card_number;
-		billing_address_ = address;
+		billing_address_ = billing_address;
 		contact_ = contact;
 		country_ = country;
 		gender_ = gender;
@@ -49,7 +47,7 @@ public class Guest {
 
 	/**
 	 * Gets the identification of this guest.
-	 * 
+	 *
 	 * @return String containing identity of this guest.
 	 */
 	public String GetIdentity() {
@@ -58,7 +56,7 @@ public class Guest {
 
 	/**
 	 * Sets new identity information of this guest.
-	 * 
+	 *
 	 * @param identity String containing guest's identification.
 	 */
 	public void SetIdentity(String identity) {
@@ -67,7 +65,7 @@ public class Guest {
 
 	/**
 	 * Gets the name of this guest.
-	 * 
+	 *
 	 * @return String with name of this guest.
 	 */
 	public String GetName() {
@@ -76,7 +74,7 @@ public class Guest {
 
 	/**
 	 * Sets new name to this guest.
-	 * 
+	 *
 	 * @param name
 	 */
 	public void SetName(String name) {
@@ -85,7 +83,7 @@ public class Guest {
 
 	/**
 	 * Gets a credit card number of this guest.
-	 * 
+	 *
 	 * @return String containing credit card number.
 	 */
 	public String GetCcNumber() {
@@ -94,7 +92,7 @@ public class Guest {
 
 	/**
 	 * Sets new credit card number to this guest.
-	 * 
+	 *
 	 * @param credit_card_number
 	 * @return true if the entered credit card number is valid.
 	 *         false if the entered credit card number is invalid.
@@ -113,7 +111,7 @@ public class Guest {
 
 	/**
 	 * Gets the billing address of this guest.
-	 * 
+	 *
 	 * @return String containing billing address of this guest.
 	 */
 	public String GetBillingAddress() {
@@ -122,7 +120,7 @@ public class Guest {
 
 	/**
 	 * Sets new billing address of this guest.
-	 * 
+	 *
 	 * @param billing_address
 	 */
 	public void SetBillingAddress(String billing_address) {
@@ -131,7 +129,7 @@ public class Guest {
 
 	/**
 	 * Gets the contact information of this guest.
-	 * 
+	 *
 	 * @return String with contact information of this guest
 	 */
 	public String GetContact() {
@@ -140,7 +138,7 @@ public class Guest {
 
 	/**
 	 * Sets new contact information of this guest.
-	 * 
+	 *
 	 * @param contact
 	 */
 	public void SetContact(String contact) {
@@ -149,7 +147,7 @@ public class Guest {
 
 	/**
 	 * Gets country of residence of this guest.
-	 * 
+	 *
 	 * @return String containing country of residence of this guest.
 	 */
 	public String GetCountry() {
@@ -158,7 +156,7 @@ public class Guest {
 
 	/**
 	 * Set new country of residence of this guest
-	 * 
+	 *
 	 * @param country
 	 */
 	public void SetCountry(String country) {
@@ -167,8 +165,8 @@ public class Guest {
 
 	/**
 	 * Gets the gender of this guest.
-	 * 
-	 * @return Gender object of this guest.
+	 *
+	 * @return Gender enum of this guest (Female/Male/Other)
 	 */
 	public Gender GetGender() {
 		return gender_;
@@ -176,8 +174,8 @@ public class Guest {
 
 	/**
 	 * Sets new gender information of this guest.
-	 * 
-	 * @param gender
+	 *
+	 * @param gender Female/Male/Other
 	 */
 	public void SetGender(Gender gender) {
 		gender_ = gender;
@@ -185,7 +183,7 @@ public class Guest {
 
 	/**
 	 * Gets the nationality of this guest.
-	 * 
+	 *
 	 * @return String containing nationality of this guest.
 	 */
 	public String GetNationality() {
@@ -194,7 +192,7 @@ public class Guest {
 
 	/**
 	 * Sets new nationality of this guest.
-	 * 
+	 *
 	 * @param nationality
 	 */
 	public void SetNationality(String nationality) {
@@ -203,7 +201,7 @@ public class Guest {
 
 	/**
 	 * Gets room number of room this guest is staying at.
-	 * 
+	 *
 	 * @return An int containing room number of this guest.
 	 */
 	public int GetRoomNum() {
@@ -212,7 +210,7 @@ public class Guest {
 
 	/**
 	 * Sets a new room number to this guest.
-	 * 
+	 *
 	 * @param room_num
 	 */
 	public void SetRoomNum(int room_num) {
@@ -221,7 +219,7 @@ public class Guest {
 
 	/**
 	 * Gets the payment ID of this guest.
-	 * 
+	 *
 	 * @return UUID object with payment ID of this guest.
 	 */
 	public UUID GetPaymentId() {
@@ -230,8 +228,8 @@ public class Guest {
 
 	/**
 	 * Sets new payment ID to this guest.
-	 * 
-	 * @param payment_id
+	 *
+	 * @param payment_id a generated UUID
 	 */
 	public void SetPaymentId(UUID payment_id) {
 		payment_id_ = payment_id;

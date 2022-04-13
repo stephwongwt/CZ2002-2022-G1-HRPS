@@ -55,7 +55,7 @@ public class RoomManager {
 	public Room SearchList(String search_text) {
 		for (var i = 0; i < room_list_.size(); i++) {
 			for (var j = 0; j < room_list_.get(i).GetGuestList().size(); j++) { // searching for same Guest Name
-				if (room_list_.get(i).GetGuestList().get(j).GetName == search_text) {
+				if (room_list_.get(i).GetGuestList().get(j).GetName() == search_text) {
 					return room_list_.get(i);
 				}
 			}
