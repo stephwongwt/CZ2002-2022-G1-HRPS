@@ -16,13 +16,13 @@ public class Reservation {
 	/**
 	 * 
 	 * @param reservationCode
-	 * @param guest
-	 * @param room
+	 * @param guestId
 	 * @param checkInDate
 	 * @param checkOutDate
 	 * @param adultNum
 	 * @param childrenNum
 	 * @param status
+	 * @param room_num
 	 */
 	public Reservation(String reservation_code, String guest_id, Timestamp check_in_date, Timestamp check_out_date,
 			int adult_num, int children_num, ReservationStatus status, int room_num) {
@@ -64,9 +64,6 @@ public class Reservation {
 		this.room_num_ = room_num;
 	}
 
-	// String reservationCode, String guestId, Timestamp checkInDate, Timestamp
-	// checkOutDate,
-	// int adultNum, int childrenNum, ReservationStatus status, int roomNum
 	public String GetReservationCode() {
 		return reservation_code_;
 	}
