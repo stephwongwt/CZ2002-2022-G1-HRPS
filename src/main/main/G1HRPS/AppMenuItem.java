@@ -10,11 +10,12 @@ public enum AppMenuItem {
 	Display(6);
 
 	private final int value;
-    private AppMenuItem(int value) {
-        this.value = value;
-    }
 
-    public int getValue() {
-        return value;
-    }
+	private AppMenuItem(int value) {
+		this.value = value;
+	}
+
+	public int getValue() {
+		return value;
+	}
 }

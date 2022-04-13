@@ -118,7 +118,6 @@ public class AppManager {
 							"[2] All Guests\n" +
 							"[3] All Reservations");
 					int option = sc_.nextInt();
-
 					switch (option) {
 						case 0:
 							break;
@@ -131,7 +130,6 @@ public class AppManager {
 						case 3:
 							DisplayList(reservation_manager_);
 							break;
-
 						default:
 							System.out.println("Option does not exist");
 							continue;
@@ -155,7 +153,6 @@ public class AppManager {
 			System.out.printf("[%d] %s\r\n", app_menu_item.getValue(), app_menu_item.toString());
 		}
 		int option = 0;
-
 		while (true) {
 			try {
 				option = sc_.nextInt();
@@ -184,42 +181,32 @@ public class AppManager {
 		String country;
 		Gender gender;
 		String nationality;
-
 		sc_.nextLine();
 		System.out.println("Enter Identification/Driving License Number (e.g. S1234567A):");
 		identity = sc_.nextLine().toUpperCase();
-
 		System.out.println("Enter Name (e.g. John Smith):");
 		name = sc_.nextLine().toUpperCase();
-
 		System.out.println("Enter Credit Card Number (e.g. 4605100120021234):");
 		credit_card_number = sc_.nextLine().toUpperCase();
-
 		System.out.println("Enter Address (e.g. 50 Nanyang Ave, S639798):");
 		address = sc_.nextLine().toUpperCase();
-
 		System.out.println("Enter Contact (e.g. +6590001000):");
 		contact = sc_.nextLine().toUpperCase();
-
 		System.out.println("Enter Country (e.g. Singapore):");
 		country = sc_.nextLine().toUpperCase();
-
 		System.out.println("Enter Gender (e.g. Female[0]/Male[1]/Other[1]):");
 		gender = GetEnumFromInput(Gender.values());
-
 		System.out.println("Enter Nationality (e.g. Singaporean):");
 		nationality = sc_.nextLine().toUpperCase();
-
-		boolean success = guest_manager_.CreateNewGuest(identity, name, credit_card_number, address, contact, country, gender, nationality);
+		boolean success = guest_manager_.CreateNewGuest(identity, name, credit_card_number, address, contact, country,
+				gender, nationality);
 		if (success) {
 			System.out.printf("Guest %s successfully created", name);
-		}
-		else
-		{
+		} else {
 			System.out.println("Guest was not created. Some error happened.");
 		}
-
-		System.out.printf("%s, %s, %s, %s, %s, %s, %s, %s", identity, name, credit_card_number, address, contact, country, gender.toString(), nationality);
+		System.out.printf("%s, %s, %s, %s, %s, %s, %s, %s", identity, name, credit_card_number, address, contact,
+				country, gender.toString(), nationality);
 	}
 
 	/**
@@ -234,7 +221,6 @@ public class AppManager {
 		boolean with_view;
 		boolean with_smoking;
 		RoomStatus status;
-
 		sc_.nextLine();
 		System.out.println("Enter Room Number:");
 		while (true) {
@@ -249,28 +235,20 @@ public class AppManager {
 				System.out.println("Unavailable, please try again.");
 			}
 		}
-
 		System.out.println("Enter Room Type (Single[0]/Standard[1]/VIP[2]/Suite[3]/Deluxe[4]):");
 		room_type = GetEnumFromInput(RoomType.values());
-
 		System.out.println("Enter price of room per night (e.g 100.00):");
 		room_price = sc_.nextFloat();
-
 		System.out.println("Enter Bed Size (Single[0]/SuperSingle[1]/Double[2]/Queen[3]/King[4]):");
 		bed_size = GetEnumFromInput(BedSize.values());
-
 		System.out.println("Enter WiFi (False[0]/True[1]):");
 		wifi_enabled = GetBooleanFromInput();
-
 		System.out.println("Enter View (False[0]/True[1]):");
 		with_view = GetBooleanFromInput();
-
 		System.out.println("Enter Smoking (False[0]/True[1]):");
 		with_smoking = GetBooleanFromInput();
-
 		System.out.println("Enter Room Status (Vacant[0]/Occupied[1]/Reserved[2]/Maintenance[3]):");
 		status = GetEnumFromInput(RoomStatus.values());
-
 		// TODO: Add room to room manager
 		System.out.printf("%d, %s, %s, %s, %s, %s, %s, %s", room_num, room_type.toString(), room_price,
 				bed_size.toString(), Boolean.valueOf(wifi_enabled), Boolean.valueOf(with_view),
@@ -279,8 +257,9 @@ public class AppManager {
 
 	/**
 	 * Present user with a list of choices from an enumset.
-	 * @param <T>       the enumset
-	 * @param opt_list  an array of the enum options
+	 * 
+	 * @param <T>      the enumset
+	 * @param opt_list an array of the enum options
 	 * @return
 	 */
 	private <T> T GetEnumFromInput(T[] opt_list) {
@@ -306,6 +285,7 @@ public class AppManager {
 
 	/**
 	 * Present user with a choice of true or false options.
+	 * 
 	 * @return return user's input in Boolean.
 	 */
 	private Boolean GetBooleanFromInput() {
@@ -329,13 +309,14 @@ public class AppManager {
 	}
 
 	/**
-	 * Gets input of search text from user and calls the SearchList method of Supermanager.
+	 * Gets input of search text from user and calls the SearchList method of
+	 * Supermanager.
 	 * Example usage:
-	 * 		GuestManager guest_manager = new GuestManager();
-	 * 		SearchList(guest_manager);
+	 * GuestManager guest_manager = new GuestManager();
+	 * SearchList(guest_manager);
 	 * 
-	 * @param <T>  type which the manager is managing
-	 * @param sm   a generic type manager which has implemented Supermanager
+	 * @param <T> type which the manager is managing
+	 * @param sm  a generic type manager which has implemented Supermanager
 	 * @return the object matching the search text
 	 */
 	private <T> T SearchList(Supermanager<T> sm) {
@@ -354,13 +335,14 @@ public class AppManager {
 	}
 
 	/**
-	 * Calls the GetList method of Supermanager and then access each object and calls toString.
+	 * Calls the GetList method of Supermanager and then access each object and
+	 * calls toString.
 	 * Example usage:
-	 * 		GuestManager guest_manager = new GuestManager();
-	 * 		DisplayList(guest_manager);
+	 * GuestManager guest_manager = new GuestManager();
+	 * DisplayList(guest_manager);
 	 * 
-	 * @param <T>  type which the manager is managing
-	 * @param sm   a generic type manager which has implemented Supermanager
+	 * @param <T> type which the manager is managing
+	 * @param sm  a generic type manager which has implemented Supermanager
 	 */
 	private <T> void DisplayList(Supermanager<T> sm) {
 		List<T> sm_list = sm.GetList();
@@ -382,5 +364,4 @@ public class AppManager {
 		menu_item_manager_.SaveDB();
 		System.out.println("Completed.");
 	}
-
 }

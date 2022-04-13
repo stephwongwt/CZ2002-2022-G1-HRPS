@@ -10,10 +10,9 @@ import java.util.StringTokenizer;
  * Manages room service orders from guests
  */
 public class RoomServiceManager extends DatabaseHandler implements Supermanager<RoomServiceOrder> {
-
 	private final String db_filename = "roomserviceorder_db.txt";
 	private List<RoomServiceOrder> room_service_order_list_;
-	
+
 	/**
 	 * Constructor for room service manager
 	 * 
@@ -44,7 +43,6 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 		throw new UnsupportedOperationException();
 	}
 
-	
 	/**
 	 * Returns the full list of room service orders
 	 * 
@@ -58,28 +56,23 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 		// read String from text file
 		ArrayList dbArray = (ArrayList) read(db_filename);
 		ArrayList dataList = new ArrayList();
-		
-
 		for (int i = 0; i < dbArray.size(); i++) {
 			String st = (String) dbArray.get(i);
 			// get individual 'fields' of the string separated by SEPARATOR
 			StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
-			
 			String rso_code = star.nextToken().trim(); // first token
 			String guest_id = star.nextToken().trim(); // second token
 			int room_id = Integer.parseInt(star.nextToken().trim());
 			String remarks = star.nextToken().trim();
 			int quantity = Integer.parseInt(star.nextToken().trim());
 			List<MenuItem> rso_items = new ArrayList<MenuItem>();
-			for (int j = 0; j < quantity; j++)
-			{
-				String name = star.nextToken().trim(); 
+			for (int j = 0; j < quantity; j++) {
+				String name = star.nextToken().trim();
 				float price = Float.parseFloat(star.nextToken().trim());
 				String description = star.nextToken().trim();
 				MenuItem m = new MenuItem(name, price, description);
 				rso_items.add(m);
 			}
-			
 			// create object from file data
 			RoomServiceOrder obj = new RoomServiceOrder(rso_code, guest_id, room_id, rso_items, remarks);
 			// add to Room service order list
@@ -90,7 +83,6 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 
 	public void SaveDB() {
 		List<String> rsoData = new ArrayList<String>();
-
 		for (RoomServiceOrder rso : room_service_order_list_) {
 			StringBuilder st = new StringBuilder();
 			int quantity = rso.getOrderQuantity();
@@ -104,8 +96,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 			st.append(SEPARATOR);
 			st.append(quantity);
 			st.append(SEPARATOR);
-			for(int i = 0; i < quantity; i++)
-			{
+			for (int i = 0; i < quantity; i++) {
 				st.append(rso.GetOrderedItemList().get(i).getName());
 				st.append(SEPARATOR);
 				st.append(rso.GetOrderedItemList().get(i).getPrice());
@@ -115,13 +106,11 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 			}
 			rsoData.add(st.toString());
 		}
-
 		try {
 			write(db_filename, rsoData);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	/**
@@ -132,14 +121,13 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	 */
 	public void SetRsoStatus(RoomServiceOrder rso, OrderStatus new_status) {
 		rso.SetStatus(new_status);
-		
 	}
 
 	/**
 	 * Gets the Order status of the room service order
 	 * 
 	 * @param rso
-	 * @return OrderStatus on the service order status 
+	 * @return OrderStatus on the service order status
 	 */
 	public OrderStatus GetRsoStatus(RoomServiceOrder rso) {
 		return rso.GetStatus();
@@ -152,10 +140,8 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	 * @return RoomServiceOrder of interest
 	 */
 	public RoomServiceOrder GetOrderedItemsByRoom(int room_id) {
-		for (RoomServiceOrder rso : room_service_order_list_)
-		{
-			if (rso.GetRoomNum() == room_id)
-			{
+		for (RoomServiceOrder rso : room_service_order_list_) {
+			if (rso.GetRoomNum() == room_id) {
 				return rso;
 			}
 		}
@@ -170,10 +156,8 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	 * @return RoomServiceOrder of interest
 	 */
 	public RoomServiceOrder GetOrderedItemsByGuest(String guest_id) {
-		for (RoomServiceOrder rso : room_service_order_list_)
-		{
-			if (rso.getGuest_id() == guest_id)
-			{
+		for (RoomServiceOrder rso : room_service_order_list_) {
+			if (rso.getGuest_id() == guest_id) {
 				return rso;
 			}
 		}

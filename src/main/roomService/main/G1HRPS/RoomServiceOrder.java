@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class RoomServiceOrder {
-
 	private String room_service_order_code_;
 	private String guest_id_;
 	private int room_num_;
@@ -15,7 +14,7 @@ public class RoomServiceOrder {
 	private String remarks_;
 	private OrderStatus status_;
 	private int order_quantity_;
-	
+
 	/**
 	 * Constructor for room service order
 	 * 
@@ -25,7 +24,8 @@ public class RoomServiceOrder {
 	 * @param ordered_item_list
 	 * @param remarks
 	 */
-	public RoomServiceOrder(String room_service_order_code, String guest_id, int room_id, List<MenuItem> ordered_item_list, String remarks) {
+	public RoomServiceOrder(String room_service_order_code, String guest_id, int room_id,
+			List<MenuItem> ordered_item_list, String remarks) {
 		// TODO - implement RoomServiceOrder.RoomServiceOrder
 		this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
 		order_quantity_ = this.ordered_item_list_.size();
@@ -111,7 +111,7 @@ public class RoomServiceOrder {
 	/**
 	 * Sets the room number for the room service order
 	 * 
-	 * @param room_num 
+	 * @param room_num
 	 */
 	public void SetRoomNum(int room_num) {
 		this.room_num_ = room_num;
@@ -145,44 +145,41 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Set the order status of the room service order. Updates time stamp when order is delivered.
+	 * Set the order status of the room service order. Updates time stamp when order
+	 * is delivered.
 	 * 
 	 * @param status enum OrderStatus on the status
 	 */
 	public void SetStatus(OrderStatus status) {
 		this.status_ = status;
-		if (this.status_ == OrderStatus.Delivered)
-		{
+		if (this.status_ == OrderStatus.Delivered) {
 			// create only first time
-			if (this.time_completed_ != null)
-			{
+			if (this.time_completed_ != null) {
 				this.time_completed_ = new Timestamp(System.currentTimeMillis());
 			}
-		}		
+		}
 	}
-	
+
 	/**
-	 * Generates string for all the menu items for the room service order in separate lines
+	 * Generates string for all the menu items for the room service order in
+	 * separate lines
 	 * 
 	 * @return String containing the list of menu items
 	 */
-	public String MenuItemstoString()
-	{
+	public String MenuItemstoString() {
 		String Textout = "";
-		for (int i = 0; i < this.ordered_item_list_.size(); i++)
-		{
+		for (int i = 0; i < this.ordered_item_list_.size(); i++) {
 			Textout += this.ordered_item_list_.get(i).toString() + "\n";
 		}
 		return Textout;
 	}
-	
-	
+
 	/**
 	 * Generate string for printing room service order at search menu
 	 */
-	public String toString()
-	{
-		return ("RSO code: "+ this.room_service_order_code_ + " created at " + this.time_created_ +  " Remarks: " + this.remarks_);
+	public String toString() {
+		return ("RSO code: " + this.room_service_order_code_ + " created at " + this.time_created_ + " Remarks: "
+				+ this.remarks_);
 	}
 
 	/**
@@ -193,13 +190,12 @@ public class RoomServiceOrder {
 	public String getGuest_id() {
 		return guest_id_;
 	}
-	
+
 	/**
 	 * Calculates price of all the menu items in the room service order
 	 * 
 	 * @return float containing the total price
 	 */
-	
 	/**
 	 * Gets number of orders for the room service order
 	 * 
@@ -208,18 +204,17 @@ public class RoomServiceOrder {
 	public int getOrderQuantity() {
 		return order_quantity_;
 	}
-	
+
 	/**
-	 * Gets total price of room service order based on all the menu items in the ordered list
+	 * Gets total price of room service order based on all the menu items in the
+	 * ordered list
 	 * 
 	 * @return float containing the total price
 	 */
-	public float CalTotalPrice()
-	{
+	public float CalTotalPrice() {
 		float total_price = 0.0f;
-		for (int i = 0; i < this.ordered_item_list_.size(); i++)
-		{
-			total_price += this.ordered_item_list_.get(i).getPrice(); 
+		for (int i = 0; i < this.ordered_item_list_.size(); i++) {
+			total_price += this.ordered_item_list_.get(i).getPrice();
 		}
 		return total_price;
 	}

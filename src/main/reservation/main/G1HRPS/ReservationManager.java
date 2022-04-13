@@ -11,13 +11,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class ReservationManager implements Supermanager<Reservation> {
-
 	private List<Reservation> reservation_list_;
 	private final String db_filename = "reservation_db.txt";
 
 	public ReservationManager() {
 		reservation_list_ = new ArrayList<Reservation>();
 	}
+
 	/**
 	 * Takes in an class object and list to add the object into.
 	 */
@@ -25,9 +25,11 @@ public class ReservationManager implements Supermanager<Reservation> {
 		reservation_list_.add(reservation);
 	}
 
-	public void AddNewReservation(String reservation_code, String guest_id, Timestamp check_in_date, Timestamp check_out_date,
-	int adult_num, int children_num, ReservationStatus status, int room_num){
-		Reservation res = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
+	public void AddNewReservation(String reservation_code, String guest_id, Timestamp check_in_date,
+			Timestamp check_out_date,
+			int adult_num, int children_num, ReservationStatus status, int room_num) {
+		Reservation res = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num,
+				children_num, status, room_num);
 		reservation_list_.add(res);
 	}
 
@@ -43,8 +45,8 @@ public class ReservationManager implements Supermanager<Reservation> {
 	 * Takes in an text or guest object and and returns a reservation object
 	 */
 	public Reservation SearchList(String search_text) {
-		for (Reservation res : reservation_list_){
-			if(res.GetReservationCode().equals(search_text)){
+		for (Reservation res : reservation_list_) {
+			if (res.GetReservationCode().equals(search_text)) {
 				return res;
 			}
 		}
@@ -52,10 +54,9 @@ public class ReservationManager implements Supermanager<Reservation> {
 		return null;
 	}
 
-
 	public Reservation SearchList(Guest guest) {
-		for (Reservation res : reservation_list_){
-			if(res.GetGuestId().equals(guest.GetIdentity())){
+		for (Reservation res : reservation_list_) {
+			if (res.GetGuestId().equals(guest.GetIdentity())) {
 				return res;
 			}
 		}
@@ -69,13 +70,10 @@ public class ReservationManager implements Supermanager<Reservation> {
 
 	public void InitializeDB() {
 		// TODO - implement ReservationManager.InitializeDB
-
 		ArrayList<String> dbArray = (ArrayList) read(db_filename);
 		ArrayList<Reservation> dataList = new ArrayList<>();
-
 		for(String st : dbArray){
 			StringTokenizer star = new StringTokenizer(st, SEPARATOR);
-
 			String reservationCode = star.nextToken().trim();
 			String guestId = star.nextToken().trim();
 			String checkInDate = star.nextToken().trim();
@@ -84,21 +82,16 @@ public class ReservationManager implements Supermanager<Reservation> {
 			String childrenNum = star.nextToken().trim();
 			String status = star.nextToken().trim();
 			String roomNum = star.nextToken().trim();
-
 			Reservation res = new Reservation(reservationCode, guestId, checkInDate, checkOutDate,
 			adultNum, childrenNum, status, int room_num)
-
 			dataList.add(res);
 	}
 
 	public void SaveDB() {
 		// TODO - implement ReservationManager.SaveDB
-
 		List<String> reservationData = new ArrayList<>();
-
-		for (Reservation res : reservation_list_){
+		for (Reservation res : reservation_list_) {
 			StringBuilder st = new StringBuilder();
-
 			st.append(res.GetReservationCode());
 			st.append(SEPARATOR);
 			st.append(res.GetGuestId());
@@ -114,23 +107,18 @@ public class ReservationManager implements Supermanager<Reservation> {
 			st.append(res.GetStatus());
 			st.append(SEPARATOR);
 			st.append(res.GetRoomNum());
-			
 			reservationData.add(st.toString());
 		}
-
 		try {
 			write(db_filename, reservationData);
-		}
-		catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-
-
 	public boolean CheckIn(String reservationCode) {
 		Reservation res = SearchList(reservationCode);
-		if (res != null){
+		if (res != null) {
 			RemoveFromList(res);
 			ReservationStatus status = ReservationStatus.CheckedIn;
 			res.SetStatus(status);
@@ -138,12 +126,11 @@ public class ReservationManager implements Supermanager<Reservation> {
 			return true;
 		}
 		return false;
-		
 	}
 
 	public boolean CheckOut(String reservationCode) {
 		Reservation res = SearchList(reservationCode);
-		if (res != null){
+		if (res != null) {
 			RemoveFromList(res);
 			ReservationStatus status = ReservationStatus.CheckedOut;
 			res.SetStatus(status);
@@ -151,7 +138,6 @@ public class ReservationManager implements Supermanager<Reservation> {
 			return true;
 		}
 		return false;
-		
 	}
 
 	/**
