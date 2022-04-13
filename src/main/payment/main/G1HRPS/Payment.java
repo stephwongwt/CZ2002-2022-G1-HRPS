@@ -213,7 +213,7 @@ public class Payment {
 	public void SetBillTotal(float bill_total) {
 
 		bill_total_ = bill_total;
-
+    
 	}
 
 	/**

@@ -133,7 +133,6 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		}
 
 		return null;
-
 	}
 
 	/**
