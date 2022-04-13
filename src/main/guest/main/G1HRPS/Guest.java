@@ -1,12 +1,20 @@
 package main.G1HRPS;
 
+import java.util.UUID;
+
 public class Guest {
 
+	private static final int MIN_CC_NUMLEN = 8;
+	private static final int MAX_CC_NUMLEN = 19;
+	private static final String EMPTY = "EMPTY";
+	private static final UUID EMPTY_UUID = null;
+	private static final int EMPTY_ROOM = 0;
+
 	private String identity_;
-	private String payment_id_;
+	private UUID payment_id_;
 	private int room_num_;
 	private String name_;
-	private int cc_number_;
+	private String credit_card_number_;
 	private String billing_address_;
 	private String contact_;
 	private String country_;
@@ -14,159 +22,294 @@ public class Guest {
 	private String nationality_;
 
 	/**
+	 * Creates a new guest object.
 	 * 
 	 * @param identity
+	 * @param payment_id
+	 * @param room_num
 	 * @param name
-	 * @param cc_number_
-	 * @param address
+	 * @param credit_card_number
+	 * @param address Billing address
 	 * @param contact
 	 * @param country
 	 * @param gender
 	 * @param nationality
 	 */
-	public Guest(String identity, String name, int cc_number_, String address, String contact, String country, Gender gender, String nationality) {
-		// TODO - implement Guest.Guest
-		throw new UnsupportedOperationException();
+
+	public Guest(String identity, UUID payment_id, int room_num, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
+
+		identity_ = identity;
+		payment_id_ = payment_id;
+		room_num_ = room_num;
+		name_ = name;
+		credit_card_number_ = credit_card_number;
+		billing_address_ = address;
+		contact_ = contact;
+		country_ = country;
+		gender_ = gender;
+		nationality_ = nationality;
+
 	}
+
+	/**
+	 * Gets the identification of this guest.
+	 * 
+	 * @return	String containing identity of this guest.
+	 */
 
 	public String GetIdentity() {
-		// TODO - implement Guest.GetIdentity
-		throw new UnsupportedOperationException();
+
+		return identity_;
+
 	}
 
 	/**
+	 * Sets new identity information of this guest.
 	 * 
-	 * @param identity
+	 * @param identity	String containing guest's identification.
 	 */
 	public void SetIdentity(String identity) {
-		// TODO - implement Guest.SetIdentity
-		throw new UnsupportedOperationException();
-	}
 
-	public String GetName() {
-		// TODO - implement Guest.GetName
-		throw new UnsupportedOperationException();
+		identity_ = identity;
+
 	}
 
 	/**
+	 * Gets the name of this guest.
+	 * 
+	 * @return	String with name of this guest.
+	 */
+
+	public String GetName() {
+
+		return name_;
+
+	}
+
+	/**
+	 * Sets new name to this guest.
 	 * 
 	 * @param name
 	 */
 	public void SetName(String name) {
-		// TODO - implement Guest.SetName
-		throw new UnsupportedOperationException();
-	}
 
-	public int GetCcNumber() {
-		// TODO - implement Guest.GetCcNumber
-		throw new UnsupportedOperationException();
+		name_ = name;
+
 	}
 
 	/**
+	 * Gets a credit card number of this guest.
 	 * 
-	 * @param cc_number
+	 * @return	String containing credit card number.
 	 */
-	public void SetCcNumber(int cc_number) {
-		// TODO - implement Guest.SetCcNumber
-		throw new UnsupportedOperationException();
+
+	public String GetCcNumber() {
+
+		return credit_card_number_;
+
 	}
+
+	/**
+	 * Sets new credit card number to this guest.
+	 * 
+	 * @param 	credit_card_number
+	 * @return	<code>true</code>	if the entered credit card number is valid.
+	 * 			</p>
+	 * 			<code>false</code>	if the entered credit card number is invalid.
+	 */
+	public boolean SetCreditCardNumber(String credit_card_number) {
+		String noSpace_CreditCardNum = credit_card_number.replaceAll("\\s+", "");
+
+		if(noSpace_CreditCardNum.matches("[0-9]+") && (noSpace_CreditCardNum.length() >= MIN_CC_NUMLEN) && (noSpace_CreditCardNum.length() <= MAX_CC_NUMLEN)) {
+			credit_card_number_ = credit_card_number;
+			return true;
+		}
+		else{
+			System.out.println("Invalid credit card number");
+			return false;
+		}
+	}
+
+	/**
+	 * Gets the billing address of this guest.
+	 * 
+	 * @return	String containing billing address of this guest.
+	 */
 
 	public String GetBillingAddress() {
-		// TODO - implement Guest.GetBillingAddress
-		throw new UnsupportedOperationException();
+
+		return billing_address_;
+
 	}
 
 	/**
+	 * Sets new billing address of this guest.
 	 * 
 	 * @param billing_address
 	 */
 	public void SetBillingAddress(String billing_address) {
-		// TODO - implement Guest.SetBillingAddress
-		throw new UnsupportedOperationException();
-	}
 
-	public String GetContact() {
-		// TODO - implement Guest.GetContact
-		throw new UnsupportedOperationException();
+		billing_address_ = billing_address;
+
 	}
 
 	/**
+	 * Gets the contact information of this guest.
+	 * 
+	 * @return	String with contact information of this guest
+	 */
+
+	public String GetContact() {
+
+		return contact_;
+
+	}
+
+	/**
+	 * Sets new contact information of this guest.
 	 * 
 	 * @param contact
 	 */
 	public void SetContact(String contact) {
-		// TODO - implement Guest.SetContact
-		throw new UnsupportedOperationException();
-	}
 
-	public String GetCountry() {
-		// TODO - implement Guest.GetCountry
-		throw new UnsupportedOperationException();
+		contact_ = contact;
+
 	}
 
 	/**
+	 * Gets country of residence of this guest.
+	 * 
+	 * @return	String containing country of residence of this guest.
+	 */
+
+	public String GetCountry() {
+
+		return country_;
+
+	}
+
+	/**
+	 * Set new country of residence of this guest
 	 * 
 	 * @param country
 	 */
 	public void SetCountry(String country) {
-		// TODO - implement Guest.SetCountry
-		throw new UnsupportedOperationException();
-	}
 
-	public Gender GetGender() {
-		// TODO - implement Guest.GetGender
-		throw new UnsupportedOperationException();
+		country_ = country;
+
 	}
 
 	/**
+	 * Gets the gender of this guest.
+	 * 
+	 * @return	Gender object of this guest.
+	 */
+
+	public Gender GetGender() {
+
+		return gender_;
+
+	}
+
+	/**
+	 * Sets new gender information of this guest.
 	 * 
 	 * @param gender
 	 */
 	public void SetGender(Gender gender) {
-		// TODO - implement Guest.SetGender
-		throw new UnsupportedOperationException();
-	}
 
-	public String GetNationality() {
-		// TODO - implement Guest.GetNationality
-		throw new UnsupportedOperationException();
+		gender_ = gender;
+
 	}
 
 	/**
+	 * Gets the nationality of this guest.
+	 * 
+	 * @return	String containing nationality of this guest.
+	 */
+
+	public String GetNationality() {
+
+		return nationality_;
+
+	}
+
+	/**
+	 * Sets new nationality of this guest.
 	 * 
 	 * @param nationality
 	 */
 	public void SetNationality(String nationality) {
-		// TODO - implement Guest.SetNationality
-		throw new UnsupportedOperationException();
-	}
 
-	public int SetRoomNum() {
-		// TODO - implement Guest.SetRoomNum
-		throw new UnsupportedOperationException();
+		nationality_ = nationality;
+
 	}
 
 	/**
+	 * Gets room number of room this guest is staying at.
+	 * 
+	 * @return	An int containing room number of this guest.
+	 */
+
+	public int GetRoomNum() {
+
+		return room_num_;
+
+	}
+
+	/**
+	 * Sets a new room number to this guest.
 	 * 
 	 * @param room_num
 	 */
 	public void SetRoomNum(int room_num) {
-		// TODO - implement Guest.SetRoomNum
-		throw new UnsupportedOperationException();
-	}
 
-	public String getPaymentId() {
-		// TODO - implement Guest.getPaymentId
-		throw new UnsupportedOperationException();
+		room_num_ = room_num;
+
 	}
 
 	/**
+	 * Gets the payment ID of this guest.
+	 * 
+	 * @return	UUID object with payment ID of this guest.
+	 */
+
+	public UUID GetPaymentId() {
+
+		return payment_id_;
+
+	}
+
+	/**
+	 * Sets new payment ID to this guest.
 	 * 
 	 * @param payment_id
 	 */
-	public void setPaymentId(String payment_id) {
-		// TODO - implement Guest.setPaymentId
-		throw new UnsupportedOperationException();
+	public void SetPaymentId(UUID payment_id) {
+
+		payment_id_ = payment_id;
+	
 	}
 
+	/**
+	 * Used to print guest information.
+	 */
+	@Override
+	public String toString() {
+		String room_num = (room_num_ == EMPTY_ROOM) ? EMPTY : String.valueOf(room_num_);
+		String payment_id = (payment_id_ == EMPTY_UUID) ? EMPTY : payment_id_.toString();
+		
+		String output = String.format(
+			"|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" +
+			"|Credit Card #: %s|\n" +
+			"|Billing Address: %s|\n" +
+			"|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n",
+			identity_, name_, room_num, payment_id,
+			credit_card_number_,
+			billing_address_,
+			contact_, country_, gender_.toString(), nationality_
+		);
+
+		return output;
+	}
 }
