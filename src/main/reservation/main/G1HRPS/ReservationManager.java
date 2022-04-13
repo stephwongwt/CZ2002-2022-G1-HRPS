@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class ReservationManager implements Supermanager<Reservation>, CodeGen {
+public class ReservationManager implements Supermanager<Reservation> {
 
 	private List<Reservation> reservation_list_;
 	private final String db_filename = "reservation_db.txt";
@@ -162,11 +162,4 @@ public class ReservationManager implements Supermanager<Reservation>, CodeGen {
 		Reservation res = SearchList(reservation.GetReservationCode());
 		return res.status_;
 	}
-
-	@Override
-	public UUID GenerateCode() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

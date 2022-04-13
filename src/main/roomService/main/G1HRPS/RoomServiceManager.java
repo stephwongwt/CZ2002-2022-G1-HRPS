@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 /**
  * Manages room service orders from guests
  */
-public class RoomServiceManager extends DatabaseHandler implements Supermanager<RoomServiceOrder>, CodeGen {
+public class RoomServiceManager extends DatabaseHandler implements Supermanager<RoomServiceOrder> {
 
 	private final String db_filename = "roomserviceorder_db.txt";
 	private List<RoomServiceOrder> room_service_order_list_;
@@ -179,12 +179,5 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 		}
 		System.out.println("No room number of " + guest_id);
 		return null;
-	}
-
-	@Override
-	public UUID GenerateCode() {
-		// TODO Auto-generated method stub
-		UUID uuid = UUID.randomUUID();
-		return uuid;
 	}
 }

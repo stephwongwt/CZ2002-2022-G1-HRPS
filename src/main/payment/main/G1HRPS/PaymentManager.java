@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-public class PaymentManager extends DatabaseHandler implements Supermanager<Payment>, CodeGen {
+public class PaymentManager extends DatabaseHandler implements Supermanager<Payment> {
 	private List<Payment> payment_list_;
 	private final String db_filename = "payment_db.txt";
 
@@ -212,7 +212,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			index++;
 		}
 
-		Payment new_payment = new Payment(GenerateCode(), guest_id, room_num, discounts, tax, cost_of_stay, total_room_service_charges, init_total_bill, PaymentStatus.Pending);
+		Payment new_payment = new Payment(UniqueIdGenerator.Generate(), guest_id, room_num, discounts, tax, cost_of_stay, total_room_service_charges, init_total_bill, PaymentStatus.Pending);
 
 		new_payment.CalculateBillTotal();
 	
@@ -222,18 +222,6 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		System.out.printf("- Total ($) : %.2f\n", new_payment.GetTotalBill());
 		
 		return new_payment;
-	}
-
-	/**
-	 * Used to generate the payment_id of a new payment.
-	 * 
-	 * @return UUID unique to this payment.
-	 */
-
-	@Override
-	public UUID GenerateCode() {
-		UUID uuid = UUID.randomUUID();
-		return uuid;
 	}
 
 	/**

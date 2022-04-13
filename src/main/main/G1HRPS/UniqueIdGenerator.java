@@ -2,15 +2,15 @@ package main.G1HRPS;
 
 import java.util.UUID;
 
-public class CodeGen {
+public class UniqueIdGenerator {
 
     /***
      * Generate a unique id using UUID.
      * Example Usage:
-     *      UUID id = CodeGen.GenerateCode();
+     *      UUID id = UniqueIdGenerator.Generate();
      * @return generated UUID
      */
-    static public UUID GenerateCode() {
+    static public UUID Generate() {
         UUID uuid = UUID.randomUUID();
 		return uuid;
     }
