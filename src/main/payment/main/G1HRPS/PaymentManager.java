@@ -199,20 +199,15 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 		cost_of_stay = days_of_stay * room_charge;
 		
 		System.out.println("-------Payment-------");
-		System.out.println("- Days of Stay : " + days_of_stay);
-		System.out.printf("--- Cost of Stay ($) : %.2f\n", cost_of_stay);
-		System.out.println("- Room services ordered");
+		System.out.println("---- Days of Stay : " + days_of_stay);
+		System.out.printf("- Cost of Stay ($) : %.2f\n", cost_of_stay);
+		System.out.println("---- Room services ordered");
 		for(RoomServiceOrder each_order : room_service_orders) {
 			price_of_order = each_order.CalTotalPrice();
 			System.out.println("--- Room Service Order [" + index + "]:");
-                        
-			// Prints all menu items in each order
-			
-			// for(MenuItem menu : each_order.GetOrderedItemList()) {
-			// 	System.out.println("\t-- " + menu);
-			// }
+            System.out.print(each_order.MenuItemstoString());
 
-			System.out.println("---- Order Total : " + price_of_order);
+			System.out.println("-- Order Total : " + price_of_order);
 
 			total_room_service_charges += price_of_order;
 			index++;
@@ -222,9 +217,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 
 		new_payment.CalculateBillTotal();
 	
-		System.out.printf("-- Cost of Room Service ($) : %.2f\n", total_room_service_charges);
-		System.out.printf("- Discounts : %.2f (%)\n", discounts);
-		System.out.printf("- Tax : %.2f (%)\n", tax);
+		System.out.printf("- Cost of Room Service ($) : %.2f\n", total_room_service_charges);
+		System.out.printf("- Discount Rate : %.2f (%)\n", discounts);
+		System.out.printf("- Tax Rate : %.2f (%)\n", tax);
 		System.out.printf("- Total ($) : %.2f\n", new_payment.GetTotalBill());
 		
 		return new_payment;
@@ -267,9 +262,9 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 			float room_service_charges = Float.parseFloat(star.nextToken().trim());
 			float bill_total = Float.parseFloat(star.nextToken().trim());
 			PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
-			// create object from file data
+
 			Payment obj = new Payment(id, guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
-			// add to Professors list
+
 			dataList.add(obj);
 		}
 		payment_list_ = dataList;
