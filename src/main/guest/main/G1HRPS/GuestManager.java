@@ -1,10 +1,6 @@
 package main.G1HRPS;
 
 import java.io.IOException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.FileInputStream;
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -35,36 +31,38 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param gender
      * @param nationality
      */
-    public void CreateNewGuest(String identity, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
+    public Guest CreateNewGuest(String identity, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
         Guest new_guest = new Guest(identity, name, credit_card_number, address, contact, country, gender, nationality);
-        AddToList(new_guest);
+        Guest found_exisiting_guest = SearchList(identity);
+        if (found_exisiting_guest == null) {
+            AddToList(new_guest);
+            return new_guest;
+        } else { // cannot create new guest due to existing guest
+            return null;
+        }
     }
 
     /**
      * Adds a new guest object into guest list.
      * 
-     * @param guest Guest object to be added.
+     * @param guest Guest object to be added
+     * @return true if success / false if failed
      */
-    public void AddToList(Guest guest) {
-        boolean success;
+    public boolean AddToList(Guest guest) {
+        boolean success = false;
         try {
             success = guest_list_.add(guest);
-            if (success) {
-                System.out.println("Guest added to list");
-            } else {
-                System.out.println("Guest of Name: " + guest.GetName() +
-                        " and ID: " + guest.GetIdentity() + " not added to list");
-            }
         } catch (NullPointerException e) {
-            System.out.println("Guest List not initialized");
             e.printStackTrace();
         }
+        return success;
     }
 
     /**
      * Removes a given guest from the guest list.
      * 
-     * @param guest Guest object to be removed.
+     * @param guest Guest object to be removed
+     * @return true if success / false if failed
      */
     public void RemoveFromList(Guest guest) {
         boolean success;
@@ -114,7 +112,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param guest
      * @param room_num
      */
-    public void CheckInGuest(Guest guest, int room_num) {
+    public void CheckIntoRoom(Guest guest, int room_num) {
         guest.SetRoomNum(room_num);
     }
 
@@ -131,9 +129,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param billing_address
      * @param credit_card_number
      */
-    public void CheckOutGuest(Guest guest, UUID payment_id, String billing_address, String credit_card_number) {
-        guest.SetBillingAddress(billing_address);
-        guest.SetCreditCardNumber(credit_card_number);
+    public void CheckOutOfRoom(Guest guest, UUID payment_id) {
         guest.SetPaymentId(payment_id);
     }
 
@@ -157,11 +153,12 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             String country = star.nextToken().trim();
             Gender gender = Gender.valueOf(star.nextToken().trim());
             String nationality = star.nextToken().trim();
-            Guest guest = new Guest(identity, payment_id, room_num, name, cc_number, address, contact, country, gender,
-                    nationality);
-            dataList.add(guest);
+            Guest obj = new Guest(identity, name, cc_number, address, contact, country, gender, nationality);
+            obj.SetPaymentId(payment_id);
+            obj.SetRoomNum(room_num);
+            dataList.add(obj);
         }
-        guest_list_ = dataList;
+        this.guest_list_ = dataList;
     }
 
     /**

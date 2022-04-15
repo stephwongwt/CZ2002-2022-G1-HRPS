@@ -1,5 +1,6 @@
 package main.G1HRPS;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Guest {
@@ -18,6 +19,7 @@ public class Guest {
     private String country_;
     private Gender gender_;
     private String nationality_;
+    private String check_in_date_;
 
     /**
      * Creates a new guest object.
@@ -43,6 +45,16 @@ public class Guest {
         country_ = country;
         gender_ = gender;
         nationality_ = nationality;
+        LocalDateTime dateTime = LocalDateTime.now();
+        check_in_date_ = AppManager.datetime_formatter.format(dateTime);
+    }
+
+    /**
+     * 
+     * @return Check in date timestamp in string
+     */
+    public String GetCheckInDate() {
+        return check_in_date_;
     }
 
     /**
