@@ -35,13 +35,11 @@ public class DatabaseHandler {
                 e.printStackTrace();
             }
         }
-
         try {
             scanner = new Scanner(new FileInputStream(db_file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         try {
             while (scanner.hasNextLine()) {
                 data.add(scanner.nextLine());
@@ -55,7 +53,6 @@ public class DatabaseHandler {
     /** Write fixed content to the given file. */
     public void write(String fileName, List data) throws IOException {
         PrintWriter out = new PrintWriter(new FileWriter(DB_PATH + fileName));
-
         try {
             for (int i = 0; i < data.size(); i++) {
                 out.println((String) data.get(i));

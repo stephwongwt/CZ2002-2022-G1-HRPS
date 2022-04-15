@@ -1,165 +1,178 @@
 package main.G1HRPS;
 
 import java.io.IOException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.FileInputStream;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-public class ReservationManager implements Supermanager<Reservation> {
+public class ReservationManager extends DatabaseHandler implements Supermanager<Reservation> {
+    private List<Reservation> reservation_list_;
+    private final String db_filename = "reservation_db.txt";
 
-	private List<Reservation> reservation_list_;
-	private final String db_filename = "reservation_db.txt";
+    public ReservationManager() {
+        reservation_list_ = new ArrayList<Reservation>();
+    }
 
-	public ReservationManager() {
-		reservation_list_ = new ArrayList<Reservation>();
-	}
-	/**
-	 * Takes in an class object and list to add the object into.
-	 */
-	public void AddToList(Reservation reservation) {
-		reservation_list_.add(reservation);
-	}
+    public void CreateNewReservation(String guest_id, Timestamp check_in_date, Timestamp check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
+        UUID reservation_code = UniqueIdGenerator.Generate();
+        Reservation rsvp = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
+        reservation_list_.add(rsvp);
+    }
 
-	public void AddNewReservation(String reservation_code, String guest_id, Timestamp check_in_date, Timestamp check_out_date,
-	int adult_num, int children_num, ReservationStatus status, int room_num){
-		Reservation res = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
-		reservation_list_.add(res);
-	}
+    public void InitializeDB() {
+        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<Reservation> dataList = new ArrayList<Reservation>();
+        for(String st : dbArray){
+            StringTokenizer star = new StringTokenizer(st, SEPARATOR);
+            UUID reservation_code = UUID.fromString(star.nextToken().trim());
+            String guest_id = star.nextToken().trim();
+            Timestamp check_in_date = Timestamp.valueOf(star.nextToken().trim());
+            Timestamp check_out_date = Timestamp.valueOf(star.nextToken().trim());
+            int adult_num = Integer.parseInt(star.nextToken().trim());
+            int children_num = Integer.parseInt(star.nextToken().trim());
+            ReservationStatus status = ReservationStatus.valueOf(star.nextToken().trim());
+            int room_num = Integer.parseInt(star.nextToken().trim());
+            Reservation obj = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
+            dataList.add(obj);
+        }
+        this.reservation_list_ = dataList;
+    }
 
-	/**
-	 * Takes in an class object and list to remove the object from the given list.
-	 */
-	public void RemoveFromList(Reservation reservation) {
-		// TODO - implement ReservationManager.RemoveFromList
-		throw new UnsupportedOperationException();
-	}
+    public void SaveDB() {
+        List<String> reservationData = new ArrayList<>();
+        for (Reservation rsvp : reservation_list_) {
+            StringBuilder st = new StringBuilder();
+            st.append(rsvp.GetReservationCode().toString());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetGuestId());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetCheckInDate().toString());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetCheckOutDate().toString());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetAdultNum());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetChildrenNum());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetStatus().toString());
+            st.append(SEPARATOR);
+            st.append(rsvp.GetRoomNum());
+            reservationData.add(st.toString());
+        }
+        try {
+            write(db_filename, reservationData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	/**
-	 * Takes in an text or guest object and and returns a reservation object
-	 */
-	public Reservation SearchList(String search_text) {
-		for (Reservation res : reservation_list_){
-			if(res.GetReservationCode().equals(search_text)){
-				return res;
-			}
-		}
-		System.out.println("cannot find reservation to this reservation Id");
-		return null;
-	}
+    /**
+     * Check in reservation by changing status.
+     * @param reservation obj to be updated
+     * @return true if status updated, else false if not found
+     */
+    public boolean CheckIn(Reservation reservation) {
+        Reservation rsvp = SearchList(reservation.GetReservationCode().toString());
+        int rsvp_index = reservation_list_.indexOf(rsvp);
+        if (rsvp != null) {
+            rsvp.SetStatus(ReservationStatus.CheckedIn);
+            reservation_list_.set(rsvp_index, rsvp);
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * Check out reservation by changing status.
+     * @param reservation obj to be updated
+     * @return true if status updated, else false if not found
+     */
+    public boolean CheckOut(Reservation reservation) {
+        Reservation rsvp = SearchList(reservation.GetReservationCode().toString());
+        int rsvp_index = reservation_list_.indexOf(rsvp);
+        if (rsvp != null) {
+            rsvp.SetStatus(ReservationStatus.CheckedOut);
+            reservation_list_.set(rsvp_index, rsvp);
+            return true;
+        }
+        return false;
+    }
 
-	public Reservation SearchList(Guest guest) {
-		for (Reservation res : reservation_list_){
-			if(res.GetGuestId().equals(guest.GetIdentity())){
-				return res;
-			}
-		}
-		System.out.println("cannot find this guest");
-		return null;
-	}
+    /**
+     * Takes in an class object and list to add the object into.
+     * 
+     * @param reservation The object to be added
+     */
+    @Override
+    public boolean AddToList(Reservation reservation) {
+        boolean success = false;
+        Reservation found = SearchList(reservation.GetReservationCode().toString());
+        if (found == null) {
+            try {
+                success = this.reservation_list_.add(reservation);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
 
-	public List<Reservation> GetList() {
-		return reservation_list_;
-	}
+    /**
+     * Takes in an class object and list to remove the object from the given list.
+     * 
+     * @param reservation The object to be removed
+     */
+    @Override
+    public boolean RemoveFromList(Reservation reservation) {
+        boolean success = false;
+        try {
+            success = this.reservation_list_.remove(reservation);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
 
-	public void InitializeDB() {
-		// TODO - implement ReservationManager.InitializeDB
+    /**
+     * Returns an ArrayList List<Reservation>, room_list
+     * 
+     * @return reservation_list_ ArrayList that is returned.
+     */
+    @Override
+    public List<Reservation> GetList() {
+        return this.reservation_list_;
+    }
 
-		ArrayList<String> dbArray = (ArrayList) read(db_filename);
-		ArrayList<Reservation> dataList = new ArrayList<>();
+    /**
+     * Search internal list of reservations for one with id matching the search_text.
+     * 
+     * @param search_text UUID reservation code to be searched
+     * @return Reservation if found, else null
+     */
+    @Override
+    public Reservation SearchList(String search_text) {
+        for (Reservation reservation : reservation_list_) {
+            if (reservation.GetReservationCode().equals(UUID.fromString(search_text))) {
+                return reservation;
+            }
+        }
+        return null;
+    }
 
-		for(String st : dbArray){
-			StringTokenizer star = new StringTokenizer(st, SEPARATOR);
-
-			String reservationCode = star.nextToken().trim();
-			String guestId = star.nextToken().trim();
-			String checkInDate = star.nextToken().trim();
-			String checkOutDate = star.nextToken().trim();
-			String adultNum = star.nextToken().trim();
-			String childrenNum = star.nextToken().trim();
-			String status = star.nextToken().trim();
-			String roomNum = star.nextToken().trim();
-
-			Reservation res = new Reservation(reservationCode, guestId, checkInDate, checkOutDate,
-			adultNum, childrenNum, status, int room_num)
-
-			dataList.add(res);
-	}
-
-	public void SaveDB() {
-		// TODO - implement ReservationManager.SaveDB
-
-		List<String> reservationData = new ArrayList<>();
-
-		for (Reservation res : reservation_list_){
-			StringBuilder st = new StringBuilder();
-
-			st.append(res.GetReservationCode());
-			st.append(SEPARATOR);
-			st.append(res.GetGuestId());
-			st.append(SEPARATOR);
-			st.append(res.GetCheckInDate());
-			st.append(SEPARATOR);
-			st.append(res.GetCheckOutDate());
-			st.append(SEPARATOR);
-			st.append(res.GetAdultNum());
-			st.append(SEPARATOR);
-			st.append(res.GetChildrenNum());
-			st.append(SEPARATOR);
-			st.append(res.GetStatus());
-			st.append(SEPARATOR);
-			st.append(res.GetRoomNum());
-			
-			reservationData.add(st.toString());
-		}
-
-		try {
-			write(db_filename, reservationData);
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-	}
-
-
-
-	public boolean CheckIn(String reservationCode) {
-		Reservation res = SearchList(reservationCode);
-		if (res != null){
-			RemoveFromList(res);
-			ReservationStatus status = ReservationStatus.CheckedIn;
-			res.SetStatus(status);
-			AddToList(res);
-			return true;
-		}
-		return false;
-		
-	}
-
-	public boolean CheckOut(String reservationCode) {
-		Reservation res = SearchList(reservationCode);
-		if (res != null){
-			RemoveFromList(res);
-			ReservationStatus status = ReservationStatus.CheckedOut;
-			res.SetStatus(status);
-			AddToList(res);
-			return true;
-		}
-		return false;
-		
-	}
-
-	/**
-	 * 
-	 * @param reservation
-	 */
-	public ReservationStatus GetReservationStatus(Reservation reservation) {
-		Reservation res = SearchList(reservation.GetReservationCode());
-		return res.status_;
-	}
+    /**
+     * Search internal list of reservations for one with id matching the search_text.
+     * 
+     * @param guest obj to be found
+     * @return Reservation if found, else null
+     */
+    public Reservation SearchList(Guest guest) {
+        for (Reservation reservation : reservation_list_) {
+            if (reservation.GetGuestId().equals(guest.GetIdentity())) {
+                return reservation;
+            }
+        }
+        return null;
+    }
 }
