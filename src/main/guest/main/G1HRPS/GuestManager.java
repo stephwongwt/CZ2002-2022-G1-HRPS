@@ -75,20 +75,15 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param guest Guest object to be removed
      * @return true if success / false if failed
      */
-    public void RemoveFromList(Guest guest) {
-        boolean success;
+    @Override
+    public boolean RemoveFromList(Guest guest) {
+        boolean success = false;
         try {
-            success = guest_list_.remove(guest);
-            if (success) {
-                System.out.println("Guest removed from list");
-            } else {
-                System.out.println("Guest of Name: " + guest.GetName() +
-                        " and ID: " + guest.GetIdentity() + " not removed from list");
-            }
+            success = this.guest_list_.remove(guest);
         } catch (NullPointerException e) {
-            System.out.println("Guest List not initialized");
             e.printStackTrace();
         }
+        return success;
     }
 
     /**
