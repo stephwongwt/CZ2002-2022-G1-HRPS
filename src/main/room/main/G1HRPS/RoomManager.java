@@ -1,6 +1,12 @@
 package main.G1HRPS;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * A manager class that stores the Room Object as elements in a list. Search
@@ -11,158 +17,55 @@ import java.util.ArrayList;
  * @author LiangHee
  *
  */
-public class RoomManager {
-    private static ArrayList<Room> room_list_;
+public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
+    private List<Room> room_list_;
+    private final String db_filename = "room_db.txt";
 
     public RoomManager() {
+        this.room_list_ = new ArrayList<Room>();
     }
 
     /**
-     * Takes in a class object and list to add the object into.
-     * Will reject adding a room with room number that already exists.
+     * Takes in user input to create a new Room and add to room_list_.
      * 
-     * @param room This is the room object to be added
+     * @param room_number
+     * @param room_type
+     * @param room_price
+     * @param bed_size
+     * @param wifi_enabled
+     * @param w_view
+     * @param w_smoking
+     * @param status
      */
-    public static void AddToList(Room room) {
-        for (var i = 0; i < room_list_.size(); i++) {
-            if (room_list_.get(i).GetRoomNumber() == room.GetRoomNumber()) {
-                System.out.println("Room number already exists in database.");
-            } else {
-                room_list_.add(room);
-            }
-        }
-    }
-
-    /**
-     * This method takes in input info about room from the menu, creates a new room
-     * object, and adds that new object
-     * to room_list_.
-     * The parameters are the same as in Room constructor.
-     */
-    public static void AddNewRoom(RoomType room_type, float price, int room_number, BedSize bedSize,
-            boolean wifiEnabled, boolean withView, boolean Smoking, RoomStatus status) {
-        Room room = new Room(room_type, price, room_number, bedSize, wifiEnabled, withView, Smoking, status);
-        AddToList(room);
-    }
-
-    /**
-     * Takes in user input from menu and searches
-     * through room_list_ for guest name with the same string.
-     * If same string found, returns object room
-     * 
-     * @param search_text This is the input that user keys in
-     */
-    public Room SearchList(String search_text) {
-        for (var i = 0; i < room_list_.size(); i++) {
-            for (var j = 0; j < room_list_.get(i).GetGuestList().size(); j++) { // searching for same Guest Name
-                if (room_list_.get(i).GetGuestList().get(j).GetName() == search_text) {
-                    return room_list_.get(i);
-                }
-            }
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Takes in user input from menu and searches through
-     * room_list_ for room number with the same integer.
-     * If same Integer found, returns object room
-     */
-    public Room SearchList(int search_int) {
-        for (var i = 0; i < room_list_.size(); i++) { // searching for same Room Name
-            if (room_list_.get(i).GetRoomNumber() == search_int) {
-                return room_list_.get(i);
-            }
-        }
-    }
-
-    /**
-     * Removes a room from room_list_, user's input is the room number
-     * 
-     * @param room_num_ Room number that user wants to remove from List.
-     */
-    public void RemoveFromList(String roomNumber) {
-        Room room = SearchList(roomNumber);
-        room_list_.remove(room);
-    }
-
-    /**
-     * Returns an arrayList List<Room>, room_list
-     * 
-     * @return room_list_ arrayList that is returned.
-     */
-    public List<Room> GetList() {
-        return room_list_;
-    }
-
-}
-
-    public void InitializeDB() {
-        // TODO - implement RoomManager.InitializeDB
-        throw new UnsupportedOperationException();
-    }
-
-    public void SaveDB() {
-        // TODO - implement RoomManager.SaveDB
-        throw new UnsupportedOperationException();
+    public Room CreateNewRoom(int room_number, RoomType room_type, float room_price, BedSize bed_size,
+            boolean wifi_enabled, boolean w_view, boolean w_smoking, RoomStatus status) {
+        Room new_room = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, w_view, w_smoking, status);
+        AddToList(new_room);
+        return new_room;
     }
 
     /**
      * Assign a guest to a room, guest is stored as an element in a guest list
      * 
-     * @param guest      This is the guest to be added
-     * @param roomNumber This is the room number of the room that the guest will be
-     *                   added to
+     * @param guest       This is the guest to be added
+     * @param room_number This is the room number of the room that the guest will be
+     *                    added to
      */
-    public void CheckInRoom(Guest guest, String roomNumber) {
-        for (var i = 0; i < room_list_.size(); i++) {
-            if (room_list_.get(i).GetRoomNumber() == roomNumber) {
-                room_list_.get(i).AddGuest(guest);
-                room_list_.get(i).SetStatus(RoomStatus.Occupied);
-                break;
-            } else
-                System.out.println("room number does not exist");
-        }
-        throw new UnsupportedOperationException();
+    public void CheckInGuest(Guest guest, int room_number) {
+        Room room = SearchList(room_number);
+        room.AddGuestToRoom(guest);
     }
 
     /**
      * removes all guests elements from the guest list of a room
      * 
-     * @param roomNumber This is the room number to remove guest elements from.
+     * @param room_number This is the room number to remove guest elements from.
      */
-    public void CheckOutAllGuest(int roomNumber) {
-        for (var i = 0; i < room_list_.size(); i++) {
-            if (room_list_.get(i).GetRoomNumber() == roomNumber) {
-                room_list_.get(i).ClearGuests();
-                room_list_.get(i).SetStatus(RoomStatus.Vacant);
-                break;
-            } else
-                System.out.println("room number does not exist");
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Removes one guest element from the guest list
-     * 
-     * @param roomNumber This is the room number to remove guest element from
-     * @param guestName  This is the guest name of guest element to be removed
-     */
-    public void CheckOutOneGuest(int roomNumber, String guestName) {// note: guest Name required from user is full name
-                                                                    // of guest
-        for (var i = 0; i < room_list_.size(); i++) {
-            if (room_list_.get(i).GetRoomNumber() == roomNumber) { // if room matches room number
-                for (var j = 0; j < room_list_.get(i).GetGuestList().size(); j++) {
-                    if (room_list_.get(i).GetGuestList().get(j).GetName == guestName) { // if guest name matches guest
-                        room_list_.get(i).CheckOutGuest(guestName);
-                        break;
-                    }
-                    if (room_list_.get(i).GetGuestList().size() == 0) { // if guest list is empty, set room status to
-                                                                        // vacant
-                        room_list_.get(i).SetStatus(RoomStatus.Vacant);
-                    }
-                }
+    public void CheckOutGuests(int room_number) {
+        for (Room room : room_list_) {
+            if (room.GetRoomNumber() == room_number) {
+                room.ClearGuestList();
+                room.SetStatus(RoomStatus.Vacant);
             }
         }
     }
@@ -170,111 +73,107 @@ public class RoomManager {
     /**
      * Sets a room status to vacant, occupied, reserved, maintenance
      * This method is primarily to set room status to reserved and maintenance,
-     * as rooms are auto set to vacant and occupied in check in and check out.
+     * as rooms are auto set to vacant and occupied in check in.
      * 
-     * @param roomNumber This is room number of the room that status will be changed
-     * @param status     This is the status to be changed into
+     * @param room_number   The room to update status
+     * @param status        The status to be changed into
      */
-    public void SetRoomStatus(int roomNumber, RoomStatus status) {
-        for (var i = 0; i < room_list_.size(); i++) {
-            if (room_list_.get(i).GetRoomNumber() == roomNumber) {
-                room_list_.get(i).SetStatus(status);
+    public void SetRoomStatus(int room_number, RoomStatus status) {
+        for (Room room : room_list_) {
+            if (room.GetRoomNumber() == room_number) {
+                room.SetStatus(status);
             }
-            throw new UnsupportedOperationException();
         }
     }
 
     /**
-     * Vacant room numbers in room_list_, organized by room type .
-     * e.g. Standard: Number: 2 out of 15 vacant
-     * Available Rooms: 0221 , 0222, 0233, 0244, 0255
-     * VIP: Number: 3 out of 5 vacant
+     * Get occupancy of rooms based on room types
+     * 
+     * Sample:
+     * EnumMap<RoomType.Single, HashMap<15, int[221, 222]>>
+     * Standard: Number: 2 out of 15 vacant
+     * Available Rooms: 221, 222
+     * 
+     * @return an enum map of room types, with an internal hashmap of total_rooms and int array of vacant room numbers.
      */
-    public void GetRoomStatisticsByTypeOccupancyRate() {
-        int singleTotalCount = 0;
-        int singleVacantCount = 0;
-        String singleVacantRoomNumber = "";
-        int standardTotalCount = 0;
-        int standardVacantCount = 0;
-        String standardVacantRoomNumber = "";
-        int deluxeTotalCount = 0;
-        int deluxeVacantCount = 0;
-        String deluxeVacantRoomNumber = "";
-        int suiteTotalCount = 0;
-        int suiteVacantCount = 0;
-        String suiteVacantRoomNumber = "";
-        int VIPTotalCount = 0;
-        int VIPVacantCount = 0;
-        String VIPVacantRoomNumber = "";
-        for (var i = 0; i < room_list_.size(); i++) {
-            RoomType type = room_list_.get(i).GetRoomType();
-            switch (type) { // This switch block acts as a counter for different room types
+    public EnumMap<RoomType, HashMap<String, Vector<Integer>>> GetRoomStatisticsByTypeOccupancyRate() {
+        int single_total = 0;
+        int single_vacant = 0;
+        Vector<Integer> single_vacant_list = new Vector<>();
+        int standard_total = 0;
+        int standard_vacant = 0;
+        Vector<Integer> standard_vacant_list = new Vector<>();
+        int deluxe_total = 0;
+        int deluxe_vacant = 0;
+        Vector<Integer> deluxe_vacant_list = new Vector<>();
+        int suite_total = 0;
+        int suite_vacant = 0;
+        Vector<Integer> suite_vacant_list = new Vector<>();
+        int vip_total = 0;
+        int vip_vacant = 0;
+        Vector<Integer> vip_vacant_list = new Vector<>();
+
+        EnumMap<RoomType, HashMap<String, Vector<Integer>>> room_stats = new EnumMap<>(RoomType.class);
+
+        for (Room room : room_list_) {
+            RoomType type = room.GetRoomType();
+            switch (type) {
                 case Single:
-                    singleTotalCount += 1;
-                    if (room_list_.get(i).GetStatus() == RoomStatus.Vacant) {
-                        singleVacantRoomNumber = singleVacantRoomNumber
-                                + Integer.toString(room_list_.get(i).GetRoomNumber()) + ",";
-                        singleVacantCount += 1;
+                    single_total++;
+                    if (room.GetStatus() == RoomStatus.Vacant) {
+                        single_vacant_list.add(room.GetRoomNumber());
+                        single_vacant++;
                     }
                     break;
                 case Standard:
-                    standardTotalCount += 1;
-                    if (room_list_.get(i).GetStatus() == RoomStatus.Vacant) {
-                        standardVacantRoomNumber = standardVacantRoomNumber
-                                + Integer.toString(room_list_.get(i).GetRoomNumber()) + ",";
-                        standardVacantCount += 1;
+                    standard_total++;
+                    if (room.GetStatus() == RoomStatus.Vacant) {
+                        standard_vacant_list.add(room.GetRoomNumber());
+                        standard_vacant++;
                     }
                     break;
-                case Deluxe:
-                    deluxeTotalCount += 1;
-                    if (room_list_.get(i).GetStatus() == RoomStatus.Vacant) {
-                        deluxeVacantRoomNumber = deluxeVacantRoomNumber
-                                + Integer.toString(room_list_.get(i).GetRoomNumber()) + ",";
-                        deluxeVacantCount += 1;
+                case Vip:
+                    vip_total++;
+                    if (room.GetStatus() == RoomStatus.Vacant) {
+                        vip_vacant_list.add(room.GetRoomNumber());
+                        vip_vacant++;
                     }
                     break;
                 case Suite:
-                    suiteTotalCount += 1;
-                    if (room_list_.get(i).GetStatus() == RoomStatus.Vacant) {
-                        suiteVacantRoomNumber = suiteVacantRoomNumber
-                                + Integer.toString(room_list_.get(i).GetRoomNumber()) + ",";
-                        suiteVacantCount += 1;
+                    suite_total++;
+                    if (room.GetStatus() == RoomStatus.Vacant) {
+                        suite_vacant_list.add(room.GetRoomNumber());
+                        suite_vacant++;
                     }
                     break;
-                case VIP:
-                    VIPTotalCount += 1;
-                    if (room_list_.get(i).GetStatus() == RoomStatus.Vacant) {
-                        VIPVacantRoomNumber = VIPVacantRoomNumber + Integer.toString(room_list_.get(i).GetRoomNumber())
-                                + ",";
-                        VIPVacantCount += 1;
+                case Deluxe:
+                    deluxe_total++;
+                    if (room.GetStatus() == RoomStatus.Vacant) {
+                        deluxe_vacant_list.add(room.GetRoomNumber());
+                        deluxe_vacant++;
                     }
                     break;
                 default:
                     break;
             }
-            singleVacantRoomNumber = singleVacantRoomNumber.substring(1, singleVacantRoomNumber.length() - 1); // removes
-                                                                                                                // the
-                                                                                                                // last
-                                                                                                                // comma
-                                                                                                                // in
-                                                                                                                // this
-                                                                                                                // String
-            standardVacantRoomNumber = standardVacantRoomNumber.substring(1, standardVacantRoomNumber.length() - 1);
-            suiteVacantRoomNumber = suiteVacantRoomNumber.substring(1, suiteVacantRoomNumber.length() - 1);
-            VIPVacantRoomNumber = VIPVacantRoomNumber.substring(1, VIPVacantRoomNumber.length() - 1);
-            deluxeVacantRoomNumber = deluxeVacantRoomNumber.substring(1, deluxeVacantRoomNumber.length() - 1);
-            System.out.println("Single: Number: " + singleVacantCount + " out of " + singleTotalCount + " vacant");
-            System.out.println("        Available Rooms: " + singleVacantRoomNumber);
-            System.out
-                    .println("Standard: Number: " + standardVacantCount + " out of " + standardTotalCount + " vacant");
-            System.out.println("        Available Rooms: " + standardVacantRoomNumber);
-            System.out.println("Deluxe: Number: " + deluxeVacantCount + " out of " + deluxeTotalCount + " vacant");
-            System.out.println("        Available Rooms: " + deluxeVacantRoomNumber);
-            System.out.println("Suite: Number: " + suiteVacantCount + " out of " + suiteTotalCount + " vacant");
-            System.out.println("        Available Rooms: " + suiteVacantRoomNumber);
-            System.out.println("VIP: Number: " + VIPVacantCount + " out of " + VIPTotalCount + " vacant");
-            System.out.println("        Available Rooms: " + VIPVacantRoomNumber);
         }
+        HashMap<String, Vector<Integer>> single_stats = new HashMap<>();
+        single_stats.put(String.valueOf(single_total), single_vacant_list);
+        room_stats.put(RoomType.Single, single_stats);
+        HashMap<String, Vector<Integer>> standard_stats = new HashMap<>();
+        standard_stats.put(String.valueOf(standard_total), standard_vacant_list);
+        room_stats.put(RoomType.Single, standard_stats);
+        HashMap<String, Vector<Integer>> vip_stats = new HashMap<>();
+        vip_stats.put(String.valueOf(vip_total), vip_vacant_list);
+        room_stats.put(RoomType.Single, vip_stats);
+        HashMap<String, Vector<Integer>> suite_stats = new HashMap<>();
+        suite_stats.put(String.valueOf(suite_total), suite_vacant_list);
+        room_stats.put(RoomType.Single, suite_stats);
+        HashMap<String, Vector<Integer>> deluxe_stats = new HashMap<>();
+        deluxe_stats.put(String.valueOf(deluxe_total), deluxe_vacant_list);
+        room_stats.put(RoomType.Single, deluxe_stats);
+
+        return room_stats;
     }
 
     /**
@@ -317,5 +216,158 @@ public class RoomManager {
         System.out.println("       Rooms:" + reservedRoomNumbers.substring(1, reservedRoomNumbers.length() - 1));
         System.out.println("Maintenance: ");
         System.out.println("       Rooms:" + maintenanceRoomNumbers.substring(1, maintenanceRoomNumbers.length() - 1));
+    }
+
+    /**
+     * Tokenize each line in the database into an object.
+     */
+    public void InitializeDB() {
+        // read String from text file
+        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<Room> dataList = new ArrayList<Room>();
+        for (String st : dbArray) {
+            // get individual 'fields' of the string separated by SEPARATOR
+            StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
+            int room_number = Integer.parseInt(star.nextToken().trim());
+            RoomType room_type = RoomType.valueOf(star.nextToken().trim());
+            float room_price = Float.parseFloat(star.nextToken().trim());
+            BedSize bed_size = BedSize.valueOf(star.nextToken().trim());
+            boolean wifi_enabled = Boolean.parseBoolean(star.nextToken().trim());
+            boolean w_view = Boolean.parseBoolean(star.nextToken().trim());
+            boolean w_smoking = Boolean.parseBoolean(star.nextToken().trim());
+            RoomStatus status = RoomStatus.valueOf(star.nextToken().trim());
+            Room obj = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, w_view, w_smoking, status);
+            dataList.add(obj);
+        }
+        this.room_list_ = dataList;
+    }
+
+    /**
+     * Data list is turned into formatted String and written the file named
+     * db_filename.
+     */
+    public void SaveDB() {
+        List<String> roomData = new ArrayList<String>();
+        for (Room room : room_list_) {
+            StringBuilder st = new StringBuilder();
+            st.append(room.GetRoomNumber());
+            st.append(SEPARATOR);
+            st.append(room.GetRoomType());
+            st.append(SEPARATOR);
+            st.append(room.GetRoomPrice());
+            st.append(SEPARATOR);
+            st.append(room.GetBedSize());
+            st.append(SEPARATOR);
+            st.append(room.GetWifi());
+            st.append(SEPARATOR);
+            st.append(room.GetView());
+            st.append(SEPARATOR);
+            st.append(room.GetSmoking());
+            st.append(SEPARATOR);
+            st.append(room.GetStatus());
+            st.append(SEPARATOR);
+            roomData.add(st.toString());
+        }
+        try {
+            write(db_filename, roomData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Takes in a class object and list to add the object into.
+     * Will reject adding a room with room number that already exists.
+     * 
+     * @param room This is the room object to be added
+     * @return true if success / false if failed
+     */
+    @Override
+    public boolean AddToList(Room room) {
+        boolean success = false;
+        Room found = SearchList(room.GetRoomNumber());
+        if (found == null) {
+            try {
+                success = this.room_list_.add(room);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        }
+        return success;
+    }
+
+    /**
+     * Removes a matching room from the room list.
+     * 
+     * @param room Payment object to be removed from the list of Payment objects.
+     * @return true if success / false if failed
+     */
+    @Override
+    public boolean RemoveFromList(Room room) {
+        boolean success = false;
+        try {
+            success = room_list_.remove(room);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+    
+    /**
+     * Returns an ArrayList List<Room>, room_list
+     * 
+     * @return room_list_ ArrayList that is returned.
+     */
+    @Override
+    public List<Room> GetList() {
+        return this.room_list_;
+    }
+
+    /**
+     * Search internal list of reservations for one with id matching the search_text.
+     * 
+     * @param search_text room number to be searched
+     * @return Room if found, else null
+     */
+    @Override
+    public Room SearchList(String search_text) {
+        for (Room room : room_list_) {
+            if (room.GetRoomNumber() == Integer.parseInt(search_text)) {
+                return room;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Looks for the room which a particular guest stays in.
+     * 
+     * @param search_guest Find room this guest stays in
+     * @return Room if found, else null
+     */
+    public Room SearchList(Guest search_guest) {
+        for (Room room : room_list_) {
+            for (Guest guest_in_room : room.GetGuestList()) {
+                if (guest_in_room.GetName().equals(search_guest.GetName())) {
+                    return room;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Looks for room with provided room number
+     * 
+     * @param search_room_num room number in integer
+     * @return Room if found, else null
+     */
+    public Room SearchList(int search_room_num) {
+        for (Room room : room_list_) {
+            if (room.GetRoomNumber() == search_room_num) {
+                return room;
+            }
+        }
+        return null;
     }
 }
