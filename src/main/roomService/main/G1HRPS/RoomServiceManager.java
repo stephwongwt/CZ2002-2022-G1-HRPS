@@ -23,8 +23,11 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 
     public RoomServiceOrder CreateNewRoomServiceOrder(String guest_id, int room_number, List<MenuItem> ordered_item_list, String remarks) {
         RoomServiceOrder new_room_service_order = new RoomServiceOrder(guest_id, room_number, ordered_item_list, remarks);
-        AddToList(new_room_service_order);
-        return new_room_service_order;
+        if (AddToList(new_room_service_order)) {
+            return new_room_service_order;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -133,8 +136,6 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
             st.append(SEPARATOR);
             st.append(rso.GetRoomNum());
             st.append(SEPARATOR);
-            st.append(rso.GetRemarks());
-            st.append(SEPARATOR);
             st.append(quantity);
             st.append(SEPARATOR);
             for (int i = 0; i < quantity; i++) {
@@ -145,6 +146,8 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
                 st.append(rso.GetOrderedItemList().get(i).GetDescription());
                 st.append(SEPARATOR);
             }
+            st.append(SEPARATOR);
+            st.append(rso.GetRemarks());
             rsoData.add(st.toString());
         }
         try {
@@ -182,8 +185,8 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
      */
     public ArrayList<RoomServiceOrder> GetOrderedItemsByRoom(int room_number) {
         ArrayList<RoomServiceOrder> room_service_orders = new ArrayList<>();
-        for (RoomServiceOrder order : room_service_order_list_) {
-            if ((order.GetRoomNum() == room_number) && (order.GetStatus() == OrderStatus.Delivered)) {
+        for (RoomServiceOrder order : this.room_service_order_list_) {
+            if (order.GetRoomNum() == room_number) {
                 room_service_orders.add(order);
             }
         }
@@ -198,8 +201,8 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
      */
     public ArrayList<RoomServiceOrder> GetOrderedItemsByGuest(String guest_id) {
         ArrayList<RoomServiceOrder> room_service_orders = new ArrayList<>();
-        for (RoomServiceOrder order : room_service_order_list_) {
-            if ((order.GetGuestId() == guest_id) && (order.GetStatus() == OrderStatus.Delivered)) {
+        for (RoomServiceOrder order : this.room_service_order_list_) {
+            if (order.GetGuestId() == guest_id) {
                 room_service_orders.add(order);
             }
         }

@@ -34,8 +34,11 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      */
     public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, PaymentStatus status) {
         Payment new_payment = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, status);
-        AddToList(new_payment);
-        return new_payment;
+        if (AddToList(new_payment)) {
+            return new_payment;
+        } else {
+            return null;
+        }
     }
 
     /**

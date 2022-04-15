@@ -77,6 +77,6 @@ public class MenuItem {
      */
     @Override
     public String toString() {
-        return "Name: " + this.name_ + " Price: $" + this.price_ + "\nDescription: " + this.description_;
+        return "Name: " + this.name_ + " Price: $" + this.price_ + " Description: " + this.description_;
     }
 }

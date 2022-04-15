@@ -245,7 +245,7 @@ public class Room {
                         "|with View: " + this.w_view_ +
                         "|\n|with Smoking: " + this.w_smoking_ +
                         "|Room Status: " + this.status_ +
-                        "|\n|Guests: " + this.guest_list_.toString() + "|";
+                        "|\n|Guests: \n" + this.guest_list_.toString();
         return output;
     }
 }

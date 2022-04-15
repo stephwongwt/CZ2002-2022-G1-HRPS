@@ -29,8 +29,11 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
      */
     public MenuItem CreateNewMenuItem(String name, float price, String description) {
         MenuItem menu_item = new MenuItem(name, price, description);
-        AddToList(menu_item);
-        return menu_item;
+        if (AddToList(menu_item)) {
+            return menu_item;
+        } else {
+            return null;
+        }
     }
 
     /**
