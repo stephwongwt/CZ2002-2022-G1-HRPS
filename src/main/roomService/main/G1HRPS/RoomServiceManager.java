@@ -146,38 +146,55 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	}
 
 	/**
-	 * Returns the room service order object based on room id
+	 * Returns list the room service order object based on room id
 	 * 
 	 * @param room_id
-	 * @return RoomServiceOrder of interest
+	 * @return List of RoomServiceOrder(s) of interest
 	 */
-	public RoomServiceOrder GetOrderedItemsByRoom(int room_id) {
+	public List<RoomServiceOrder> GetOrderedItemsByRoom(int room_id) {
+		List<RoomServiceOrder> allOrders = new ArrayList<>();
+
 		for (RoomServiceOrder rso : room_service_order_list_)
 		{
 			if (rso.GetRoomNum() == room_id)
 			{
-				return rso;
+				allOrders.add(rso);
 			}
 		}
-		System.out.println("No order from room number of " + room_id);
-		return null;
+
+		if(allOrders.isEmpty()) {
+			System.out.println("No order from room number of " + room_id);
+			return null;
+		}
+		else
+			return allOrders;
+
 	}
 
 	/**
-	 * Returns the room service order object based on guest id
+	 * Returns the list of room service order object based on guest id
 	 * 
 	 * @param guest_id
-	 * @return RoomServiceOrder of interest
+	 * @return List of RoomServiceOrder(s) of interest
 	 */
-	public RoomServiceOrder GetOrderedItemsByGuest(String guest_id) {
+	public List<RoomServiceOrder> GetOrderedItemsByGuest(String guest_id) {
+		List<RoomServiceOrder> allOrders = new ArrayList<>();
+
 		for (RoomServiceOrder rso : room_service_order_list_)
 		{
 			if (rso.getGuest_id() == guest_id)
 			{
-				return rso;
+				allOrders.add(rso);
 			}
 		}
-		System.out.println("No room number of " + guest_id);
-		return null;
+
+		if(allOrders.isEmpty()) {
+			System.out.println("No room number of " + guest_id);
+			return null;
+		}
+		else
+			return allOrders;
+
 	}
+
 }
