@@ -32,8 +32,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      * @param bill_total           After deducting discounts
      * @param status
      */
-    public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, float bill_total, PaymentStatus status) {
-        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
+    public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, PaymentStatus status) {
+        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, status);
         AddToList(new_payment);
         return new_payment;
     }
@@ -109,7 +109,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
         String room_services_ordered = "|-|Room services ordered|-|";
         for (int i = 0; i < room_service_orders.size(); i++) {
             RoomServiceOrder each_order = room_service_orders.get(i);
-            price_of_order = each_order.CalTotalPrice();
+            price_of_order = each_order.CalculateOrderTotalPrice();
             room_services_ordered.concat(".Room Service Order [" + i+1 + "]");
             room_services_ordered.concat(each_order.MenuItemstoString());
             total_room_service_charges += price_of_order;
