@@ -32,8 +32,8 @@ public class Payment {
      * @param bill_total           After deducting discounts
      * @param status
      */
-    public Payment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, float bill_total, PaymentStatus status) {
-        payment_id_ = UniqueIdGenerator.Generate();
+    public Payment(UUID payment_id, String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, float bill_total, PaymentStatus status) {
+        payment_id_ = payment_id;
         guest_id_ = guest_id;
         room_num_ = room_num;
         discounts_ = discounts;
@@ -225,5 +225,10 @@ public class Payment {
      */
     public PaymentStatus GetStatus() {
         return status_;
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.payment_id_ + " Guest Id: " + this.guest_id_ + " Room Num: " + this.room_num_ + " Total: $ " + this.bill_total_;
     }
 }

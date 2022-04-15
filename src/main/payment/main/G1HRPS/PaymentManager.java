@@ -1,7 +1,6 @@
 package main.G1HRPS;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -146,7 +145,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
             float room_service_charges = Float.parseFloat(star.nextToken().trim());
             float bill_total = Float.parseFloat(star.nextToken().trim());
             PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
-            Payment obj = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
+            Payment obj = new Payment(id, guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
             dataList.add(obj);
         }
         this.payment_list_ = dataList;
