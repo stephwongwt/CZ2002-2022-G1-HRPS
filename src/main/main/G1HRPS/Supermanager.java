@@ -9,14 +9,14 @@ public interface Supermanager<T> {
      * 
      * @param t object to be added
      */
-    void AddToList(T t);
+    boolean AddToList(T t);
 
     /**
      * Remove given object from list.
      * 
      * @param t object to be removed
      */
-    void RemoveFromList(T t);
+    boolean RemoveFromList(T t);
 
     /**
      * Search list using given search text.
