@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class GuestManager extends DatabaseHandler implements Supermanager<Guest> {
     private List<Guest> guest_list_;
-    private final String db_filename = "guest_db.txt";
+    private final String DB_FILENAME = "guest_db.txt";
 
     /**
      * Creates a Guest Manager.
@@ -59,12 +59,16 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param guest Guest object to be added
      * @return true if success / false if failed
      */
+    @Override
     public boolean AddToList(Guest guest) {
         boolean success = false;
-        try {
-            success = guest_list_.add(guest);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Guest found = SearchList(guest.GetIdentity());
+        if (found == null) {
+            try {
+                success = guest_list_.add(guest);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -75,20 +79,18 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param guest Guest object to be removed
      * @return true if success / false if failed
      */
-    public void RemoveFromList(Guest guest) {
-        boolean success;
-        try {
-            success = guest_list_.remove(guest);
-            if (success) {
-                System.out.println("Guest removed from list");
-            } else {
-                System.out.println("Guest of Name: " + guest.GetName() +
-                        " and ID: " + guest.GetIdentity() + " not removed from list");
+    @Override
+    public boolean RemoveFromList(Guest guest) {
+        boolean success = false;
+        Guest found = SearchList(guest.GetIdentity());
+        if (found != null) {
+            try {
+                success = this.guest_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
             }
-        } catch (NullPointerException e) {
-            System.out.println("Guest List not initialized");
-            e.printStackTrace();
         }
+        return success;
     }
 
     /**
@@ -150,7 +152,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * Each String object is parsed to create each of the guests.
      */
     public void InitializeDB() {
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Guest> dataList = new ArrayList<>();
         for (String st : dbArray) {
             StringTokenizer star = new StringTokenizer(st, SEPARATOR);
@@ -204,7 +206,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             guestData.add(st.toString());
         }
         try {
-            write(db_filename, guestData);
+            write(DB_FILENAME, guestData);
         } catch (IOException e) {
             e.printStackTrace();
         }

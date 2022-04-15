@@ -164,7 +164,7 @@ public class Payment {
      * 
      * @param tax A float of tax rate.
      */
-    public void SetTax(float tax) {
+    public void SetTax(int tax) {
         tax_ = tax;
     }
 
@@ -173,7 +173,7 @@ public class Payment {
      * 
      * @return A float with tax rate of this payment.
      */
-    public float GetTax() {
+    public int GetTax() {
         return tax_;
     }
 

@@ -1,10 +1,10 @@
 package main.G1HRPS;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
@@ -13,7 +13,7 @@ import java.util.Vector;
  * Manager that handles running the app
  */
 public class AppManager {
-    public static final DateTimeFormatter datetime_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public Scanner sc_;
     private ReservationManager reservation_manager_;
     private GuestManager guest_manager_;
@@ -21,7 +21,8 @@ public class AppManager {
     private RoomServiceManager room_service_manager_;
     private RoomManager room_manager_;
     private MenuItemManager menu_item_manager_;
-    private final List<AppMenuItem> app_menu_list;
+    private final List<AppMenuItem> APP_MENU_LIST;
+    private final int DEFAULT_CHECK_IN_HOUR = 15;
 
     public AppManager() {
         System.out.println("Application Start");
@@ -32,7 +33,7 @@ public class AppManager {
         room_service_manager_ = new RoomServiceManager();
         room_manager_ = new RoomManager();
         menu_item_manager_ = new MenuItemManager();
-        app_menu_list = java.util.Arrays.asList(AppMenuItem.values());
+        APP_MENU_LIST = java.util.Arrays.asList(AppMenuItem.values());
     }
 
     /**
@@ -65,7 +66,8 @@ public class AppManager {
                     break;
                 case AddGuest:
                     System.out.println("|---|Add Guest|---|");
-                    CreateNewGuest();
+                    Guest new_guest = CreateNewGuest();
+                    PrintGuestSubMenu(new_guest);
                     break;
                 case AddRoom:
                     System.out.println("|---|Add Room|---|");
@@ -74,146 +76,7 @@ public class AppManager {
                 case SearchGuest:
                     System.out.println("|---|Search Guest|---|");
                     Guest search_guest = SearchManagerList(guest_manager_);
-                    search_guest.toString();
-                    final String guest_id = search_guest.GetIdentity();
-                    final int guest_room_number = search_guest.GetRoomNum();
-
-                    System.out.println("What would you like to do with this guest?\n" +
-                                    "[0] Go back\n" +
-                                    "[1] Check In\n" +
-                                    "[2] Check Out\n" +
-                                    "[3] Order Room Service\n" +
-                                    "[4] Edit Details");
-                    int sub_guest_option = GetIntFromInput(0, 4);
-
-                    switch (sub_guest_option) {
-                        case 0:
-                            System.out.println("Back to previous menu...");
-                            break;
-                        case 1:
-                            System.out.println("|------|Guest Check In|------|");
-                            Reservation check_in_reservation = reservation_manager_.SearchList(search_guest);
-                            int room_to_check_in = 0;
-                            if (check_in_reservation != null) {
-                                if (reservation_manager_.CheckIn(check_in_reservation)) {
-                                    room_to_check_in = check_in_reservation.GetRoomNum();
-                                    System.out.println("Guest reservation found!");
-                                }
-                            } else {
-                                room_to_check_in = PickRoom();
-                            }
-                            System.out.println("Room Number: " + room_to_check_in);
-                            guest_manager_.CheckIntoRoom(search_guest, room_to_check_in);
-                            room_manager_.CheckInGuest(search_guest, room_to_check_in);
-                            System.out.println("Guest checked in.");
-                            break;
-                        case 2:
-                            System.out.println("|------|Guest Check Out|------|");
-                            System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
-                            int discounts = GetIntFromInput();
-                            System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
-                            int tax = GetIntFromInput();
-
-                            Room guest_room = room_manager_.SearchList(search_guest);
-                            List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
-                            Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, LocalDateTime.parse(search_guest.GetCheckInDate(), datetime_formatter), guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
-                            System.out.println(bill.a);
-
-                            System.out.println("Making payment for this bill? (False[0]/True[1])");
-                            boolean make_payment = GetBooleanFromInput();
-                            if (make_payment) {
-                                guest_manager_.CheckOutOfRoom(search_guest, bill.b.GetPaymentID());
-                                room_manager_.CheckOutGuests(bill.b.GetRoomNum());
-                                Reservation check_out_reservation = reservation_manager_.SearchList(search_guest);
-                                reservation_manager_.CheckOut(check_out_reservation);
-                            }
-                            break;
-                        case 3:
-                            System.out.println("|------|Guest Order Room Service|------|");
-                            List<MenuItem> ordered_item_list = PrintRoomServiceMenu();
-                            System.out.println("Any remarks to add to order?");
-                            String remarks = sc_.nextLine().toUpperCase();
-                            RoomServiceOrder room_service_order = room_service_manager_.CreateNewRoomServiceOrder(guest_id, guest_room_number, ordered_item_list, remarks);
-                            if (room_service_order != null) {
-                                System.out.println("Room Service Order successfully created!");
-                            }
-                            break;
-                        case 4:
-                            System.out.println("|------|Guest Edit Details|------|");
-                            boolean continue_editing_guest = true;
-                            System.out.println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.");
-                            System.out.println("[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
-                            while (continue_editing_guest) {
-                                int edit_opt = GetIntFromInput(0, 11);
-                                switch (edit_opt) {
-                                    case 0:
-                                        System.out.println("Back to previous menu...");
-                                        continue_editing_guest = false;
-                                        break;
-                                    case 1:
-                                        System.out.println("Enter new identity:");
-                                        String edit_identity = sc_.nextLine();
-                                        search_guest.SetIdentity(edit_identity);
-                                        break;
-                                    case 2:
-                                        System.out.println("Enter new payment id:");
-                                        String edit_payment_id = sc_.nextLine();
-                                        search_guest.SetIdentity(edit_payment_id);
-                                        break;
-                                    case 3:
-                                        System.out.println("Enter new room number:");
-                                        int edit_room_number = GetNonZeroIntFromInput();
-                                        search_guest.SetRoomNum(edit_room_number);
-                                        break;
-                                    case 4:
-                                        System.out.println("Enter new name:");
-                                        String edit_name = sc_.nextLine();
-                                        search_guest.SetName(edit_name);
-                                        break;
-                                    case 5:
-                                        System.out.println("Enter new credit card number:");
-                                        String edit_cc_number = sc_.nextLine();
-                                        search_guest.SetCreditCardNumber(edit_cc_number);
-                                        break;
-                                    case 6:
-                                        System.out.println("Enter new billing address:");
-                                        String edit_billing = sc_.nextLine();
-                                        search_guest.SetBillingAddress(edit_billing);
-                                        break;
-                                    case 7:
-                                        System.out.println("Enter new contact number:");
-                                        String edit_contact = sc_.nextLine();
-                                        search_guest.SetContact(edit_contact);
-                                        break;
-                                    case 8:
-                                        System.out.println("Enter new country:");
-                                        String edit_country = sc_.nextLine();
-                                        search_guest.SetCountry(edit_country);
-                                        break;
-                                        case 9:
-                                        System.out.println("Enter new gender (e.g. Female[0]/Male[1]/Other[2]):");
-                                        Gender edit_gender = GetEnumFromInput(Gender.values());
-                                        search_guest.SetGender(edit_gender);
-                                        break;
-                                        case 10:
-                                        System.out.println("Enter new Nationality:");
-                                        String edit_nationality = sc_.nextLine();
-                                        search_guest.SetNationality(edit_nationality);
-                                        break;
-                                        case 11:
-                                        System.out.println("Enter new check in date (e.g. 2022-04-14 16:51:31):");
-                                        String edit_check_in_date = sc_.nextLine();
-                                        search_guest.SetCheckInDate(edit_check_in_date);
-                                        break;
-                                    default:
-                                        System.out.println("Unavailable, please try again:");
-                                        break;
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
+                    PrintGuestSubMenu(search_guest);
                     break;
                 case SearchRoom:
                     System.out.println("|---|Search Room|---|");
@@ -357,8 +220,10 @@ public class AppManager {
                             "[0] Go back\n" +
                             "[1] All Rooms\n" +
                             "[2] All Guests\n" +
-                            "[3] All Reservations");
-                    int option = sc_.nextInt();
+                            "[3] All Reservations\n" +
+                            "[4] Room Stats by Occupancy Rate\n" +
+                            "[5] Room Stats by Status");
+                            int option = sc_.nextInt();
                     switch (option) {
                         case 0:
                             System.out.println("Back to previous menu...");
@@ -371,6 +236,27 @@ public class AppManager {
                             break;
                         case 3:
                             DisplayList(reservation_manager_);
+                            break;
+                        case 4:
+                            System.out.println("|------|Room Stats by Occupancy Rate|------|");
+                            EnumMap<RoomType, Pair<Integer, Vector<Integer>>> room_stats_type = room_manager_.GetRoomStatisticsByTypeOccupancyRate();
+                            for (RoomType type : RoomType.values()) {
+                                Pair<Integer, Vector<Integer>> stat = room_stats_type.get(type);
+                                int key_type_total_rooms = stat.a;
+                                Vector<Integer> vacant_rooms = stat.b;
+                                System.out.println("." + type.toString() + " Rooms: " + vacant_rooms.size() + " out of " + key_type_total_rooms + " vacant");
+                                System.out.println(".Vacant Rooms: " + vacant_rooms.toString());
+                            }
+                            break;
+                        case 5:
+                            System.out.println("|------|Room Stats by Status|------|");
+                            EnumMap<RoomStatus, Vector<Integer>> room_stats_status = room_manager_.GetRoomStatisticsByStatus();
+                            for (RoomStatus status : RoomStatus.values()) {
+                                Vector<Integer> stats = room_stats_status.get(status);
+                                for (Integer each_status_stat : stats) {
+                                    System.out.println(status.toString() + ": " + each_status_stat.toString());
+                                }
+                            }
                             break;
                         default:
                             System.out.println("Unavailable, please try again:");
@@ -391,14 +277,14 @@ public class AppManager {
      */
     private AppMenuItem PrintMenu() {
         System.out.println("\r\n|--------|Choose an option|--------|");
-        for (AppMenuItem app_menu_item : app_menu_list) {
+        for (AppMenuItem app_menu_item : APP_MENU_LIST) {
             System.out.printf("[%d] %s\r\n", app_menu_item.GetValue(), app_menu_item.toString());
         }
         int option = 0;
         while (true) {
             try {
                 option = sc_.nextInt();
-                if ((option >= 0) && (option < app_menu_list.size())) {
+                if ((option >= 0) && (option < APP_MENU_LIST.size())) {
                     break;
                 } else {
                     System.out.println("Unavailable, please try again:");
@@ -409,6 +295,162 @@ public class AppManager {
             }
         }
         return AppMenuItem.values()[option];
+    }
+
+    private void PrintGuestSubMenu(Guest sub_menu_guest) {
+        if (sub_menu_guest == null) {
+            System.out.println("Guest is null, unavailable");
+            return;
+        }
+        sub_menu_guest.toString();
+        final String guest_id = sub_menu_guest.GetIdentity();
+        final int guest_room_number = sub_menu_guest.GetRoomNum();
+        System.out.println("What would you like to do with this guest?\n" +
+                "[0] Go back\n" +
+                "[1] Create Reservation\n" +
+                "[2] Check In\n" +
+                "[3] Check Out\n" +
+                "[4] Order Room Service\n" +
+                "[5] Edit Details");
+        int sub_guest_option = GetIntFromInput(0, 4);
+
+        switch (sub_guest_option) {
+            case 0:
+                System.out.println("Back to previous menu...");
+                break;
+            case 1:
+                System.out.println("|------|Guest Create Reservation|------|");
+                break;
+            case 2:
+                System.out.println("|------|Guest Check In|------|");
+                Reservation check_in_reservation = reservation_manager_.SearchList(sub_menu_guest);
+                int room_to_check_in = 0;
+                if (check_in_reservation != null) {
+                    if (reservation_manager_.CheckIn(check_in_reservation)) {
+                        room_to_check_in = check_in_reservation.GetRoomNum();
+                        System.out.println("Guest reservation found!");
+                    }
+                } else {
+                    room_to_check_in = PickRoom();
+                }
+                System.out.println("Room Number: " + room_to_check_in);
+                guest_manager_.CheckIntoRoom(sub_menu_guest, room_to_check_in);
+                room_manager_.CheckInGuest(sub_menu_guest, room_to_check_in);
+                System.out.println("Guest checked in.");
+                break;
+            case 3:
+                System.out.println("|------|Guest Check Out|------|");
+                System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
+                int discounts = GetIntFromInput();
+                System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
+                int tax = GetIntFromInput();
+
+                Room guest_room = room_manager_.SearchList(sub_menu_guest);
+                List<RoomServiceOrder> room_service_orders = room_service_manager_
+                        .GetOrderedItemsByRoom(guest_room_number);
+                Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number,
+                        LocalDateTime.parse(sub_menu_guest.GetCheckInDate(), DATETIME_FORMATTER),
+                        guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
+                System.out.println(bill.a);
+
+                System.out.println("Making payment for this bill? (False[0]/True[1])");
+                boolean make_payment = GetBooleanFromInput();
+                if (make_payment) {
+                    guest_manager_.CheckOutOfRoom(sub_menu_guest, bill.b.GetPaymentID());
+                    room_manager_.CheckOutGuests(bill.b.GetRoomNum());
+                    Reservation check_out_reservation = reservation_manager_.SearchList(sub_menu_guest);
+                    reservation_manager_.CheckOut(check_out_reservation);
+                }
+                break;
+            case 4:
+                System.out.println("|------|Guest Order Room Service|------|");
+                List<MenuItem> ordered_item_list = PrintRoomServiceMenu();
+                System.out.println("Any remarks to add to order?");
+                String remarks = GetUppercaseStringFromInput();
+                RoomServiceOrder room_service_order = room_service_manager_.CreateNewRoomServiceOrder(guest_id,
+                        guest_room_number, ordered_item_list, remarks);
+                if (room_service_order != null) {
+                    System.out.println("Room Service Order successfully created!");
+                }
+                break;
+            case 5:
+                System.out.println("|------|Guest Edit Details|------|");
+                boolean continue_editing_guest = true;
+                System.out
+                        .println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.");
+                System.out.println(
+                        "[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
+                while (continue_editing_guest) {
+                    int edit_opt = GetIntFromInput(0, 11);
+                    switch (edit_opt) {
+                        case 0:
+                            System.out.println("Back to previous menu...");
+                            continue_editing_guest = false;
+                            break;
+                        case 1:
+                            System.out.println("Enter new identity:");
+                            String edit_identity = sc_.nextLine();
+                            sub_menu_guest.SetIdentity(edit_identity);
+                            break;
+                        case 2:
+                            System.out.println("Enter new payment id:");
+                            String edit_payment_id = sc_.nextLine();
+                            sub_menu_guest.SetIdentity(edit_payment_id);
+                            break;
+                        case 3:
+                            System.out.println("Enter new room number:");
+                            int edit_room_number = GetNonZeroIntFromInput();
+                            sub_menu_guest.SetRoomNum(edit_room_number);
+                            break;
+                        case 4:
+                            System.out.println("Enter new name:");
+                            String edit_name = sc_.nextLine();
+                            sub_menu_guest.SetName(edit_name);
+                            break;
+                        case 5:
+                            System.out.println("Enter new credit card number:");
+                            String edit_cc_number = sc_.nextLine();
+                            sub_menu_guest.SetCreditCardNumber(edit_cc_number);
+                            break;
+                        case 6:
+                            System.out.println("Enter new billing address:");
+                            String edit_billing = sc_.nextLine();
+                            sub_menu_guest.SetBillingAddress(edit_billing);
+                            break;
+                        case 7:
+                            System.out.println("Enter new contact number:");
+                            String edit_contact = sc_.nextLine();
+                            sub_menu_guest.SetContact(edit_contact);
+                            break;
+                        case 8:
+                            System.out.println("Enter new country:");
+                            String edit_country = sc_.nextLine();
+                            sub_menu_guest.SetCountry(edit_country);
+                            break;
+                        case 9:
+                            System.out.println("Enter new gender (e.g. Female[0]/Male[1]/Other[2]):");
+                            Gender edit_gender = GetEnumFromInput(Gender.values());
+                            sub_menu_guest.SetGender(edit_gender);
+                            break;
+                        case 10:
+                            System.out.println("Enter new Nationality:");
+                            String edit_nationality = sc_.nextLine();
+                            sub_menu_guest.SetNationality(edit_nationality);
+                            break;
+                        case 11:
+                            System.out.println("Enter new check in date (e.g. 2022-04-14 16:51:31):");
+                            String edit_check_in_date = sc_.nextLine();
+                            sub_menu_guest.SetCheckInDate(edit_check_in_date);
+                            break;
+                        default:
+                            System.out.println("Unavailable, please try again:");
+                            break;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private List<MenuItem> PrintRoomServiceMenu() {
@@ -450,7 +492,7 @@ public class AppManager {
     /**
      * Handles the input and output for creating new guest
      */
-    private void CreateNewGuest() {
+    private Guest CreateNewGuest() {
         String identity;
         String name;
         String credit_card_number;
@@ -461,12 +503,12 @@ public class AppManager {
         String nationality;
         sc_.nextLine();
         System.out.println("Enter Identification/Driving License Number (e.g. S1234567A):");
-        identity = sc_.nextLine().toUpperCase();
+        identity = GetUppercaseStringFromInput();
         System.out.println("Enter Name (e.g. John Smith):");
-        name = sc_.nextLine().toUpperCase();
+        name = GetUppercaseStringFromInput();
         System.out.println("Enter Credit Card Number (e.g. 4605100120021234):");
         while (true) {
-            credit_card_number = sc_.nextLine().toUpperCase();
+            credit_card_number = GetUppercaseStringFromInput();
             if (guest_manager_.VerifyCreditCardNumber(credit_card_number)) {
                 break;
             } else {
@@ -476,21 +518,22 @@ public class AppManager {
         }
 
         System.out.println("Enter Address (e.g. 50 Nanyang Ave, S639798):");
-        address = sc_.nextLine().toUpperCase();
+        address = GetUppercaseStringFromInput();
         System.out.println("Enter Contact (e.g. +6590001000):");
-        contact = sc_.nextLine().toUpperCase();
+        contact = GetUppercaseStringFromInput();
         System.out.println("Enter Country (e.g. Singapore):");
-        country = sc_.nextLine().toUpperCase();
+        country = GetUppercaseStringFromInput();
         System.out.println("Enter Gender (e.g. Female[0]/Male[1]/Other[2]):");
         gender = GetEnumFromInput(Gender.values());
         System.out.println("Enter Nationality (e.g. Singaporean):");
-        nationality = sc_.nextLine().toUpperCase();
+        nationality = GetUppercaseStringFromInput();
         Guest new_guest = guest_manager_.CreateNewGuest(identity, name, credit_card_number, address, contact, country, gender, nationality);
         if (new_guest == null) {
             System.out.println("Guest ID already exists, did not create.");
         } else {
             System.out.printf("Guest %s successfully created!", name);
         }
+        return new_guest;
     }
 
     /**
@@ -530,23 +573,27 @@ public class AppManager {
         }
     }
 
+    /**
+     * Handles input for picking an vacant room to check in 
+     * @return room number for checking in
+     */
     private int PickRoom() {
         int picked_room_number;
         System.out.println("Pick a room number:");
-        EnumMap<RoomType, HashMap<String, Vector<Integer>>> room_stats = room_manager_.GetRoomStatisticsByTypeOccupancyRate();
-        Vector<Integer> all_available_rooms = new Vector<>();
+        EnumMap<RoomType, Pair<Integer, Vector<Integer>>> room_stats = room_manager_.GetRoomStatisticsByTypeOccupancyRate();
+        Vector<Integer> all_vacant_rooms = new Vector<>();
         for (RoomType type : RoomType.values()) {
-            HashMap<String, Vector<Integer>> stat = room_stats.get(type);
-            String key_type_total_rooms = (String) stat.keySet().toArray()[0];
-            Vector<Integer> available_rooms = stat.get(key_type_total_rooms);
-            all_available_rooms.addAll(available_rooms);
-            System.out.println("|--- " + type.toString() + " Rooms: " + available_rooms.size() + " out of " + key_type_total_rooms + " vacant");
-            System.out.println("|--- Available Rooms: " + available_rooms);
+            Pair<Integer, Vector<Integer>> stat = room_stats.get(type);
+            int key_type_total_rooms = stat.a;
+            Vector<Integer> vacant_rooms = stat.b;
+            all_vacant_rooms.addAll(vacant_rooms);
+            System.out.println("." + type.toString() + " Rooms: " + vacant_rooms.size() + " out of " + key_type_total_rooms + " vacant");
+            System.out.println(".Vacant Rooms: " + vacant_rooms.toString());
         }
         while (true) {
             try {
                 picked_room_number = sc_.nextInt();
-                boolean valid_room = all_available_rooms.contains(picked_room_number);
+                boolean valid_room = all_vacant_rooms.contains(picked_room_number);
                 if (valid_room) {
                     sc_.nextLine();
                     break;
@@ -557,6 +604,70 @@ public class AppManager {
             }
         }
         return picked_room_number;
+    }
+
+    private void CreateNewReservation(String guest_id) {
+        LocalDateTime check_in_date;
+        LocalDateTime check_out_date;
+        int adult_num;
+        int children_num;
+        ReservationStatus status;
+        int room_num;
+        sc_.nextLine();
+        System.out.println("Enter Check In Date (e.g. 2022-04-15):");
+        check_in_date = GetDatetimeStringFromDateInput("yyyy-MM-dd");
+        System.out.println("Enter Check Out Date (e.g. 2022-04-15):");
+        check_out_date = GetDatetimeStringFromDateInput("yyyy-MM-dd");
+        System.out.println("Enter Number of Adults:");
+        adult_num = GetNonZeroIntFromInput();
+        System.out.println("Enter Number of Children:");
+        children_num = GetIntFromInput();
+        ///TODO: Check limit for number of occupants in the room based on RoomType
+        System.out.println("Enter Reservation Status (Confirmed[0]/Waitlist[1]/CheckedIn[2]/CheckedOut[3]/Expired[3]):");
+        status = GetEnumFromInput(ReservationStatus.values());
+        System.out.println("Enter Room Num:");
+        room_num = PickRoom();
+
+        Reservation new_rsvp = reservation_manager_.CreateNewReservation(guest_id, check_in_date.toString(), check_out_date.toString(), adult_num, children_num, status, room_num);
+        if (new_rsvp == null) {
+            System.out.println("Reservation code already exists, did not create.");
+        } else {
+            System.out.printf("Reservation code %d successfully created!", new_rsvp.GetReservationCode().toString());
+        }
+    }
+
+    private LocalDateTime GetDatetimeStringFromDateInput(String date_format) {
+        DateTimeFormatter localdate_format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate input_date;
+        LocalDateTime return_localdatetime;
+        String value = "";
+        while (true) {
+            try {
+                value = sc_.nextLine();
+                input_date = LocalDate.parse(value, localdate_format);
+                return_localdatetime = input_date.atTime(DEFAULT_CHECK_IN_HOUR, 0, 0);
+                break;
+            } catch (Exception e) {
+                sc_.nextLine();
+                System.out.println("Unavailable, please try again:");
+            }
+        }
+
+        return return_localdatetime;
+    }
+
+    private String GetUppercaseStringFromInput() {
+        String value = "";
+        while (true) {
+            try {
+                value = sc_.nextLine().toUpperCase();
+                break;
+            } catch (Exception e) {
+                sc_.nextLine();
+                System.out.println("Unavailable, please try again:");
+            }
+        }
+        return value;
     }
 
     private int GetIntFromInput() {

@@ -74,7 +74,7 @@ public class Guest {
         this.gender_ = gender;
         this.nationality_ = nationality;
         LocalDateTime dateTime = LocalDateTime.now();
-        this.check_in_date_ = AppManager.datetime_formatter.format(dateTime);
+        this.check_in_date_ = AppManager.DATETIME_FORMATTER.format(dateTime);
     }
 
     /**

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class PaymentManager extends DatabaseHandler implements Supermanager<Payment> {
     private List<Payment> payment_list_;
-    private final String db_filename = "payment_db.txt";
+    private final String DB_FILENAME = "payment_db.txt";
 
     /**
      * Create a Payment Manager.
@@ -32,8 +32,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      * @param bill_total           After deducting discounts
      * @param status
      */
-    public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, float bill_total, PaymentStatus status) {
-        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
+    public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, PaymentStatus status) {
+        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, status);
         AddToList(new_payment);
         return new_payment;
     }
@@ -109,7 +109,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
         String room_services_ordered = "|-|Room services ordered|-|";
         for (int i = 0; i < room_service_orders.size(); i++) {
             RoomServiceOrder each_order = room_service_orders.get(i);
-            price_of_order = each_order.CalTotalPrice();
+            price_of_order = each_order.CalculateOrderTotalPrice();
             room_services_ordered.concat(".Room Service Order [" + i+1 + "]");
             room_services_ordered.concat(each_order.MenuItemstoString());
             total_room_service_charges += price_of_order;
@@ -131,7 +131,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      */
     public void InitializeDB() {
         // read String from text file
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Payment> dataList = new ArrayList<Payment>();
         for(String st : dbArray){
             // get individual 'fields' of the string separated by SEPARATOR
@@ -152,7 +152,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     }
 
     /**
-     * Data list is turned into formatted String and written the file named db_filename.
+     * Data list is turned into formatted String and written the file named DB_FILENAME.
      */
     public void SaveDB() {
         List<String> paymentData = new ArrayList<String>();
@@ -179,7 +179,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
             paymentData.add(st.toString());
         }
         try {
-            write(db_filename, paymentData);
+            write(DB_FILENAME, paymentData);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -194,10 +194,13 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     @Override
     public boolean AddToList(Payment payment) {
         boolean success = false;
-        try {
-            success = payment_list_.add(payment);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Payment found = SearchList(payment.GetPaymentID().toString());
+        if (found == null) {
+            try {
+                success = payment_list_.add(payment);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -211,10 +214,13 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     @Override
     public boolean RemoveFromList(Payment payment) {
         boolean success = false;
-        try {
-            success = payment_list_.remove(payment);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Payment found = SearchList(payment.GetPaymentID().toString());
+        if (found != null) {
+            try {
+                success = payment_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }

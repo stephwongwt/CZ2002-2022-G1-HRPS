@@ -4,32 +4,32 @@ import java.io.IOException;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class ReservationManager extends DatabaseHandler implements Supermanager<Reservation> {
     private List<Reservation> reservation_list_;
-    private final String db_filename = "reservation_db.txt";
+    private final String DB_FILENAME = "reservation_db.txt";
 
     public ReservationManager() {
         reservation_list_ = new ArrayList<Reservation>();
     }
 
-    public void CreateNewReservation(String guest_id, Timestamp check_in_date, Timestamp check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
+    public Reservation CreateNewReservation(String guest_id, String check_in_date, String check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
         UUID reservation_code = UniqueIdGenerator.Generate();
         Reservation rsvp = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
         reservation_list_.add(rsvp);
+        return rsvp;
     }
 
     public void InitializeDB() {
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Reservation> dataList = new ArrayList<Reservation>();
         for(String st : dbArray){
             StringTokenizer star = new StringTokenizer(st, SEPARATOR);
             UUID reservation_code = UUID.fromString(star.nextToken().trim());
             String guest_id = star.nextToken().trim();
-            Timestamp check_in_date = Timestamp.valueOf(star.nextToken().trim());
-            Timestamp check_out_date = Timestamp.valueOf(star.nextToken().trim());
+            String check_in_date = star.nextToken().trim();
+            String check_out_date = star.nextToken().trim();
             int adult_num = Integer.parseInt(star.nextToken().trim());
             int children_num = Integer.parseInt(star.nextToken().trim());
             ReservationStatus status = ReservationStatus.valueOf(star.nextToken().trim());
@@ -48,9 +48,9 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
             st.append(SEPARATOR);
             st.append(rsvp.GetGuestId());
             st.append(SEPARATOR);
-            st.append(rsvp.GetCheckInDate().toString());
+            st.append(rsvp.GetCheckInDate());
             st.append(SEPARATOR);
-            st.append(rsvp.GetCheckOutDate().toString());
+            st.append(rsvp.GetCheckOutDate());
             st.append(SEPARATOR);
             st.append(rsvp.GetAdultNum());
             st.append(SEPARATOR);
@@ -62,7 +62,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
             reservationData.add(st.toString());
         }
         try {
-            write(db_filename, reservationData);
+            write(DB_FILENAME, reservationData);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,10 +127,13 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
     @Override
     public boolean RemoveFromList(Reservation reservation) {
         boolean success = false;
-        try {
-            success = this.reservation_list_.remove(reservation);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Reservation found = SearchList(reservation.GetReservationCode().toString());
+        if (found != null) {
+            try {
+                success = this.reservation_list_.remove(found);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
