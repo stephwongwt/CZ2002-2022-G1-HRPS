@@ -21,32 +21,33 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
     /**
      * Adds a new menu item object into menu item list.
      * 
-     * @param MenuItem MenuItem to be added
+     * @param MenuItem obj to be added
+     * @return true if success / false if failed
      */
-    public void AddToList(MenuItem menu_item) {
-        for (int i = 0; i < this.menu_item_list_.size(); i++) {
-            if (this.menu_item_list_.get(i).GetName() == menu_item.GetName()) {
-                System.out.println("Item with the same name already exists. This will not to be added");
-                return;
-            }
+    public boolean AddToList(MenuItem menu_item) {
+        boolean success = false;
+        try {
+            success = menu_item_list_.add(menu_item);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
-        this.menu_item_list_.add(menu_item);
-        System.out.println("Item " + menu_item.GetName() + " added");
+        return success;
     }
 
     /**
      * Removes a menu item from menu item list.
+     * 
+     * @param MenuItem obj to be removed
+     * @return true if success / false if failed
      */
-    public void RemoveFromList(MenuItem menu_item) {
-        // TODO - implement MenuItemManager.RemoveFromList
-        for (int i = 0; i < this.menu_item_list_.size(); i++) {
-            if (this.menu_item_list_.get(i).GetName() == menu_item.GetName()) {
-                this.menu_item_list_.remove(i);
-                System.out.println("Item " + menu_item.GetName() + " removed");
-                return;
-            }
+    public boolean RemoveFromList(MenuItem menu_item) {
+        boolean success = false;
+        try {
+            success = menu_item_list_.remove(menu_item);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
-        System.out.println("Item to be removed not found in Menu!");
+        return success;
     }
 
     /**
@@ -98,10 +99,9 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
     }
 
     public void InitializeDB() {
-        ArrayList dbArray = (ArrayList) read(db_filename);
-        ArrayList dataList = new ArrayList();
-        for (int i = 0; i < dbArray.size(); i++) {
-            String st = (String) dbArray.get(i);
+        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<MenuItem> dataList = new ArrayList<MenuItem>();
+        for(String st : dbArray){
             // get individual 'fields' of the string separated by SEPARATOR
             StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
             String name = star.nextToken().trim(); // first token
