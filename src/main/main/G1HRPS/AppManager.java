@@ -284,8 +284,8 @@ public class AppManager {
                             "[3] All Reservations\n" +
                             "[4] Room Stats by Occupancy Rate\n" +
                             "[5] Room Stats by Status\n" +
-                            "[6] Room Services Ordered by Room\n" +
-                            "[7] Room Services Ordered by Guest");
+                            "[6] Room Services Ordered by Guest\n" +
+                            "[7] Room Services Ordered by Room");
                             int option = sc_.nextInt();
                     switch (option) {
                         case 0:
@@ -329,11 +329,26 @@ public class AppManager {
                         case 6:
                             System.out.println("|------|Room Services Ordered by Guest|------|");
                             System.out.println("Enter Guest Id: ");
-                            room_service_manager_.GetOrderedItemsByGuest(guest_id)
+                            sc_.nextLine();
+                            String guest_id = GetUppercaseStringFromInput();
+                            List<RoomServiceOrder> guest_ordered_list = room_service_manager_.GetOrderedItemsByGuest(guest_id);
+                            if (guest_ordered_list.isEmpty()) {
+                                System.out.println("Guest did not order room service.");
+                            } else {
+                                System.out.println(guest_ordered_list.toString());
+                            }
                             break;
                             case 7:
                             System.out.println("|------|Room Services Ordered by Room|------|");
-                            room_service_manager_.GetOrderedItemsByRoom(room_number)
+                            System.out.println("Enter Room Number: ");
+                            sc_.nextLine();
+                            int room_number = GetNonZeroIntFromInput();
+                            List<RoomServiceOrder> room_ordered_list = room_service_manager_.GetOrderedItemsByRoom(room_number);
+                            if (room_ordered_list.isEmpty()) {
+                                System.out.println("Room did not order room service.");
+                            } else {
+                                System.out.println(room_ordered_list.toString());
+                            }
                             break;
                         default:
                             System.out.println("Unavailable, please try again:");
@@ -424,11 +439,8 @@ public class AppManager {
                 int tax = GetIntFromInput();
 
                 Room guest_room = room_manager_.SearchList(sub_menu_guest);
-                List<RoomServiceOrder> room_service_orders = room_service_manager_
-                        .GetOrderedItemsByRoom(guest_room_number);
-                Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number,
-                        LocalDateTime.parse(sub_menu_guest.GetCheckInDate(), DATETIME_FORMATTER),
-                        guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
+                List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
+                Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, LocalDateTime.parse(sub_menu_guest.GetCheckInDate(), DATETIME_FORMATTER), guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
                 System.out.println(bill.a);
 
                 System.out.println("Making payment for this bill? (False[0]/True[1])");

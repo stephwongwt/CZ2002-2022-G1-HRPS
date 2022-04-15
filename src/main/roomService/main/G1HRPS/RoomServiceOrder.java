@@ -232,6 +232,21 @@ public class RoomServiceOrder {
      */
     @Override
     public String toString() {
-        return ("Room Service Order Code: " + this.room_service_order_code_ + " created at " + this.time_created_ + " Remarks: " + this.remarks_);
+        String output = String.format(
+                "|Room Service Order Code: %s|\n" +
+                "|Guest Id: %s|Room Number: %d|\n" +
+                "|Time Created: %s|Time Completed: %s|\n" +
+                "|Remarks: %s|\n" +
+                "|Status: %s|Quantity: %d|\n" +
+                "|Ordered Items:\n",
+                this.room_service_order_code_,
+                this.guest_id_, this.room_number_,
+                this.time_created_, this.time_completed_,
+                this.remarks_,
+                this.status_, this.order_quantity_);
+        for (MenuItem menu_item : this.ordered_item_list_) {
+            output += "|  " + menu_item.toString() + "\n";
+        }
+        return output;
     }
 }
