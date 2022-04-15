@@ -184,7 +184,7 @@ public class Room {
      * 
      * @param bedsize
      */
-    public void SetRoomType(BedSize bedsize) {
+    public void SetBedSize(BedSize bedsize) {
         this.bedsize_ = bedsize;
     }
 
@@ -238,15 +238,13 @@ public class Room {
      */
     @Override
     public String toString(){
-        String output = "|----------Room Details----------|" +
-                        "\nRoom Number: " + room_number_ +
-                        "\nRoom Price: " + room_price_ +
-                        "\nBed Size: " + bedsize_ +
-                        "\nwifi Enabled: " + wifi_enabled_ +
-                        "\nwith View: " + w_view_ +
-                        "\nwith Smoking: " + w_smoking_ +
-                        "\nRoom Status: " + status_ +
-                        "\nGuests: " + guest_list_.toString();
+        String output = "Room Number: " + this.room_number_ + "Room Price: " + this.room_price_ +
+                        "\nBed Size: " + this.bedsize_ +
+                        "\nwifi Enabled: " + this.wifi_enabled_ +
+                        "\nwith View: " + this.w_view_ +
+                        "\nwith Smoking: " + this.w_smoking_ +
+                        "\nRoom Status: " + this.status_ +
+                        "\nGuests: " + this.guest_list_.toString();
         return output;
     }
 }
