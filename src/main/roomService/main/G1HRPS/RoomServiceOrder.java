@@ -185,7 +185,7 @@ public class RoomServiceOrder {
     public String MenuItemstoString() {
         String Textout = "";
         for (MenuItem menu_item : ordered_item_list_) {
-            Textout.concat(menu_item.toString() + "\n");
+            Textout += "   ." + menu_item.toString() + "\n";
         }
         return Textout;
     }

@@ -93,6 +93,46 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      * 
      * @param guest_id
      * @param room_num
+     * @param days_of_stay
+     * @param room_charge
+     * @param discounts
+     * @param tax
+     * @param room_service_orders
+     * @return Object array [0] New Payment object, [1] String of Bill to be printed.
+     */
+    public Pair<String, Payment> GenerateAndPrintBill(String guest_id, int room_num, int days_of_stay, float room_charge, int discounts, int tax, List<RoomServiceOrder> room_service_orders) {
+        String bill_string = "";
+        float total_room_service_charges, cost_of_stay, price_of_order;
+        total_room_service_charges = 0;
+
+        cost_of_stay = days_of_stay * room_charge;
+
+        bill_string += String.format("- Days of Stay: %d, Cost: $ %.2f\n", days_of_stay, cost_of_stay);
+        String room_services_ordered = "|-|Room services ordered|-|\n";
+        for (int i = 0; i < room_service_orders.size(); i++) {
+            RoomServiceOrder each_order = room_service_orders.get(i);
+            price_of_order = each_order.CalculateOrderTotalPrice();
+            room_services_ordered += "  Room Service Order [" + (i+1) + "]\n";
+            room_services_ordered += each_order.MenuItemstoString();
+            total_room_service_charges += price_of_order;
+        }
+        room_services_ordered += String.format("  Room Service Total : $ %.2f\n", total_room_service_charges);
+        bill_string += room_services_ordered;
+        
+        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, cost_of_stay, total_room_service_charges, PaymentStatus.Pending);
+        bill_string += String.format("- Discount Rate: %d %%\n", discounts);
+        bill_string += String.format("- Tax Rate: %d %%\n", tax);
+        bill_string += String.format("- Bill Total: $ %.2f\n", new_payment.GetTotalBill());
+        Pair<String, Payment> return_pair = Pair.makePair(bill_string, new_payment);
+        return return_pair;
+    }
+
+    /**
+     * Generates a new payment with the given arguments and
+     * inputs the bill into string format to be printed.
+     * 
+     * @param guest_id
+     * @param room_num
      * @param check_in_date
      * @param room_charge
      * @param discounts
@@ -108,23 +148,22 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
         long days_of_stay = ChronoUnit.DAYS.between(check_in_date, LocalDateTime.now());
         cost_of_stay = days_of_stay * room_charge;
 
-        bill_string.concat(String.format("- Days of Stay: %d, Cost: $ %.2f\n", days_of_stay, cost_of_stay));
-        String room_services_ordered = "|-|Room services ordered|-|";
+        bill_string += String.format("- Days of Stay: %d, Cost: $ %.2f\n", days_of_stay, cost_of_stay);
+        String room_services_ordered = "|-|Room services ordered|-|\n";
         for (int i = 0; i < room_service_orders.size(); i++) {
             RoomServiceOrder each_order = room_service_orders.get(i);
             price_of_order = each_order.CalculateOrderTotalPrice();
-            room_services_ordered.concat(".Room Service Order [" + i+1 + "]");
-            room_services_ordered.concat(each_order.MenuItemstoString());
+            room_services_ordered += "  Room Service Order [" + (i+1) + "]\n";
+            room_services_ordered += each_order.MenuItemstoString();
             total_room_service_charges += price_of_order;
         }
-        room_services_ordered.concat(String.format(" .Room Service Total : $ %.2f\n", total_room_service_charges));
-        bill_string.concat(room_services_ordered);
+        room_services_ordered += String.format("  Room Service Total : $ %.2f\n", total_room_service_charges);
+        bill_string += room_services_ordered;
         
         Payment new_payment = new Payment(guest_id, room_num, discounts, tax, cost_of_stay, total_room_service_charges, PaymentStatus.Pending);
-        bill_string.concat(String.format("- Discount Rate: %d %\n", discounts));
-        bill_string.concat(String.format("- Tax Rate: %d %\n", tax));
-        bill_string.concat(String.format("- Bill Total: $ %.2f\n", new_payment.GetTotalBill()));
-
+        bill_string += String.format("- Discount Rate: %d %%\n", discounts);
+        bill_string += String.format("- Tax Rate: %d %%\n", tax);
+        bill_string += String.format("- Bill Total: $ %.2f\n", new_payment.GetTotalBill());
         Pair<String, Payment> return_pair = Pair.makePair(bill_string, new_payment);
         return return_pair;
     }
@@ -238,9 +277,8 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      */
     @Override
     public Payment SearchList(String payment_id) {
-        UUID uuid = UUID.fromString(payment_id);
         for (Payment payment : payment_list_) {
-            if (uuid.equals(payment.GetPaymentID())) {
+            if (payment.GetPaymentID().toString().equals(payment_id)) {
                 return payment;
             }
         }

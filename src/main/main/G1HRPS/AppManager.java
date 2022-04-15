@@ -90,7 +90,7 @@ public class AppManager {
                     System.out.println("Enter price:");
                     float menu_item_price = GetNonZeroFloatFromInput();
                     System.out.println("Enter description:");
-                    String menu_item_description = GetUppercaseStringFromInput();
+                    String menu_item_description = GetStringFromInput();
                     MenuItem new_menu_item = menu_item_manager_.CreateNewMenuItem(menu_item_name, menu_item_price, menu_item_description);
                     if (new_menu_item != null) {
                         System.out.println("Item created!");
@@ -142,6 +142,10 @@ public class AppManager {
                             break;
                         case 1:
                             System.out.println("|------|Order Room Service|------|");
+                            if (search_room.GetStatus() == RoomStatus.Vacant) {
+                                System.out.println("Unavailable, room is vacant");
+                                break;
+                            }
                             List<MenuItem> ordered_item_list = PrintRoomServiceMenu();
                             System.out.println("Any remarks to add to order?");
                             sc_.nextLine();
@@ -153,6 +157,10 @@ public class AppManager {
                             break;
                         case 2:
                             System.out.println("|------|Complete Room Service Order|------|");
+                            if (search_room.GetStatus() == RoomStatus.Vacant) {
+                                System.out.println("Unavailable, room is vacant");
+                                break;
+                            }
                             List<RoomServiceOrder> order_list = room_service_manager_.GetOrderedItemsByRoom(search_room.GetRoomNumber());
                             if (!order_list.isEmpty()) {
                                 System.out.println("Room services ordered:");
@@ -242,6 +250,7 @@ public class AppManager {
                                         break;
                                 }
                             }
+                            System.out.println("Edited Room:\n" + search_room.toString());
                             break;
                         default:
                             System.out.println("Unavailable, please try again:");
@@ -334,10 +343,11 @@ public class AppManager {
                                         break;
                                 }
                             }
+                            System.out.println("Edited Menu Item:\n" + search_menu_item.toString());
                             break;
                         case 2:
                             System.out.println("|------|Delete Menu Item|------|");
-                            boolean del_menu_item_success = menu_item_manager_.RemoveFromList(search_menu_item)
+                            boolean del_menu_item_success = menu_item_manager_.RemoveFromList(search_menu_item);
                             if (del_menu_item_success) {
                                 System.out.println("Successfully deleted menu item!");
                             } else {
@@ -356,10 +366,11 @@ public class AppManager {
                             "[1] All Rooms\n" +
                             "[2] All Guests\n" +
                             "[3] All Reservations\n" +
-                            "[4] Room Stats by Occupancy Rate\n" +
-                            "[5] Room Stats by Status\n" +
-                            "[6] Room Services Ordered by Guest\n" +
-                            "[7] Room Services Ordered by Room");
+                            "[4] All Menu Items\n" +
+                            "[5] Room Stats by Occupancy Rate\n" +
+                            "[6] Room Stats by Status\n" +
+                            "[7] Room Services Ordered by Guest\n" +
+                            "[8] Room Services Ordered by Room");
                             int option = sc_.nextInt();
                     switch (option) {
                         case 0:
@@ -378,6 +389,10 @@ public class AppManager {
                             DisplayList(reservation_manager_);
                             break;
                         case 4:
+                            System.out.println("|------|All Menu Items|------|");
+                            DisplayList(menu_item_manager_);
+                            break;
+                        case 5:
                             System.out.println("|------|Room Stats by Occupancy Rate|------|");
                             EnumMap<RoomType, Pair<Integer, Vector<Integer>>> room_stats_type = room_manager_.GetRoomStatisticsByTypeOccupancyRate();
                             for (RoomType type : RoomType.values()) {
@@ -390,7 +405,7 @@ public class AppManager {
                                 }
                             }
                             break;
-                        case 5:
+                        case 6:
                             System.out.println("|------|Room Stats by Status|------|");
                             EnumMap<RoomStatus, Vector<Integer>> room_stats_status = room_manager_.GetRoomStatisticsByStatus();
                             for (RoomStatus status : RoomStatus.values()) {
@@ -400,7 +415,7 @@ public class AppManager {
                                 }
                             }
                             break;
-                        case 6:
+                        case 7:
                             System.out.println("|------|Room Services Ordered by Guest|------|");
                             System.out.println("Enter Guest Id: ");
                             sc_.nextLine();
@@ -412,7 +427,7 @@ public class AppManager {
                                 System.out.println(guest_ordered_list.toString());
                             }
                             break;
-                            case 7:
+                        case 8:
                             System.out.println("|------|Room Services Ordered by Room|------|");
                             System.out.println("Enter Room Number: ");
                             sc_.nextLine();
@@ -507,21 +522,29 @@ public class AppManager {
                 break;
             case 3:
                 System.out.println("|------|Guest Check Out|------|");
-                System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
-                int discounts = GetIntFromInput();
-                System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
-                int tax = GetIntFromInput();
-
-                Room guest_room = room_manager_.SearchList(sub_menu_guest);
-                List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
-                Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, LocalDateTime.parse(sub_menu_guest.GetCheckInDate(), DATETIME_FORMATTER), guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
-                System.out.println(bill.a);
-
+                Payment guest_payment;
+                if ((sub_menu_guest.GetPaymentId().isEmpty()) || (sub_menu_guest.GetPaymentId().equals(Guest.EMPTY))) {
+                    System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
+                    int discounts = GetIntFromInput();
+                    System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
+                    int tax = GetIntFromInput();
+                    System.out.println("Enter days of stay: ");
+                    int days_of_stay = GetNonZeroIntFromInput();
+    
+                    Room guest_room = room_manager_.SearchList(sub_menu_guest);
+                    List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
+                    Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, days_of_stay, guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
+                    System.out.println("Generated Bill\n" + bill.a.toString());
+                    guest_payment = bill.b;
+                } else {
+                    guest_payment = payment_manager_.SearchList(sub_menu_guest.GetPaymentId());
+                }
+                System.out.println("Payment item:\n" + guest_payment.toString());
                 System.out.println("Making payment for this bill? (False[0]/True[1])");
                 boolean make_payment = GetBooleanFromInput();
                 if (make_payment) {
-                    guest_manager_.CheckOutOfRoom(sub_menu_guest, bill.b.GetPaymentID().toString());
-                    room_manager_.CheckOutGuests(bill.b.GetRoomNum());
+                    guest_manager_.CheckOutOfRoom(sub_menu_guest, guest_payment.GetPaymentID().toString());
+                    room_manager_.CheckOutGuests(guest_payment.GetRoomNum());
                     Reservation check_out_reservation = reservation_manager_.SearchList(sub_menu_guest);
                     reservation_manager_.CheckOut(check_out_reservation);
                 }
@@ -624,6 +647,7 @@ public class AppManager {
                             break;
                     }
                 }
+                System.out.println("Edited Guest:\n" + sub_menu_guest.toString());
                 break;
             default:
                 break;

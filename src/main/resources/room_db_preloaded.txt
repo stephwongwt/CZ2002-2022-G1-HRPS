@@ -2,10 +2,10 @@
 102|Single|90.0|Single|true|false|false|Reserved|
 103|Single|70.0|Single|false|true|false|Maintenance|
 104|Single|100.0|Single|true|true|true|Vacant|
+201|Standard|250.0|Supersingle|true|true|true|Occupied|
 202|Standard|150.0|Supersingle|true|false|false|Vacant|
 203|Standard|180.0|Supersingle|false|true|false|Maintenance|
 204|Standard|190.0|Supersingle|false|false|true|Reserved|
-201|Standard|250.0|Supersingle|true|true|true|Occupied|
 301|Vip|300.0|Double|true|true|false|Vacant|
 302|Vip|300.0|Double|false|true|true|Occupied|
 303|Vip|280.0|Double|false|false|false|Vacant|
