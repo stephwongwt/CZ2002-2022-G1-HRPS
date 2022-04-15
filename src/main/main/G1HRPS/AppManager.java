@@ -320,6 +320,7 @@ public class AppManager {
                 break;
             case 1:
                 System.out.println("|------|Guest Create Reservation|------|");
+                CreateNewReservation(guest_id);
                 break;
             case 2:
                 System.out.println("|------|Guest Check In|------|");
@@ -356,7 +357,7 @@ public class AppManager {
                 System.out.println("Making payment for this bill? (False[0]/True[1])");
                 boolean make_payment = GetBooleanFromInput();
                 if (make_payment) {
-                    guest_manager_.CheckOutOfRoom(sub_menu_guest, bill.b.GetPaymentID());
+                    guest_manager_.CheckOutOfRoom(sub_menu_guest, bill.b.GetPaymentID().toString());
                     room_manager_.CheckOutGuests(bill.b.GetRoomNum());
                     Reservation check_out_reservation = reservation_manager_.SearchList(sub_menu_guest);
                     reservation_manager_.CheckOut(check_out_reservation);
@@ -531,7 +532,7 @@ public class AppManager {
         if (new_guest == null) {
             System.out.println("Guest ID already exists, did not create.");
         } else {
-            System.out.printf("Guest %s successfully created!", name);
+            System.out.printf("Guest %s successfully created!\r\n", name);
         }
         return new_guest;
     }
@@ -569,7 +570,7 @@ public class AppManager {
         if (new_room == null) {
             System.out.println("Room ID already exists, did not create.");
         } else {
-            System.out.printf("Room %d successfully created!", room_number);
+            System.out.printf("Room %d successfully created!\r\n", room_number);
         }
     }
 
@@ -632,7 +633,9 @@ public class AppManager {
         if (new_rsvp == null) {
             System.out.println("Reservation code already exists, did not create.");
         } else {
-            System.out.printf("Reservation code %d successfully created!", new_rsvp.GetReservationCode().toString());
+            Room rsvp_room = room_manager_.SearchList(room_num);
+            rsvp_room.SetStatus(RoomStatus.Reserved);
+            System.out.printf("Reservation code %d successfully created!\r\n", new_rsvp.GetReservationCode().toString());
         }
     }
 
