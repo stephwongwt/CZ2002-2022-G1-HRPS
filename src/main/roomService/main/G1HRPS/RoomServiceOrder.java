@@ -2,12 +2,13 @@ package main.G1HRPS;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
 public class RoomServiceOrder {
-    private String room_service_order_code_;
+    private UUID room_service_order_code_;
     private String guest_id_;
-    private int room_num_;
+    private int room_number_;
     private final Timestamp time_created_;
     private Timestamp time_completed_;
     private List<MenuItem> ordered_item_list_;
@@ -20,20 +21,32 @@ public class RoomServiceOrder {
      * 
      * @param room_service_order_code
      * @param guest_id
-     * @param room_id
+     * @param room_number
      * @param ordered_item_list
      * @param remarks
      */
-    public RoomServiceOrder(String room_service_order_code, String guest_id, int room_id,
-            List<MenuItem> ordered_item_list, String remarks) {
-        // TODO - implement RoomServiceOrder.RoomServiceOrder
-        this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
-        order_quantity_ = this.ordered_item_list_.size();
+    public RoomServiceOrder(String guest_id, int room_number, List<MenuItem> ordered_item_list, String remarks) {
+        this.room_service_order_code_ = UniqueIdGenerator.Generate();
         this.guest_id_ = guest_id;
-        this.room_service_order_code_ = room_service_order_code;
-        this.time_created_ = new Timestamp(System.currentTimeMillis());
+        this.room_number_ = room_number;
+        this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
         this.remarks_ = remarks;
+
+        this.time_created_ = new Timestamp(System.currentTimeMillis());
         this.status_ = OrderStatus.Confirmed;
+        this.order_quantity_ = this.ordered_item_list_.size();
+    }
+    
+    public RoomServiceOrder(UUID room_service_order_code, String guest_id, int room_number, List<MenuItem> ordered_item_list, String remarks) {
+        this.room_service_order_code_ = room_service_order_code;
+        this.guest_id_ = guest_id;
+        this.room_number_ = room_number;
+        this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
+        this.remarks_ = remarks;
+
+        this.time_created_ = new Timestamp(System.currentTimeMillis());
+        this.status_ = OrderStatus.Confirmed;
+        this.order_quantity_ = this.ordered_item_list_.size();
     }
 
     /**
@@ -41,7 +54,7 @@ public class RoomServiceOrder {
      * 
      * @return UUID on the code for the room service order
      */
-    public String GetRsoCode() {
+    public UUID GetRsoCode() {
         return this.room_service_order_code_;
     }
 
@@ -51,7 +64,7 @@ public class RoomServiceOrder {
      * @param room_service_order_code_
      */
     public void SetRsoCode(String room_service_order_code) {
-        this.room_service_order_code_ = room_service_order_code;
+        this.room_service_order_code_ = UUID.fromString(room_service_order_code);
     }
 
     /**
@@ -105,7 +118,7 @@ public class RoomServiceOrder {
      * @return int containing the room number
      */
     public int GetRoomNum() {
-        return this.room_num_;
+        return this.room_number_;
     }
 
     /**
@@ -114,7 +127,7 @@ public class RoomServiceOrder {
      * @param room_num
      */
     public void SetRoomNum(int room_num) {
-        this.room_num_ = room_num;
+        this.room_number_ = room_num;
     }
 
     /**
@@ -168,8 +181,8 @@ public class RoomServiceOrder {
      */
     public String MenuItemstoString() {
         String Textout = "";
-        for (int i = 0; i < this.ordered_item_list_.size(); i++) {
-            Textout += this.ordered_item_list_.get(i).toString() + "\n";
+        for (MenuItem menu_item : ordered_item_list_) {
+            Textout.concat(menu_item.toString() + "\n");
         }
         return Textout;
     }
@@ -216,7 +229,6 @@ public class RoomServiceOrder {
      */
     @Override
     public String toString() {
-        return ("RSO code: " + this.room_service_order_code_ + " created at " + this.time_created_ + " Remarks: "
-                + this.remarks_);
+        return ("Room Service Order Code: " + this.room_service_order_code_ + " created at " + this.time_created_ + " Remarks: " + this.remarks_);
     }
 }
