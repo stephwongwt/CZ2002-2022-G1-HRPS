@@ -46,8 +46,6 @@ public class AppManager {
         room_service_manager_.InitializeDB();
         room_manager_.InitializeDB();
         menu_item_manager_.InitializeDB();
-
-        ///TODO: rooms need to be populated with guests again on init
     }
 
     /**
@@ -60,50 +58,41 @@ public class AppManager {
             AppMenuItem selection = PrintMenu();
             switch (selection) {
                 case Quit:
+                    System.out.println("|---|Quit|---|");
                     Quit();
                     System.out.println("Exiting, Goodbye.");
                     running = false;
                     break;
                 case AddGuest:
+                    System.out.println("|---|Add Guest|---|");
                     CreateNewGuest();
                     break;
                 case AddRoom:
+                    System.out.println("|---|Add Room|---|");
                     CreateNewRoom();
                     break;
                 case SearchGuest:
-                    Guest guest = SearchList(guest_manager_);
-                    guest.toString();
-                    final String guest_id = guest.GetIdentity();
-                    final int guest_room_number = guest.GetRoomNum();
+                    System.out.println("|---|Search Guest|---|");
+                    Guest search_guest = SearchManagerList(guest_manager_);
+                    search_guest.toString();
+                    final String guest_id = search_guest.GetIdentity();
+                    final int guest_room_number = search_guest.GetRoomNum();
 
-                    System.out.println("Which to display?\n" +
-                            "[0] Go back\n" +
-                            "[1] Check In\n" +
-                            "[2] Check Out\n" +
-                            "[3] Order Room Service\n" +
-                            "[4] Edit Details");
-                    System.out.println("What would you like to do with this Guest?");
-                    int opt = 0;
-                    while (true) {
-                        try {
-                            opt = sc_.nextInt();
-                            if (opt != 0) {
-                                sc_.nextLine();
-                                break;
-                            }
-                        } catch (Exception e) {
-                            sc_.nextLine();
-                            System.out.println("Unavailable, please try again.");
-                        }
-                    }
+                    System.out.println("What would you like to do with this guest?\n" +
+                                    "[0] Go back\n" +
+                                    "[1] Check In\n" +
+                                    "[2] Check Out\n" +
+                                    "[3] Order Room Service\n" +
+                                    "[4] Edit Details");
+                    int sub_guest_option = GetIntFromInput(0, 4);
 
-                    switch (opt) {
+                    switch (sub_guest_option) {
                         case 0:
+                            System.out.println("Back to previous menu...");
                             break;
                         case 1:
-                        /// check in guest & room & 
-                            System.out.println("|-----|Check In|-----|");
-                            Reservation check_in_reservation = reservation_manager_.SearchList(guest);
+                            System.out.println("|------|Guest Check In|------|");
+                            Reservation check_in_reservation = reservation_manager_.SearchList(search_guest);
                             int room_to_check_in = 0;
                             if (check_in_reservation != null) {
                                 if (reservation_manager_.CheckIn(check_in_reservation)) {
@@ -114,33 +103,33 @@ public class AppManager {
                                 room_to_check_in = PickRoom();
                             }
                             System.out.println("Room Number: " + room_to_check_in);
-                            guest_manager_.CheckIntoRoom(guest, room_to_check_in);
-                            room_manager_.CheckInGuest(guest, room_to_check_in);
+                            guest_manager_.CheckIntoRoom(search_guest, room_to_check_in);
+                            room_manager_.CheckInGuest(search_guest, room_to_check_in);
                             System.out.println("Guest checked in.");
                             break;
                         case 2:
-                            System.out.println("|-----|Check Out|-----|");
+                            System.out.println("|------|Guest Check Out|------|");
                             System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
                             int discounts = GetIntFromInput();
                             System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
                             int tax = GetIntFromInput();
 
-                            Room guest_room = room_manager_.SearchList(guest);
+                            Room guest_room = room_manager_.SearchList(search_guest);
                             List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
-                            Payment bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, LocalDateTime.parse(guest.GetCheckInDate(), datetime_formatter), guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
-                            bill.toString();
+                            Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, LocalDateTime.parse(search_guest.GetCheckInDate(), datetime_formatter), guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
+                            System.out.println(bill.a);
 
                             System.out.println("Making payment for this bill? (False[0]/True[1])");
                             boolean make_payment = GetBooleanFromInput();
                             if (make_payment) {
-                                guest_manager_.CheckOutOfRoom(guest, bill.GetPaymentID());
-                                room_manager_.CheckOutGuests(bill.GetRoomNum());
-                                Reservation check_out_reservation = reservation_manager_.SearchList(guest);
+                                guest_manager_.CheckOutOfRoom(search_guest, bill.b.GetPaymentID());
+                                room_manager_.CheckOutGuests(bill.b.GetRoomNum());
+                                Reservation check_out_reservation = reservation_manager_.SearchList(search_guest);
                                 reservation_manager_.CheckOut(check_out_reservation);
                             }
                             break;
                         case 3:
-                            System.out.println("|-----|Order Room Service|-----|");
+                            System.out.println("|------|Guest Order Room Service|------|");
                             List<MenuItem> ordered_item_list = PrintRoomServiceMenu();
                             System.out.println("Any remarks to add to order?");
                             String remarks = sc_.nextLine().toUpperCase();
@@ -150,12 +139,76 @@ public class AppManager {
                             }
                             break;
                         case 4:
-                            System.out.println("|-----|Edit Guest Details|-----|");
-                            boolean continue_editing = true;
-                            while (continue_editing) {
-                                System.out.println("[0] ID | [1] PaymentID | [2] RoomNum | [3] Name | [4] Credit Card No. | [5] Billing Address");
-                                System.out.println("[0] ID | [1] PaymentID | [2] RoomNum | [3] Name | [4] Credit Card No. | [5] Billing Address");
-
+                            System.out.println("|------|Guest Edit Details|------|");
+                            boolean continue_editing_guest = true;
+                            System.out.println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.");
+                            System.out.println("[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
+                            while (continue_editing_guest) {
+                                int edit_opt = GetIntFromInput(0, 11);
+                                switch (edit_opt) {
+                                    case 0:
+                                        System.out.println("Back to previous menu...");
+                                        continue_editing_guest = false;
+                                        break;
+                                    case 1:
+                                        System.out.println("Enter new identity:");
+                                        String edit_identity = sc_.nextLine();
+                                        search_guest.SetIdentity(edit_identity);
+                                        break;
+                                    case 2:
+                                        System.out.println("Enter new payment id:");
+                                        String edit_payment_id = sc_.nextLine();
+                                        search_guest.SetIdentity(edit_payment_id);
+                                        break;
+                                    case 3:
+                                        System.out.println("Enter new room number:");
+                                        int edit_room_number = GetNonZeroIntFromInput();
+                                        search_guest.SetRoomNum(edit_room_number);
+                                        break;
+                                    case 4:
+                                        System.out.println("Enter new name:");
+                                        String edit_name = sc_.nextLine();
+                                        search_guest.SetName(edit_name);
+                                        break;
+                                    case 5:
+                                        System.out.println("Enter new credit card number:");
+                                        String edit_cc_number = sc_.nextLine();
+                                        search_guest.SetCreditCardNumber(edit_cc_number);
+                                        break;
+                                    case 6:
+                                        System.out.println("Enter new billing address:");
+                                        String edit_billing = sc_.nextLine();
+                                        search_guest.SetBillingAddress(edit_billing);
+                                        break;
+                                    case 7:
+                                        System.out.println("Enter new contact number:");
+                                        String edit_contact = sc_.nextLine();
+                                        search_guest.SetContact(edit_contact);
+                                        break;
+                                    case 8:
+                                        System.out.println("Enter new country:");
+                                        String edit_country = sc_.nextLine();
+                                        search_guest.SetCountry(edit_country);
+                                        break;
+                                        case 9:
+                                        System.out.println("Enter new gender (e.g. Female[0]/Male[1]/Other[2]):");
+                                        Gender edit_gender = GetEnumFromInput(Gender.values());
+                                        search_guest.SetGender(edit_gender);
+                                        break;
+                                        case 10:
+                                        System.out.println("Enter new Nationality:");
+                                        String edit_nationality = sc_.nextLine();
+                                        search_guest.SetNationality(edit_nationality);
+                                        break;
+                                        case 11:
+                                        System.out.println("Enter new check in date (e.g. 2022-04-14 16:51:31):");
+                                        String edit_check_in_date = sc_.nextLine();
+                                        search_guest.SetCheckInDate(edit_check_in_date);
+                                        break;
+                                    default:
+                                        System.out.println("Unavailable, please try again:");
+                                        break;
+                                }
                             }
                             break;
                         default:
@@ -163,32 +216,142 @@ public class AppManager {
                     }
                     break;
                 case SearchRoom:
-                    Room search_room = SearchList(room_manager_);
-                    /// complete room service order
-                    // List<RoomServiceOrder> rso_list = room_service_manager_.GetOrderedItemsByRoom(search_room.GetRoomNum());
-                    // for (RoomServiceOrder rso : rso_list) {
-                    //     rso.toString();
-                    // }
-                    // pick which rso to complete
-
-                    /// edit room details
+                    System.out.println("|---|Search Room|---|");
+                    Room search_room = SearchManagerList(room_manager_);
+                    search_room.toString();
+                    System.out.println("What would you like to do with this room?\n" +
+                                    "[0] Go back\n" +
+                                    "[1] Complete Room Service Order\n" +
+                                    "[2] Edit Details\n");
+                    int sub_room_option = GetIntFromInput(0, 2);
+                    switch (sub_room_option) {
+                        case 0:
+                            System.out.println("Back to previous menu...");
+                            break;
+                        case 1:
+                            System.out.println("|------|Complete Room Service Order|------|");
+                            List<RoomServiceOrder> order_list = room_service_manager_.GetOrderedItemsByRoom(search_room.GetRoomNumber());
+                            System.out.println("Select Order to Complete");
+                            for (int i = 0; i < order_list.size(); i++) {
+                                RoomServiceOrder order = order_list.get(i);
+                                System.out.printf("[%d] Status (%s), Items: %", i, order.GetStatus().toString(), order.GetOrderedItemList().toString());
+                            }
+                            int order_to_complete = GetIntFromInput(0, order_list.size());
+                            order_list.get(order_to_complete).SetStatus(OrderStatus.Delivered);
+                            break;
+                        case 2:
+                            System.out.println("|------|Edit Room Details|------|");
+                            boolean continue_editing_room = true;
+                            System.out.println("[0] Go back | [1] Room Number | [2] Room Type | [3] Room Price");
+                            System.out.println("[4] Bed Size | [5] Wifi | [6] View | [7] Smoking | [8] Status");
+                            while (continue_editing_room) {
+                                int edit_opt = GetIntFromInput(0, 11);
+                                switch (edit_opt) {
+                                    case 0:
+                                        System.out.println("Back to previous menu...");
+                                        continue_editing_room = false;
+                                        break;
+                                    case 1:
+                                        System.out.println("Enter new Room Number:");
+                                        int edit_room_num = GetNonZeroIntFromInput();
+                                        Room found_room = room_manager_.SearchList(edit_room_num);
+                                        if (found_room == null) {
+                                            search_room.SetRoomNumber(edit_room_num);
+                                        } else {
+                                            System.out.println("Room number already exists.");
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Enter new Room Type (Single[0]/Standard[1]/VIP[2]/Suite[3]/Deluxe[4]):");
+                                        RoomType room_type = GetEnumFromInput(RoomType.values());
+                                        search_room.SetRoomType(room_type);
+                                        break;
+                                    case 3:
+                                        System.out.println("Enter new price of room per night (e.g 100.00):");
+                                        float room_price = GetNonZeroFloatFromInput();
+                                        search_room.SetRoomPrice(room_price);
+                                        break;
+                                    case 4:
+                                        System.out.println("Enter new Bed Size (Single[0]/SuperSingle[1]/Double[2]/Queen[3]/King[4]):");
+                                        BedSize bed_size = GetEnumFromInput(BedSize.values());
+                                        search_room.SetBedSize(bed_size);
+                                        break;
+                                    case 5:
+                                        System.out.println("Enter new WiFi (False[0]/True[1]):");
+                                        boolean wifi_enabled = GetBooleanFromInput();
+                                        search_room.SetWifi(wifi_enabled);
+                                        break;
+                                    case 6:
+                                        System.out.println("Enter new View (False[0]/True[1]):");
+                                        boolean with_view = GetBooleanFromInput();
+                                        search_room.SetView(with_view);
+                                        break;
+                                    case 7:
+                                        System.out.println("Enter new Smoking (False[0]/True[1]):");
+                                        boolean with_smoking = GetBooleanFromInput();
+                                        search_room.SetSmoking(with_smoking);
+                                        break;
+                                    case 8:
+                                        System.out.println("Enter new Room Status (Vacant[0]/Occupied[1]/Reserved[2]/Maintenance[3]):");
+                                        RoomStatus status = GetEnumFromInput(RoomStatus.values());
+                                        search_room.SetStatus(status);
+                                        break;
+                                    default:
+                                        System.out.println("Unavailable, please try again:");
+                                        break;
+                                }
+                            }
+                            break;
+                        default:
+                            System.out.println("Unavailable, please try again:");
+                            break;
+                    }
                     break;
                 case SearchReservations:
-                    Reservation search_rsvp = SearchList(reservation_manager_);
-                    /// check in guest & room & reservation
-                    /// delete reservation
-
+                    System.out.println("|---|Search Reservations|---|");
+                    Reservation search_rsvp = SearchManagerList(reservation_manager_);
+                    search_rsvp.toString();
+                    System.out.println("What would you like to do with this reservation?\n" +
+                                    "[0] Go back\n" +
+                                    "[1] Check In\n" +
+                                    "[2] Delete\n");
+                    int sub_rsvp_option = GetIntFromInput(0, 2);
+                    switch (sub_rsvp_option) {
+                        case 0:
+                            System.out.println("Back to previous menu...");
+                            break;
+                        case 1:
+                            System.out.println("|------|Check In|------|");
+                            reservation_manager_.CheckIn(search_rsvp);
+                            Guest rsvp_guest = guest_manager_.SearchList(search_rsvp.GetGuestId());
+                            int rsvp_room_num = search_rsvp.GetRoomNum();
+                            guest_manager_.CheckIntoRoom(rsvp_guest, rsvp_room_num);
+                            room_manager_.CheckInGuest(rsvp_guest, rsvp_room_num);
+                            System.out.printf("Guest %s checked into room number %d. \r\n", rsvp_guest.GetName(), rsvp_room_num);
+                            break;
+                        default:
+                            System.out.println("|------|Delete|------|");
+                            boolean del_rsvp_success = reservation_manager_.RemoveFromList(search_rsvp);
+                            if (del_rsvp_success) {
+                                System.out.println("Successfully deleted reservation!");
+                            } else {
+                                System.out.println("Failed to delete reservation.");
+                            }
+                            break;
+                    }
                     break;
                 case Display:
+                    System.out.println("|---|Display|---|");
                     sc_.nextLine();
                     System.out.println("Which to display?\n" +
                             "[0] Go back\n" +
-                            "[1] Room Availabilities\n" +
+                            "[1] All Rooms\n" +
                             "[2] All Guests\n" +
                             "[3] All Reservations");
                     int option = sc_.nextInt();
                     switch (option) {
                         case 0:
+                            System.out.println("Back to previous menu...");
                             break;
                         case 1:
                             DisplayList(room_manager_);
@@ -200,12 +363,12 @@ public class AppManager {
                             DisplayList(reservation_manager_);
                             break;
                         default:
-                            System.out.println("Option does not exist");
+                            System.out.println("Unavailable, please try again:");
                             continue;
                     }
                     break;
                 default:
-                    System.out.println("Option does not exist");
+                    System.out.println("Unavailable, please try again:");
                     break;
             }
         }
@@ -213,7 +376,7 @@ public class AppManager {
     }
 
     /**
-     * 
+     *
      * @return selected menu option
      */
     private AppMenuItem PrintMenu() {
@@ -228,11 +391,11 @@ public class AppManager {
                 if ((option >= 0) && (option < app_menu_list.size())) {
                     break;
                 } else {
-                    System.out.println("Unavailable, please select another option.");
+                    System.out.println("Unavailable, please try again:");
                 }
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please select another option.");
+                System.out.println("Unavailable, please try again:");
             }
         }
         return AppMenuItem.values()[option];
@@ -262,11 +425,11 @@ public class AppManager {
                         }
                         break;
                     } else {
-                        System.out.println("Unavailable, please select another option.");
+                        System.out.println("Unavailable, please try again:");
                     }
                 } catch (Exception e) {
                     sc_.nextLine();
-                    System.out.println("Unavailable, please select another option.");
+                    System.out.println("Unavailable, please try again:");
                 }
             }
         }
@@ -292,7 +455,16 @@ public class AppManager {
         System.out.println("Enter Name (e.g. John Smith):");
         name = sc_.nextLine().toUpperCase();
         System.out.println("Enter Credit Card Number (e.g. 4605100120021234):");
-        credit_card_number = sc_.nextLine().toUpperCase();
+        while (true) {
+            credit_card_number = sc_.nextLine().toUpperCase();
+            if (guest_manager_.VerifyCreditCardNumber(credit_card_number)) {
+                break;
+            } else {
+                sc_.nextLine();
+                System.out.println("Invalid credit card number, please try again:");
+            }
+        }
+
         System.out.println("Enter Address (e.g. 50 Nanyang Ave, S639798):");
         address = sc_.nextLine().toUpperCase();
         System.out.println("Enter Contact (e.g. +6590001000):");
@@ -371,7 +543,7 @@ public class AppManager {
                 }
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please try again.");
+                System.out.println("Unavailable, please try again:");
             }
         }
         return picked_room_number;
@@ -385,7 +557,24 @@ public class AppManager {
                 break;
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please try again.");
+                System.out.println("Unavailable, please try again:");
+            }
+        }
+        return value;
+    }
+
+    private int GetIntFromInput(int inclusive_min, int inclusive_max) {
+        int value = 0;
+        while (true) {
+            try {
+                value = sc_.nextInt();
+                if (value >= inclusive_min && value <= inclusive_max) {
+                    sc_.nextLine();
+                    break;
+                }
+            } catch (Exception e) {
+                sc_.nextLine();
+                System.out.println("Unavailable, please try again:");
             }
         }
         return value;
@@ -402,7 +591,7 @@ public class AppManager {
                 }
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please try again.");
+                System.out.println("Unavailable, please try again:");
             }
         }
         return value;
@@ -416,7 +605,7 @@ public class AppManager {
                 break;
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please try again.");
+                System.out.println("Unavailable, please try again:");
             }
         }
         return value;
@@ -433,7 +622,7 @@ public class AppManager {
                 }
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please try again.");
+                System.out.println("Unavailable, please try again:");
             }
         }
         return value;
@@ -441,7 +630,7 @@ public class AppManager {
 
     /**
      * Present user with a list of choices from an enumset.
-     * 
+     *
      * @param <T>      the enumset
      * @param opt_list an array of the enum options
      * @return
@@ -457,11 +646,11 @@ public class AppManager {
                     sc_.nextLine();
                     break;
                 } else {
-                    System.out.println("Unavailable, please select another option.");
+                    System.out.println("Unavailable, please try again:");
                 }
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please select another option.");
+                System.out.println("Unavailable, please try again:");
             }
         }
         return t;
@@ -469,7 +658,7 @@ public class AppManager {
 
     /**
      * Present user with a choice of true or false options.
-     * 
+     *
      * @return return user's input in Boolean.
      */
     private Boolean GetBooleanFromInput() {
@@ -483,11 +672,11 @@ public class AppManager {
                     return false;
                 } else {
                     sc_.nextLine();
-                    System.out.println("Unavailable, please try again.");
+                    System.out.println("Unavailable, please try again:");
                 }
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Unavailable, please try again.");
+                System.out.println("Unavailable, please try again:");
             }
         }
     }
@@ -498,12 +687,12 @@ public class AppManager {
      * Example usage:
      * GuestManager guest_manager = new GuestManager();
      * SearchList(guest_manager);
-     * 
+     *
      * @param <T> type which the manager is managing
      * @param sm  a generic type manager which has implemented Supermanager
      * @return the object matching the search text
      */
-    private <T> T SearchList(Supermanager<T> sm) {
+    private <T> T SearchManagerList(Supermanager<T> sm) {
         String search_text = "";
         System.out.println("Enter search text:");
         sc_.nextLine();
@@ -513,7 +702,7 @@ public class AppManager {
                 return sm.SearchList(search_text);
             } catch (Exception e) {
                 sc_.nextLine();
-                System.out.println("Error Input, please try again.");
+                System.out.println("Unavailable, please try again:");
             }
         }
     }
@@ -524,7 +713,7 @@ public class AppManager {
      * Example usage:
      * GuestManager guest_manager = new GuestManager();
      * DisplayList(guest_manager);
-     * 
+     *
      * @param <T> type which the manager is managing
      * @param sm  a generic type manager which has implemented Supermanager
      */
