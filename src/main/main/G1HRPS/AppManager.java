@@ -1,6 +1,5 @@
 package main.G1HRPS;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -136,7 +135,7 @@ public class AppManager {
                                     "[1] Order Room Service\n" +
                                     "[2] Complete Room Service Order\n" +
                                     "[3] Edit Details\n");
-                    int sub_room_option = GetIntFromInput(0, 2);
+                    int sub_room_option = GetIntFromInput(0, 3);
                     switch (sub_room_option) {
                         case 0:
                             System.out.println("Back to previous menu...");
@@ -179,7 +178,8 @@ public class AppManager {
                             System.out.println("[0] Go back | [1] Room Number | [2] Room Type | [3] Room Price");
                             System.out.println("[4] Bed Size | [5] Wifi | [6] View | [7] Smoking | [8] Status");
                             while (continue_editing_room) {
-                                int edit_opt = GetIntFromInput(0, 11);
+                                System.out.println("Pick detail to edit:");
+                                int edit_opt = GetIntFromInput(0, 8);
                                 switch (edit_opt) {
                                     case 0:
                                         System.out.println("Back to previous menu...");
@@ -191,6 +191,7 @@ public class AppManager {
                                         Room found_room = room_manager_.SearchList(edit_room_num);
                                         if (found_room == null) {
                                             search_room.SetRoomNumber(edit_room_num);
+                                            System.out.println("Edit successful.");
                                         } else {
                                             System.out.println("Room number already exists.");
                                         }
@@ -204,31 +205,37 @@ public class AppManager {
                                         System.out.println("Enter new price of room per night (e.g 100.00):");
                                         float room_price = GetNonZeroFloatFromInput();
                                         search_room.SetRoomPrice(room_price);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 4:
                                         System.out.println("Enter new Bed Size (Single[0]/SuperSingle[1]/Double[2]/Queen[3]/King[4]):");
                                         BedSize bed_size = GetEnumFromInput(BedSize.values());
                                         search_room.SetBedSize(bed_size);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 5:
                                         System.out.println("Enter new WiFi (False[0]/True[1]):");
                                         boolean wifi_enabled = GetBooleanFromInput();
                                         search_room.SetWifi(wifi_enabled);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 6:
                                         System.out.println("Enter new View (False[0]/True[1]):");
                                         boolean with_view = GetBooleanFromInput();
                                         search_room.SetView(with_view);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 7:
                                         System.out.println("Enter new Smoking (False[0]/True[1]):");
                                         boolean with_smoking = GetBooleanFromInput();
                                         search_room.SetSmoking(with_smoking);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 8:
                                         System.out.println("Enter new Room Status (Vacant[0]/Occupied[1]/Reserved[2]/Maintenance[3]):");
                                         RoomStatus status = GetEnumFromInput(RoomStatus.values());
                                         search_room.SetStatus(status);
+                                        System.out.println("Edit successful.");
                                         break;
                                     default:
                                         System.out.println("Unavailable, please try again:");
@@ -404,7 +411,7 @@ public class AppManager {
                 "[3] Check Out\n" +
                 "[4] Order Room Service\n" +
                 "[5] Edit Details");
-        int sub_guest_option = GetIntFromInput(0, 4);
+        int sub_guest_option = GetIntFromInput(0, 5);
 
         switch (sub_guest_option) {
             case 0:
@@ -466,11 +473,10 @@ public class AppManager {
             case 5:
                 System.out.println("|------|Guest Edit Details|------|");
                 boolean continue_editing_guest = true;
-                System.out
-                        .println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.");
-                System.out.println(
-                        "[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
+                System.out .println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.\n" +
+                                    "[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
                 while (continue_editing_guest) {
+                    System.out.println("Pick detail to edit:");
                     int edit_opt = GetIntFromInput(0, 11);
                     switch (edit_opt) {
                         case 0:
@@ -479,58 +485,72 @@ public class AppManager {
                             break;
                         case 1:
                             System.out.println("Enter new identity:");
-                            String edit_identity = sc_.nextLine();
+                            String edit_identity = GetUppercaseStringFromInput();
                             sub_menu_guest.SetIdentity(edit_identity);
+                            System.out.println("Edit successful.");
                             break;
                         case 2:
                             System.out.println("Enter new payment id:");
-                            String edit_payment_id = sc_.nextLine();
-                            sub_menu_guest.SetIdentity(edit_payment_id);
+                            String edit_payment_id = GetUppercaseStringFromInput();
+                            sub_menu_guest.SetPaymentId(edit_payment_id);
+                            System.out.println("Edit successful.");
                             break;
                         case 3:
                             System.out.println("Enter new room number:");
                             int edit_room_number = GetNonZeroIntFromInput();
                             sub_menu_guest.SetRoomNum(edit_room_number);
+                            System.out.println("Edit successful.");
                             break;
                         case 4:
                             System.out.println("Enter new name:");
-                            String edit_name = sc_.nextLine();
+                            String edit_name = GetUppercaseStringFromInput();
                             sub_menu_guest.SetName(edit_name);
+                            System.out.println("Edit successful.");
                             break;
                         case 5:
                             System.out.println("Enter new credit card number:");
-                            String edit_cc_number = sc_.nextLine();
-                            sub_menu_guest.SetCreditCardNumber(edit_cc_number);
+                            String edit_cc_number = GetUppercaseStringFromInput();
+                            if (sub_menu_guest.SetCreditCardNumber(edit_cc_number)) {
+                                System.out.println("Edit successful.");
+                            } else {
+                                System.out.println("Edit failed.");
+                            }
                             break;
                         case 6:
                             System.out.println("Enter new billing address:");
-                            String edit_billing = sc_.nextLine();
+                            String edit_billing = GetUppercaseStringFromInput();
                             sub_menu_guest.SetBillingAddress(edit_billing);
+                            System.out.println("Edit successful.");
                             break;
                         case 7:
                             System.out.println("Enter new contact number:");
-                            String edit_contact = sc_.nextLine();
+                            String edit_contact = GetUppercaseStringFromInput();
                             sub_menu_guest.SetContact(edit_contact);
+                            System.out.println("Edit successful.");
                             break;
                         case 8:
                             System.out.println("Enter new country:");
-                            String edit_country = sc_.nextLine();
+                            String edit_country = GetUppercaseStringFromInput();
                             sub_menu_guest.SetCountry(edit_country);
+                            System.out.println("Edit successful.");
                             break;
                         case 9:
                             System.out.println("Enter new gender (e.g. Female[0]/Male[1]/Other[2]):");
                             Gender edit_gender = GetEnumFromInput(Gender.values());
                             sub_menu_guest.SetGender(edit_gender);
+                            System.out.println("Edit successful.");
                             break;
                         case 10:
                             System.out.println("Enter new Nationality:");
                             String edit_nationality = sc_.nextLine();
                             sub_menu_guest.SetNationality(edit_nationality);
+                            System.out.println("Edit successful.");
                             break;
                         case 11:
                             System.out.println("Enter new check in date (e.g. 2022-04-14 16:51:31):");
                             String edit_check_in_date = sc_.nextLine();
                             sub_menu_guest.SetCheckInDate(edit_check_in_date);
+                            System.out.println("Edit successful.");
                             break;
                         default:
                             System.out.println("Unavailable, please try again:");
@@ -731,7 +751,8 @@ public class AppManager {
         } else {
             Room rsvp_room = room_manager_.SearchList(room_num);
             rsvp_room.SetStatus(RoomStatus.Reserved);
-            System.out.printf("Reservation code %s successfully created!\r\n", new_rsvp.GetReservationCode().toString());
+            System.out.printf("Reservation successfully created! Details:\n%s\n", new_rsvp.toString());
+            System.out.printf("Room Details:\n%s\n", rsvp_room.toString());
         }
     }
 
