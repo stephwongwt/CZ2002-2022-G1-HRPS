@@ -30,8 +30,11 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      */
     public Guest CreateNewGuest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
         Guest new_guest = new Guest(identity, name, credit_card_number, billing_address, contact, country, gender, nationality);
-        AddToList(new_guest);
-        return new_guest;
+        if (AddToList(new_guest)) {
+            return new_guest;
+        } else {
+            return null;
+        }
     }
     
     public boolean VerifyCreditCardNumber(String credit_card_number) {
@@ -85,13 +88,14 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
         return success;
     }
 
-    public Guest SearchListByName(String guest_name) {
+    public List<Guest> SearchListByName(String guest_name) {
+        List<Guest> found_guests = new ArrayList<>();
         for (Guest guest : guest_list_) {
             if (guest_name.equals(guest.GetName())) {
-                return guest;
+                found_guests.add(guest);
             }
         }
-        return null;
+        return found_guests;
     }
 
     /**

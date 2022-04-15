@@ -296,7 +296,7 @@ public class Guest {
                 "|Credit Card #: %s|\n" +
                 "|Billing Address: %s|\n" +
                 "|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n" +
-                "|Check In Date: %s|\n",
+                "|Check In Date: %s|",
                 identity_, name_, room_num, payment_id,
                 credit_card_number_,
                 billing_address_,

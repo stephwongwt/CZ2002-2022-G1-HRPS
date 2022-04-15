@@ -16,8 +16,11 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
 
     public Reservation CreateNewReservation(String guest_id, String check_in_date, String check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
         Reservation rsvp = new Reservation(guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
-        AddToList(rsvp);
-        return rsvp;
+        if (AddToList(rsvp)) {
+            return rsvp;
+        } else {
+            return null;
+        }
     }
 
     public void InitializeDB() {

@@ -39,8 +39,11 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
     public Room CreateNewRoom(int room_number, RoomType room_type, float room_price, BedSize bed_size,
             boolean wifi_enabled, boolean w_view, boolean w_smoking, RoomStatus status) {
         Room new_room = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, w_view, w_smoking, status);
-        AddToList(new_room);
-        return new_room;
+        if (AddToList(new_room)) {
+            return new_room;
+        } else {
+            return null;
+        }
     }
 
     /**
