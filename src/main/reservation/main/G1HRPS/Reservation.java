@@ -1,10 +1,11 @@
 package main.G1HRPS;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class Reservation {
 
-    private final String reservation_code_;
+    private final UUID reservation_code_;
     private String guest_id_;
     public Timestamp check_in_date_;
     public Timestamp check_out_date_;
@@ -15,16 +16,16 @@ public class Reservation {
 
     /**
      * 
-     * @param reservationCode
-     * @param guestId
-     * @param checkInDate
-     * @param checkOutDate
-     * @param adultNum
-     * @param childrenNum
+     * @param reservation_code
+     * @param guest_id
+     * @param check_in_date
+     * @param check_out_date
+     * @param adult_num
+     * @param children_num
      * @param status
      * @param room_num
      */
-    public Reservation(String reservation_code, String guest_id, Timestamp check_in_date, Timestamp check_out_date,
+    public Reservation(UUID reservation_code, String guest_id, Timestamp check_in_date, Timestamp check_out_date,
             int adult_num, int children_num, ReservationStatus status, int room_num) {
         this.reservation_code_ = reservation_code;
         this.guest_id_ = guest_id;
@@ -64,7 +65,7 @@ public class Reservation {
         this.room_num_ = room_num;
     }
 
-    public String GetReservationCode() {
+    public UUID GetReservationCode() {
         return reservation_code_;
     }
 
