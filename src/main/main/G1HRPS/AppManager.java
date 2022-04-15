@@ -13,7 +13,7 @@ import java.util.Vector;
  * Manager that handles running the app
  */
 public class AppManager {
-    public static final DateTimeFormatter datetime_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public Scanner sc_;
     private ReservationManager reservation_manager_;
     private GuestManager guest_manager_;
@@ -21,7 +21,8 @@ public class AppManager {
     private RoomServiceManager room_service_manager_;
     private RoomManager room_manager_;
     private MenuItemManager menu_item_manager_;
-    private final List<AppMenuItem> app_menu_list;
+    private final List<AppMenuItem> APP_MENU_LIST;
+    private final int DEFAULT_CHECK_IN_HOUR = 15;
 
     public AppManager() {
         System.out.println("Application Start");
@@ -32,7 +33,7 @@ public class AppManager {
         room_service_manager_ = new RoomServiceManager();
         room_manager_ = new RoomManager();
         menu_item_manager_ = new MenuItemManager();
-        app_menu_list = java.util.Arrays.asList(AppMenuItem.values());
+        APP_MENU_LIST = java.util.Arrays.asList(AppMenuItem.values());
     }
 
     /**
@@ -391,14 +392,14 @@ public class AppManager {
      */
     private AppMenuItem PrintMenu() {
         System.out.println("\r\n|--------|Choose an option|--------|");
-        for (AppMenuItem app_menu_item : app_menu_list) {
+        for (AppMenuItem app_menu_item : APP_MENU_LIST) {
             System.out.printf("[%d] %s\r\n", app_menu_item.GetValue(), app_menu_item.toString());
         }
         int option = 0;
         while (true) {
             try {
                 option = sc_.nextInt();
-                if ((option >= 0) && (option < app_menu_list.size())) {
+                if ((option >= 0) && (option < APP_MENU_LIST.size())) {
                     break;
                 } else {
                     System.out.println("Unavailable, please try again:");

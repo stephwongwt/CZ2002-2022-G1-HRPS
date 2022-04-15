@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class GuestManager extends DatabaseHandler implements Supermanager<Guest> {
     private List<Guest> guest_list_;
-    private final String db_filename = "guest_db.txt";
+    private final String DB_FILENAME = "guest_db.txt";
 
     /**
      * Creates a Guest Manager.
@@ -150,7 +150,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * Each String object is parsed to create each of the guests.
      */
     public void InitializeDB() {
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Guest> dataList = new ArrayList<>();
         for (String st : dbArray) {
             StringTokenizer star = new StringTokenizer(st, SEPARATOR);
@@ -204,7 +204,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             guestData.add(st.toString());
         }
         try {
-            write(db_filename, guestData);
+            write(DB_FILENAME, guestData);
         } catch (IOException e) {
             e.printStackTrace();
         }

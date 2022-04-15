@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public class PaymentManager extends DatabaseHandler implements Supermanager<Payment> {
     private List<Payment> payment_list_;
-    private final String db_filename = "payment_db.txt";
+    private final String DB_FILENAME = "payment_db.txt";
 
     /**
      * Create a Payment Manager.
@@ -131,7 +131,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      */
     public void InitializeDB() {
         // read String from text file
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Payment> dataList = new ArrayList<Payment>();
         for(String st : dbArray){
             // get individual 'fields' of the string separated by SEPARATOR
@@ -152,7 +152,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     }
 
     /**
-     * Data list is turned into formatted String and written the file named db_filename.
+     * Data list is turned into formatted String and written the file named DB_FILENAME.
      */
     public void SaveDB() {
         List<String> paymentData = new ArrayList<String>();
@@ -179,7 +179,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
             paymentData.add(st.toString());
         }
         try {
-            write(db_filename, paymentData);
+            write(DB_FILENAME, paymentData);
         } catch (IOException e) {
             e.printStackTrace();
         }

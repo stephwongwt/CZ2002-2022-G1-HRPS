@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
     private List<Room> room_list_;
-    private final String db_filename = "room_db.txt";
+    private final String DB_FILENAME = "room_db.txt";
 
     public RoomManager() {
         this.room_list_ = new ArrayList<Room>();
@@ -223,7 +223,7 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
      */
     public void InitializeDB() {
         // read String from text file
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Room> dataList = new ArrayList<Room>();
         for (String st : dbArray) {
             // get individual 'fields' of the string separated by SEPARATOR
@@ -243,8 +243,7 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
     }
 
     /**
-     * Data list is turned into formatted String and written the file named
-     * db_filename.
+     * Data list is turned into formatted String and written the file named DB_FILENAME.
      */
     public void SaveDB() {
         List<String> roomData = new ArrayList<String>();
@@ -269,7 +268,7 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
             roomData.add(st.toString());
         }
         try {
-            write(db_filename, roomData);
+            write(DB_FILENAME, roomData);
         } catch (IOException e) {
             e.printStackTrace();
         }

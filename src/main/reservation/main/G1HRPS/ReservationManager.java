@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class ReservationManager extends DatabaseHandler implements Supermanager<Reservation> {
     private List<Reservation> reservation_list_;
-    private final String db_filename = "reservation_db.txt";
+    private final String DB_FILENAME = "reservation_db.txt";
 
     public ReservationManager() {
         reservation_list_ = new ArrayList<Reservation>();
@@ -22,7 +22,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
     }
 
     public void InitializeDB() {
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<Reservation> dataList = new ArrayList<Reservation>();
         for(String st : dbArray){
             StringTokenizer star = new StringTokenizer(st, SEPARATOR);
@@ -62,7 +62,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
             reservationData.add(st.toString());
         }
         try {
-            write(db_filename, reservationData);
+            write(DB_FILENAME, reservationData);
         } catch (IOException e) {
             e.printStackTrace();
         }

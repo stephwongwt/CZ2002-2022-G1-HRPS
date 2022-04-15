@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
  * Manages the available menu items for room service
  */
 public class MenuItemManager extends DatabaseHandler implements Supermanager<MenuItem> {
-    private final String db_filename = "menuitem_db.txt";
+    private final String DB_FILENAME = "menuitem_db.txt";
     public List<MenuItem> menu_item_list_;
 
     /**
@@ -99,7 +99,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
     }
 
     public void InitializeDB() {
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<MenuItem> dataList = new ArrayList<MenuItem>();
         for(String st : dbArray){
             // get individual 'fields' of the string separated by SEPARATOR
@@ -128,7 +128,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
             menuItemData.add(st.toString());
         }
         try {
-            write(db_filename, menuItemData);
+            write(DB_FILENAME, menuItemData);
         } catch (IOException e) {
             e.printStackTrace();
         }

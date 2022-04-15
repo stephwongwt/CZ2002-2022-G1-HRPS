@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
  */
 public class RoomServiceManager extends DatabaseHandler implements Supermanager<RoomServiceOrder> {
     private List<RoomServiceOrder> room_service_order_list_;
-    private final String db_filename = "roomserviceorder_db.txt";
+    private final String DB_FILENAME = "roomserviceorder_db.txt";
 
     /**
      * Constructor for room service manager
@@ -90,7 +90,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 
     public void InitializeDB() {
         // read String from text file
-        ArrayList<String> dbArray = (ArrayList) read(db_filename);
+        ArrayList<String> dbArray = (ArrayList) read(DB_FILENAME);
         ArrayList<RoomServiceOrder> dataList = new ArrayList<RoomServiceOrder>();
         for(String st : dbArray){
             // get individual 'fields' of the string separated by SEPARATOR
@@ -142,7 +142,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
             rsoData.add(st.toString());
         }
         try {
-            write(db_filename, rsoData);
+            write(DB_FILENAME, rsoData);
         } catch (IOException e) {
             e.printStackTrace();
         }
