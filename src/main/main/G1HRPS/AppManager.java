@@ -82,8 +82,8 @@ public class AppManager {
                     System.out.println("|---|Add Room|---|");
                     CreateNewRoom();
                     break;
-                case AddRoomServiceMenuItem:
-                    System.out.println("|---|Add Room Service Menu Items|---|");
+                case AddMenuItem:
+                    System.out.println("|---|Add Menu Items|---|");
                     sc_.nextLine();
                     System.out.println("Enter name of menu item:");
                     String menu_item_name = GetUppercaseStringFromInput();
@@ -262,7 +262,7 @@ public class AppManager {
                             System.out.println("Back to previous menu...");
                             break;
                         case 1:
-                            System.out.println("|------|Check In|------|");
+                            System.out.println("|------| Reservation Check In|------|");
                             reservation_manager_.CheckIn(search_rsvp);
                             Guest rsvp_guest = guest_manager_.SearchList(search_rsvp.GetGuestId());
                             int rsvp_room_num = search_rsvp.GetRoomNum();
@@ -271,13 +271,80 @@ public class AppManager {
                             System.out.printf("Guest %s checked into room number %d. \r\n", rsvp_guest.GetName(), rsvp_room_num);
                             break;
                         default:
-                            System.out.println("|------|Delete|------|");
+                            System.out.println("|------|Delete Reservation|------|");
                             boolean del_rsvp_success = reservation_manager_.RemoveFromList(search_rsvp);
                             if (del_rsvp_success) {
                                 System.out.println("Successfully deleted reservation!");
                             } else {
                                 System.out.println("Failed to delete reservation.");
                             }
+                            break;
+                    }
+                    break;
+                case SearchMenuItems:
+                    System.out.println("|---|Search Menu Item|---|");
+                    MenuItem search_menu_item = SearchManagerList(menu_item_manager_);
+                    System.out.println(search_menu_item.toString());
+                    System.out.println("What would you like to do with this menu item?\n" +
+                                    "[0] Go back\n" +
+                                    "[1] Edit details\n" +
+                                    "[2] Delete\n");
+                    int sub_menu_item_option = GetIntFromInput(0, 2);
+                    switch (sub_menu_item_option) {
+                        case 0:
+                            System.out.println("Back to previous menu...");
+                            break;
+                        case 1:
+                            System.out.println("|------|Edit Menu Item Details|------|");
+                            boolean continue_editing_menu_item = true;
+                            System.out.println("[0] Go back | [1] Name | [2] Price | [3] Description");
+                            while (continue_editing_menu_item) {
+                                System.out.println("Pick detail to edit:");
+                                int edit_opt = GetIntFromInput(0, 3);
+                                switch (edit_opt) {
+                                    case 0:
+                                        System.out.println("Back to previous menu...");
+                                        continue_editing_menu_item = false;
+                                        break;
+                                    case 1:
+                                        System.out.println("Enter new Name:");
+                                        String edit_name = GetUppercaseStringFromInput();
+                                        MenuItem found_menu_item = menu_item_manager_.SearchList(edit_name);
+                                        if (found_menu_item == null) {
+                                            search_menu_item.SetName(edit_name);
+                                            System.out.println("Edit successful.");
+                                        } else {
+                                            System.out.println("Item name already exists.");
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Enter new price:");
+                                        float item_price = GetNonZeroFloatFromInput();
+                                        search_menu_item.SetPrice(item_price);
+                                        System.out.println("Edit successful.");
+                                        break;
+                                    case 3:
+                                        System.out.println("Enter new description:");
+                                        String item_description = GetStringFromInput();
+                                        search_menu_item.SetDescription(item_description);
+                                        System.out.println("Edit successful.");
+                                        break;
+                                    default:
+                                        System.out.println("Unavailable, please try again:");
+                                        break;
+                                }
+                            }
+                            break;
+                        case 2:
+                            System.out.println("|------|Delete Menu Item|------|");
+                            boolean del_menu_item_success = menu_item_manager_.RemoveFromList(search_menu_item)
+                            if (del_menu_item_success) {
+                                System.out.println("Successfully deleted menu item!");
+                            } else {
+                                System.out.println("Failed to delete menu item.");
+                            }
+                            break;
+                        default:
                             break;
                     }
                     break;
@@ -774,6 +841,20 @@ public class AppManager {
         }
 
         return return_localdatetime;
+    }
+
+    private String GetStringFromInput() {
+        String value = "";
+        while (true) {
+            try {
+                value += sc_.nextLine();
+                break;
+            } catch (Exception e) {
+                sc_.nextLine();
+                System.out.println("Unavailable, please try again:");
+            }
+        }
+        return value;
     }
 
     private String GetUppercaseStringFromInput() {

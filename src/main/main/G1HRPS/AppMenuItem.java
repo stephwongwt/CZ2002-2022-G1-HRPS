@@ -4,11 +4,12 @@ public enum AppMenuItem {
     Quit(0),
     AddGuest(1),
     AddRoom(2),
-    AddRoomServiceMenuItem(3),
+    AddMenuItem(3),
     SearchGuest(4),
     SearchRoom(5),
     SearchReservations(6),
-    Display(7);
+    SearchMenuItems(7),
+    Display(8);
 
     private final int value;
 
