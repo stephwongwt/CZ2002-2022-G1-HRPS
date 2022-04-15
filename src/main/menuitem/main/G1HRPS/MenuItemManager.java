@@ -20,6 +20,20 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
     }
 
     /**
+     * Creates new MenuItem and adds it to MenuItem list.
+     * 
+     * @param name
+     * @param price
+     * @param description
+     * @return
+     */
+    public MenuItem CreateNewMenuItem(String name, float price, String description) {
+        MenuItem menu_item = new MenuItem(name, price, description);
+        AddToList(menu_item);
+        return menu_item;
+    }
+
+    /**
      * Adds a new menu item object into menu item list.
      * 
      * @param MenuItem obj to be added
@@ -31,7 +45,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
         MenuItem found = SearchList(menu_item.GetName());
         if (found == null) {
             try {
-                success = menu_item_list_.add(menu_item);
+                success = this.menu_item_list_.add(menu_item);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -51,7 +65,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
         MenuItem found = SearchList(menu_item.GetName());
         if (found != null) {
             try {
-                success = menu_item_list_.remove(found);
+                success = this.menu_item_list_.remove(found);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -104,7 +118,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
 
     public void SaveDB() {
         List<String> menuItemData = new ArrayList<String>();
-        for (MenuItem item : menu_item_list_) {
+        for (MenuItem item : this.menu_item_list_) {
             StringBuilder st = new StringBuilder();
             st.append(item.GetName());
             st.append(SEPARATOR);

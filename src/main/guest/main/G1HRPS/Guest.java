@@ -1,12 +1,11 @@
 package main.G1HRPS;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Guest {
     public static final int MIN_CC_NUMLEN = 8;
     public static final int MAX_CC_NUMLEN = 19;
-    private static final String EMPTY = "Unassigned";
+    public static final String EMPTY = "EMPTY";
     private static final int EMPTY_ROOM = 0;
     private String identity_;
     private String payment_id_;
@@ -297,7 +296,7 @@ public class Guest {
                 "|Credit Card #: %s|\n" +
                 "|Billing Address: %s|\n" +
                 "|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n" +
-                "|Check In Date: %s\n",
+                "|Check In Date: %s|\n",
                 identity_, name_, room_num, payment_id,
                 credit_card_number_,
                 billing_address_,

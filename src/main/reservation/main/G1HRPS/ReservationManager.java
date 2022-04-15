@@ -11,13 +11,12 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
     private final String DB_FILENAME = "reservation_db.txt";
 
     public ReservationManager() {
-        reservation_list_ = new ArrayList<Reservation>();
+        this.reservation_list_ = new ArrayList<Reservation>();
     }
 
     public Reservation CreateNewReservation(String guest_id, String check_in_date, String check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
-        UUID reservation_code = UniqueIdGenerator.Generate();
-        Reservation rsvp = new Reservation(reservation_code, guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
-        reservation_list_.add(rsvp);
+        Reservation rsvp = new Reservation(guest_id, check_in_date, check_out_date, adult_num, children_num, status, room_num);
+        AddToList(rsvp);
         return rsvp;
     }
 
@@ -42,7 +41,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
 
     public void SaveDB() {
         List<String> reservationData = new ArrayList<>();
-        for (Reservation rsvp : reservation_list_) {
+        for (Reservation rsvp : this.reservation_list_) {
             StringBuilder st = new StringBuilder();
             st.append(rsvp.GetReservationCode().toString());
             st.append(SEPARATOR);
@@ -75,10 +74,10 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
      */
     public boolean CheckIn(Reservation reservation) {
         Reservation rsvp = SearchList(reservation.GetReservationCode().toString());
-        int rsvp_index = reservation_list_.indexOf(rsvp);
+        int rsvp_index = this.reservation_list_.indexOf(rsvp);
         if (rsvp != null) {
             rsvp.SetStatus(ReservationStatus.CheckedIn);
-            reservation_list_.set(rsvp_index, rsvp);
+            this.reservation_list_.set(rsvp_index, rsvp);
             return true;
         }
         return false;
@@ -91,10 +90,10 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
      */
     public boolean CheckOut(Reservation reservation) {
         Reservation rsvp = SearchList(reservation.GetReservationCode().toString());
-        int rsvp_index = reservation_list_.indexOf(rsvp);
+        int rsvp_index = this.reservation_list_.indexOf(rsvp);
         if (rsvp != null) {
             rsvp.SetStatus(ReservationStatus.CheckedOut);
-            reservation_list_.set(rsvp_index, rsvp);
+            this.reservation_list_.set(rsvp_index, rsvp);
             return true;
         }
         return false;
@@ -141,7 +140,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
     /**
      * Returns an ArrayList List<Reservation>, room_list
      * 
-     * @return reservation_list_ ArrayList that is returned.
+     * @return this.reservation_list_ ArrayList that is returned.
      */
     @Override
     public List<Reservation> GetList() {
@@ -156,7 +155,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
      */
     @Override
     public Reservation SearchList(String search_text) {
-        for (Reservation reservation : reservation_list_) {
+        for (Reservation reservation : this.reservation_list_) {
             if (reservation.GetReservationCode().equals(UUID.fromString(search_text))) {
                 return reservation;
             }
@@ -171,7 +170,7 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
      * @return Reservation if found, else null
      */
     public Reservation SearchList(Guest guest) {
-        for (Reservation reservation : reservation_list_) {
+        for (Reservation reservation : this.reservation_list_) {
             if (reservation.GetGuestId().equals(guest.GetIdentity())) {
                 return reservation;
             }

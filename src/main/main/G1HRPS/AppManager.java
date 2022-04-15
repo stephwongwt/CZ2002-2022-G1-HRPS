@@ -1,8 +1,10 @@
 package main.G1HRPS;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -73,15 +75,42 @@ public class AppManager {
                     System.out.println("|---|Add Room|---|");
                     CreateNewRoom();
                     break;
+                case AddRoomServiceMenuItem:
+                    System.out.println("|---|Add Room Service Menu Items|---|");
+                    sc_.nextLine();
+                    System.out.println("Enter name of menu item:");
+                    String menu_item_name = GetUppercaseStringFromInput();
+                    System.out.println("Enter price:");
+                    float menu_item_price = GetNonZeroFloatFromInput();
+                    System.out.println("Enter description:");
+                    String menu_item_description = GetUppercaseStringFromInput();
+                    MenuItem new_menu_item = menu_item_manager_.CreateNewMenuItem(menu_item_name, menu_item_price, menu_item_description);
+                    if (new_menu_item != null) {
+                        System.out.println("Item created!");
+                        System.out.println(new_menu_item.toString());
+                    } else {
+                        System.out.println("Menu item already exists, did not create.");
+                    }
+                    break;
                 case SearchGuest:
                     System.out.println("|---|Search Guest|---|");
-                    Guest search_guest = SearchManagerList(guest_manager_);
+                    System.out.println("Search by name (False[0]/True[1])?");
+                    boolean search_by_name = GetBooleanFromInput();
+                    Guest search_guest = null;
+                    if (search_by_name) {
+                        System.out.println("Enter name to search:");
+                        sc_.nextLine();
+                        String search_guest_name = GetUppercaseStringFromInput();
+                        search_guest = guest_manager_.SearchListByName(search_guest_name);
+                    } else {
+                        search_guest = SearchManagerList(guest_manager_);
+                    }
                     PrintGuestSubMenu(search_guest);
                     break;
                 case SearchRoom:
                     System.out.println("|---|Search Room|---|");
                     Room search_room = SearchManagerList(room_manager_);
-                    search_room.toString();
+                    System.out.println(search_room.toString());
                     System.out.println("What would you like to do with this room?\n" +
                                     "[0] Go back\n" +
                                     "[1] Complete Room Service Order\n" +
@@ -183,7 +212,7 @@ public class AppManager {
                 case SearchReservations:
                     System.out.println("|---|Search Reservations|---|");
                     Reservation search_rsvp = SearchManagerList(reservation_manager_);
-                    search_rsvp.toString();
+                    System.out.println(search_rsvp.toString());
                     System.out.println("What would you like to do with this reservation?\n" +
                                     "[0] Go back\n" +
                                     "[1] Check In\n" +
@@ -229,12 +258,15 @@ public class AppManager {
                             System.out.println("Back to previous menu...");
                             break;
                         case 1:
+                            System.out.println("|------|All Rooms|------|");
                             DisplayList(room_manager_);
                             break;
                         case 2:
+                            System.out.println("|------|All Guests|------|");
                             DisplayList(guest_manager_);
                             break;
                         case 3:
+                            System.out.println("|------|All Reservations|------|");
                             DisplayList(reservation_manager_);
                             break;
                         case 4:
@@ -242,19 +274,21 @@ public class AppManager {
                             EnumMap<RoomType, Pair<Integer, Vector<Integer>>> room_stats_type = room_manager_.GetRoomStatisticsByTypeOccupancyRate();
                             for (RoomType type : RoomType.values()) {
                                 Pair<Integer, Vector<Integer>> stat = room_stats_type.get(type);
-                                int key_type_total_rooms = stat.a;
-                                Vector<Integer> vacant_rooms = stat.b;
-                                System.out.println("." + type.toString() + " Rooms: " + vacant_rooms.size() + " out of " + key_type_total_rooms + " vacant");
-                                System.out.println(".Vacant Rooms: " + vacant_rooms.toString());
+                                if (stat != null) {
+                                    int type_total_rooms = stat.a;
+                                    Vector<Integer> vacant_rooms = stat.b;
+                                    System.out.println("." + type.toString() + " Rooms: " + vacant_rooms.size() + " out of " + type_total_rooms + " vacant");
+                                    System.out.println("    .Vacancies: " + vacant_rooms.toString());
+                                }
                             }
                             break;
                         case 5:
                             System.out.println("|------|Room Stats by Status|------|");
                             EnumMap<RoomStatus, Vector<Integer>> room_stats_status = room_manager_.GetRoomStatisticsByStatus();
                             for (RoomStatus status : RoomStatus.values()) {
-                                Vector<Integer> stats = room_stats_status.get(status);
-                                for (Integer each_status_stat : stats) {
-                                    System.out.println(status.toString() + ": " + each_status_stat.toString());
+                                if (status != null) {
+                                    Vector<Integer> stats = room_stats_status.get(status);
+                                    System.out.println(status.toString() + ": " + stats.toString());
                                 }
                             }
                             break;
@@ -276,7 +310,7 @@ public class AppManager {
      * @return selected menu option
      */
     private AppMenuItem PrintMenu() {
-        System.out.println("\r\n|--------|Choose an option|--------|");
+        System.out.println("\r\n|-|Choose an option|-|");
         for (AppMenuItem app_menu_item : APP_MENU_LIST) {
             System.out.printf("[%d] %s\r\n", app_menu_item.GetValue(), app_menu_item.toString());
         }
@@ -302,7 +336,7 @@ public class AppManager {
             System.out.println("Guest is null, unavailable");
             return;
         }
-        sub_menu_guest.toString();
+        System.out.println(sub_menu_guest.toString());
         final String guest_id = sub_menu_guest.GetIdentity();
         final int guest_room_number = sub_menu_guest.GetRoomNum();
         System.out.println("What would you like to do with this guest?\n" +
@@ -591,6 +625,7 @@ public class AppManager {
             System.out.println("." + type.toString() + " Rooms: " + vacant_rooms.size() + " out of " + key_type_total_rooms + " vacant");
             System.out.println(".Vacant Rooms: " + vacant_rooms.toString());
         }
+        System.out.println("Enter Room Num:");
         while (true) {
             try {
                 picked_room_number = sc_.nextInt();
@@ -604,6 +639,7 @@ public class AppManager {
                 System.out.println("Unavailable, please try again:");
             }
         }
+        System.out.println("Selected room " + picked_room_number);
         return picked_room_number;
     }
 
@@ -614,19 +650,24 @@ public class AppManager {
         int children_num;
         ReservationStatus status;
         int room_num;
-        sc_.nextLine();
         System.out.println("Enter Check In Date (e.g. 2022-04-15):");
         check_in_date = GetDatetimeStringFromDateInput("yyyy-MM-dd");
         System.out.println("Enter Check Out Date (e.g. 2022-04-15):");
-        check_out_date = GetDatetimeStringFromDateInput("yyyy-MM-dd");
+        while (true) {
+            check_out_date = GetDatetimeStringFromDateInput("yyyy-MM-dd");
+            if (ChronoUnit.DAYS.between(check_in_date, check_out_date) < 1) {
+                System.out.println("Please key in a date more than a day difference from Check In Date: ");
+            } else {
+                break;
+            }
+        }
         System.out.println("Enter Number of Adults:");
         adult_num = GetNonZeroIntFromInput();
         System.out.println("Enter Number of Children:");
         children_num = GetIntFromInput();
         ///TODO: Check limit for number of occupants in the room based on RoomType
-        System.out.println("Enter Reservation Status (Confirmed[0]/Waitlist[1]/CheckedIn[2]/CheckedOut[3]/Expired[3]):");
+        System.out.println("Enter Reservation Status (Confirmed[0]/Waitlist[1]/CheckedIn[2]/CheckedOut[3]/Expired[4]):");
         status = GetEnumFromInput(ReservationStatus.values());
-        System.out.println("Enter Room Num:");
         room_num = PickRoom();
 
         Reservation new_rsvp = reservation_manager_.CreateNewReservation(guest_id, check_in_date.toString(), check_out_date.toString(), adult_num, children_num, status, room_num);
@@ -635,12 +676,12 @@ public class AppManager {
         } else {
             Room rsvp_room = room_manager_.SearchList(room_num);
             rsvp_room.SetStatus(RoomStatus.Reserved);
-            System.out.printf("Reservation code %d successfully created!\r\n", new_rsvp.GetReservationCode().toString());
+            System.out.printf("Reservation code %s successfully created!\r\n", new_rsvp.GetReservationCode().toString());
         }
     }
 
     private LocalDateTime GetDatetimeStringFromDateInput(String date_format) {
-        DateTimeFormatter localdate_format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter localdate_format = DateTimeFormatter.ofPattern(date_format);
         LocalDate input_date;
         LocalDateTime return_localdatetime;
         String value = "";
@@ -663,7 +704,7 @@ public class AppManager {
         String value = "";
         while (true) {
             try {
-                value = sc_.nextLine().toUpperCase();
+                value += sc_.nextLine().toUpperCase();
                 break;
             } catch (Exception e) {
                 sc_.nextLine();
@@ -709,7 +750,9 @@ public class AppManager {
         while (true) {
             try {
                 value = sc_.nextInt();
-                if (value != 0) {
+                if (value == 0) {
+                    System.out.println("Unavailable, please try again:");
+                } else {
                     sc_.nextLine();
                     break;
                 }
@@ -740,7 +783,9 @@ public class AppManager {
         while (true) {
             try {
                 value = sc_.nextFloat();
-                if (value != 0.0f) {
+                if (value == 0.0f) {
+                    System.out.println("Unavailable, please try again:");
+                } else {
                     sc_.nextLine();
                     break;
                 }
@@ -818,11 +863,11 @@ public class AppManager {
      */
     private <T> T SearchManagerList(Supermanager<T> sm) {
         String search_text = "";
-        System.out.println("Enter search text:");
+        System.out.println("Enter id to search:");
         sc_.nextLine();
         while (true) {
             try {
-                search_text += sc_.nextLine();
+                search_text += sc_.nextLine().toUpperCase();
                 return sm.SearchList(search_text);
             } catch (Exception e) {
                 sc_.nextLine();
@@ -844,7 +889,7 @@ public class AppManager {
     private <T> void DisplayList(Supermanager<T> sm) {
         List<T> sm_list = sm.GetList();
         for (T t : sm_list) {
-            t.toString();
+            System.out.println(t.toString() + "\n");
         }
     }
 

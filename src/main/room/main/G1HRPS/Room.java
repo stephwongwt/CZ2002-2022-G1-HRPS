@@ -238,13 +238,14 @@ public class Room {
      */
     @Override
     public String toString(){
-        String output = "Room Number: " + this.room_number_ + "Room Price: " + this.room_price_ +
-                        "\nBed Size: " + this.bedsize_ +
-                        "\nwifi Enabled: " + this.wifi_enabled_ +
-                        "\nwith View: " + this.w_view_ +
-                        "\nwith Smoking: " + this.w_smoking_ +
-                        "\nRoom Status: " + this.status_ +
-                        "\nGuests: " + this.guest_list_.toString();
+        String output = "|Room Number: " + this.room_number_ +
+                        "|Room Price: " + this.room_price_ +
+                        "|\n|Bed Size: " + this.bedsize_ +
+                        "|wifi Enabled: " + this.wifi_enabled_ +
+                        "|with View: " + this.w_view_ +
+                        "|\n|with Smoking: " + this.w_smoking_ +
+                        "|Room Status: " + this.status_ +
+                        "|\n|Guests: " + this.guest_list_.toString() + "|";
         return output;
     }
 }

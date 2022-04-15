@@ -30,13 +30,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      */
     public Guest CreateNewGuest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
         Guest new_guest = new Guest(identity, name, credit_card_number, billing_address, contact, country, gender, nationality);
-        Guest found_exisiting_guest = SearchList(identity);
-        if (found_exisiting_guest == null) {
-            AddToList(new_guest);
-            return new_guest;
-        } else { // cannot create new guest due to existing guest
-            return null;
-        }
+        AddToList(new_guest);
+        return new_guest;
     }
     
     public boolean VerifyCreditCardNumber(String credit_card_number) {
@@ -88,6 +83,15 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             }
         }
         return success;
+    }
+
+    public Guest SearchListByName(String guest_name) {
+        for (Guest guest : guest_list_) {
+            if (guest_name.equals(guest.GetName())) {
+                return guest;
+            }
+        }
+        return null;
     }
 
     /**
@@ -182,7 +186,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             StringBuilder st = new StringBuilder();
             st.append(guest.GetIdentity());
             st.append(SEPARATOR);
-            st.append(guest.GetPaymentId());
+            String payment_id = guest.GetPaymentId();
+            st.append(payment_id.isEmpty() ? Guest.EMPTY : payment_id);
             st.append(SEPARATOR);
             st.append(guest.GetRoomNum());
             st.append(SEPARATOR);
