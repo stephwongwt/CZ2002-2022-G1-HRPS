@@ -1,6 +1,6 @@
 package main.G1HRPS;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ public class RoomServiceOrder {
     private UUID room_service_order_code_;
     private String guest_id_;
     private int room_number_;
-    private final Timestamp time_created_;
-    private Timestamp time_completed_;
+    private final String time_created_;
+    private String time_completed_;
     private List<MenuItem> ordered_item_list_;
     private String remarks_;
     private OrderStatus status_;
@@ -31,8 +31,9 @@ public class RoomServiceOrder {
         this.room_number_ = room_number;
         this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
         this.remarks_ = remarks;
-
-        this.time_created_ = new Timestamp(System.currentTimeMillis());
+        LocalDateTime dateTime = LocalDateTime.now();
+        this.time_created_ = AppManager.DATETIME_FORMATTER.format(dateTime);
+        this.time_completed_ = null;
         this.status_ = OrderStatus.Confirmed;
         this.order_quantity_ = this.ordered_item_list_.size();
     }
@@ -43,8 +44,9 @@ public class RoomServiceOrder {
         this.room_number_ = room_number;
         this.ordered_item_list_ = new ArrayList<MenuItem>(ordered_item_list);
         this.remarks_ = remarks;
-
-        this.time_created_ = new Timestamp(System.currentTimeMillis());
+        LocalDateTime dateTime = LocalDateTime.now();
+        this.time_created_ = AppManager.DATETIME_FORMATTER.format(dateTime);
+        this.time_completed_ = null;
         this.status_ = OrderStatus.Confirmed;
         this.order_quantity_ = this.ordered_item_list_.size();
     }
@@ -70,18 +72,18 @@ public class RoomServiceOrder {
     /**
      * Get the time stamp when order was delivered
      * 
-     * @return Timestamp when order was created
+     * @return timestamp of when order was created
      */
-    public Timestamp GetTimeCreated() {
+    public String GetTimeCreated() {
         return this.time_created_;
     }
 
     /**
      * Gets the time stamp when order was delivered
      * 
-     * @return Timestamp when order was delivered
+     * @return timestamp of when order was delivered
      */
-    public Timestamp GetTimeCompleted() {
+    public String GetTimeCompleted() {
         return this.time_completed_;
     }
 
@@ -90,7 +92,7 @@ public class RoomServiceOrder {
      * 
      * @param time_completed
      */
-    public void SetTimeCompleted(Timestamp time_completed) {
+    public void SetTimeCompleted(String time_completed) {
         this.time_completed_ = time_completed;
     }
 
@@ -167,8 +169,9 @@ public class RoomServiceOrder {
         this.status_ = status;
         if (this.status_ == OrderStatus.Delivered) {
             // create only first time
-            if (this.time_completed_ != null) {
-                this.time_completed_ = new Timestamp(System.currentTimeMillis());
+            if (this.time_completed_ == null) {
+                LocalDateTime dateTime = LocalDateTime.now();
+                this.time_completed_ = AppManager.DATETIME_FORMATTER.format(dateTime);
             }
         }
     }
@@ -216,10 +219,10 @@ public class RoomServiceOrder {
      * 
      * @return float containing the total price
      */
-    public float CalTotalPrice() {
+    public float CalculateOrderTotalPrice() {
         float total_price = 0.0f;
-        for (int i = 0; i < this.ordered_item_list_.size(); i++) {
-            total_price += this.ordered_item_list_.get(i).GetPrice();
+        for (MenuItem menu_item : ordered_item_list_) {
+            total_price += menu_item.GetPrice();
         }
         return total_price;
     }
