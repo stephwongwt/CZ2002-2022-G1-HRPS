@@ -1,0 +1,5 @@
+TIGER BEER|15.0|Ice cold Tiger beer.|
+CHEESE FRIES|5.0|Crispy french fries drizzled with nacho cheese.|
+CAESAR SALAD|15.0|Classic chicken caesar salad with lettuce, tomato, egg, croutons, and slices of grilled chicken.|
+ITALIAN SPAGHETTI BOLOGNESE|20.0|Classic italian tomato based pasta.|
+MINERAL WATER|3.0|Bottle of plain mineral water.|
