@@ -290,7 +290,7 @@ public class Guest {
     public String toString() {
         String room_num = (this.room_num_ == EMPTY_ROOM) ? EMPTY : String.valueOf(this.room_num_);
         String payment_id = (this.payment_id_.isEmpty()) ? EMPTY : this.payment_id_.toString();
-        String check_in_date = (this.check_in_date_.isEmpty()) ? EMPTY : this.payment_id_.toString();
+        String check_in_date = (this.check_in_date_.isEmpty()) ? EMPTY : this.check_in_date_.toString();
         String output = String.format(
                 "|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" +
                 "|Credit Card #: %s|\n" +
