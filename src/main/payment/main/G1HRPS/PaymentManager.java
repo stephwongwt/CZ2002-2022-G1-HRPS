@@ -1,10 +1,9 @@
 package main.G1HRPS;
 
 import java.io.IOException;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.FileInputStream;
-import java.util.Scanner;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -34,72 +33,10 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
      * @param bill_total           After deducting discounts
      * @param status
      */
-    public void CreateNewPayment(UUID id, String guest_id, int room_num, float discounts, float tax, float room_charges,
-            float room_service_charges, float bill_total, PaymentStatus status) {
-        Payment new_payment = new Payment(id, guest_id, room_num, discounts, tax, room_charges, room_service_charges,
-                bill_total, status);
+    public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges, float room_service_charges, float bill_total, PaymentStatus status) {
+        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
         AddToList(new_payment);
-    }
-
-    /**
-     * Takes a payment and add it to payment list.
-     * 
-     * @param payment New Payment object to be added to list of Payment objects.
-     */
-    public void AddToList(Payment payment) {
-        boolean success;
-        try {
-            success = payment_list_.add(payment);
-            if (success)
-                System.out.println("Payment added to list");
-            else {
-                System.out.println("Payment of UUID: " + payment.GetPaymentID() + " not added to list");
-            }
-        } catch (NullPointerException e) {
-            System.out.println("Payment List not initialized");
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Removes a matching payment from the payment list.
-     * 
-     * @param payment Payment object to be removed from the list of Payment objects.
-     */
-    public void RemoveFromList(Payment payment) {
-        boolean success;
-        try {
-            success = payment_list_.remove(payment);
-            if (success) {
-                System.out.println("Payment removed from list");
-            } else {
-                System.out.println("Payment of UUID: " + payment.GetPaymentID() + " not removed from list");
-            }
-        } catch (NullPointerException e) {
-            System.out.println("Payment List not initialized");
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Method overrides the <T> SearchList(String search_text)
-     * in Supermanager interface and returns a payment with
-     * matching search text.
-     * 
-     * @param payment_id String converted payment ID that was originally of type
-     *                   UUID.
-     * 
-     * @return payment with the matching payment ID.
-     */
-    @Override
-    public Payment SearchList(String payment_id) {
-        UUID uuid = UUID.fromString(payment_id);
-        for (Payment payment : payment_list_) {
-            if (uuid.equals(payment.GetPaymentID())) {
-                return payment;
-            }
-        }
-        return null;
+        return new_payment;
     }
 
     /**
@@ -149,85 +86,74 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     }
 
     /**
-     * Generates a new payment with the given arguments and prints the bill.
-     * After printing the bill, the method returns the Payment object.
+     * Generates a new payment with the given arguments and
+     * inputs the bill into string format to be printed.
      * 
      * @param guest_id
      * @param room_num
-     * @param days_of_stay
+     * @param check_in_date
      * @param room_charge
      * @param discounts
      * @param tax
      * @param room_service_orders
-     * @return new Payment object created from given arguments.
+     * @return Object array [0] New Payment object, [1] String of Bill to be printed.
      */
-    public Payment GenerateAndPrintBill(String guest_id, int room_num, int days_of_stay, float room_charge,
-            float discounts, float tax, List<RoomServiceOrder> room_service_orders) {
-        int index;
-        boolean success;
-        float rate, init_total_bill;
+    public Pair<String, Payment> GenerateAndPrintBill(String guest_id, int room_num, LocalDateTime check_in_date, float room_charge, int discounts, int tax, List<RoomServiceOrder> room_service_orders) {
+        String bill_string = "";
         float total_room_service_charges, cost_of_stay, price_of_order;
-        index = 1;
-        init_total_bill = 0;
-        success = false;
         total_room_service_charges = 0;
+
+        long days_of_stay = ChronoUnit.DAYS.between(check_in_date, LocalDateTime.now());
         cost_of_stay = days_of_stay * room_charge;
-        System.out.println("-------Payment-------");
-        System.out.println("---- Days of Stay : " + days_of_stay);
-        System.out.printf("- Cost of Stay ($) : %.2f\n", cost_of_stay);
-        System.out.println("---- Room services ordered");
-        for (RoomServiceOrder each_order : room_service_orders) {
+
+        bill_string.concat(String.format("- Days of Stay: %d, Cost: $ %.2f\n", days_of_stay, cost_of_stay));
+        String room_services_ordered = "|-|Room services ordered|-|";
+        for (int i = 0; i < room_service_orders.size(); i++) {
+            RoomServiceOrder each_order = room_service_orders.get(i);
             price_of_order = each_order.CalTotalPrice();
-            System.out.println("--- Room Service Order [" + index + "]:");
-            System.out.print(each_order.MenuItemstoString());
-            System.out.println("-- Order Total : " + price_of_order);
+            room_services_ordered.concat(".Room Service Order [" + i+1 + "]");
+            room_services_ordered.concat(each_order.MenuItemstoString());
             total_room_service_charges += price_of_order;
-            index++;
         }
-        Payment new_payment = new Payment(UniqueIdGenerator.Generate(), guest_id, room_num, discounts, tax,
-                cost_of_stay, total_room_service_charges, init_total_bill, PaymentStatus.Pending);
-        new_payment.CalculateBillTotal();
-        System.out.printf("- Cost of Room Service ($) : %.2f\n", total_room_service_charges);
-        System.out.printf("- Discount Rate : %.2f (%)\n", discounts);
-        System.out.printf("- Tax Rate : %.2f (%)\n", tax);
-        System.out.printf("- Total ($) : %.2f\n", new_payment.GetTotalBill());
-        return new_payment;
+        room_services_ordered.concat(String.format(" .Room Service Total : $ %.2f\n", total_room_service_charges));
+        bill_string.concat(room_services_ordered);
+        
+        Payment new_payment = new Payment(guest_id, room_num, discounts, tax, cost_of_stay, total_room_service_charges, PaymentStatus.Pending);
+        bill_string.concat(String.format("- Discount Rate: %d %\n", discounts));
+        bill_string.concat(String.format("- Tax Rate: %d %\n", tax));
+        bill_string.concat(String.format("- Bill Total: $ %.2f\n", new_payment.GetTotalBill()));
+
+        Pair<String, Payment> return_pair = Pair.makePair(bill_string, new_payment);
+        return return_pair;
     }
 
     /**
-     * Payment data read as list of Strings are converted to a list of payment
-     * class.
-     * </p>
-     * Each String object data is parsed and used to create each Payment object data
-     * in list.
+     * Tokenize each line in the database into an object.
      */
     public void InitializeDB() {
         // read String from text file
         ArrayList<String> dbArray = (ArrayList) read(db_filename);
         ArrayList<Payment> dataList = new ArrayList<Payment>();
-        for (int i = 0; i < dbArray.size(); i++) {
-            String st = (String) dbArray.get(i);
+        for(String st : dbArray){
             // get individual 'fields' of the string separated by SEPARATOR
             StringTokenizer star = new StringTokenizer(st, SEPARATOR); // pass in the string to the string tokenizer
             UUID id = UUID.fromString(star.nextToken().trim()); // first token
             String guest_id = star.nextToken().trim(); // second token
             int room_num = Integer.parseInt(star.nextToken().trim());
-            float discounts = Float.parseFloat(star.nextToken().trim());
-            float tax = Float.parseFloat(star.nextToken().trim());
+            int discounts = Integer.parseInt(star.nextToken().trim());
+            int tax = Integer.parseInt(star.nextToken().trim());
             float room_charges = Float.parseFloat(star.nextToken().trim());
             float room_service_charges = Float.parseFloat(star.nextToken().trim());
             float bill_total = Float.parseFloat(star.nextToken().trim());
             PaymentStatus status = PaymentStatus.valueOf(star.nextToken().trim());
-            Payment obj = new Payment(id, guest_id, room_num, discounts, tax, room_charges, room_service_charges,
-                    bill_total, status);
+            Payment obj = new Payment(guest_id, room_num, discounts, tax, room_charges, room_service_charges, bill_total, status);
             dataList.add(obj);
         }
-        payment_list_ = dataList;
+        this.payment_list_ = dataList;
     }
 
     /**
-     * Each payment data in the list is turned into formatted String and
-     * written into each line of file named "payment_db.txt".
+     * Data list is turned into formatted String and written the file named db_filename.
      */
     public void SaveDB() {
         List<String> paymentData = new ArrayList<String>();
@@ -258,5 +184,58 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Takes a payment and add it to payment list.
+     * 
+     * @param payment New Payment object to be added to list of Payment objects.
+     * @return true if success / false if failed
+     */
+    @Override
+    public boolean AddToList(Payment payment) {
+        boolean success = false;
+        try {
+            success = payment_list_.add(payment);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+
+    /**
+     * Removes a matching payment from the payment list.
+     * 
+     * @param payment Payment object to be removed from the list of Payment objects.
+     * @return true if success / false if failed
+     */
+    @Override
+    public boolean RemoveFromList(Payment payment) {
+        boolean success = false;
+        try {
+            success = payment_list_.remove(payment);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+
+    /**
+     * Method overrides the <T> SearchList(String search_text)
+     * in Supermanager interface and returns a payment with
+     * matching search text.
+     * 
+     * @param payment_id String converted payment ID that was originally of type UUID.
+     * @return payment with the matching payment ID.
+     */
+    @Override
+    public Payment SearchList(String payment_id) {
+        UUID uuid = UUID.fromString(payment_id);
+        for (Payment payment : payment_list_) {
+            if (uuid.equals(payment.GetPaymentID())) {
+                return payment;
+            }
+        }
+        return null;
     }
 }
