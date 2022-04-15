@@ -59,12 +59,16 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param guest Guest object to be added
      * @return true if success / false if failed
      */
+    @Override
     public boolean AddToList(Guest guest) {
         boolean success = false;
-        try {
-            success = guest_list_.add(guest);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Guest found = SearchList(guest.GetIdentity());
+        if (found == null) {
+            try {
+                success = guest_list_.add(guest);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -78,10 +82,13 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
     @Override
     public boolean RemoveFromList(Guest guest) {
         boolean success = false;
-        try {
-            success = this.guest_list_.remove(guest);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Guest found = SearchList(guest.GetIdentity());
+        if (found != null) {
+            try {
+                success = this.guest_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }

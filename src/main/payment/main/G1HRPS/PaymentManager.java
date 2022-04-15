@@ -194,10 +194,13 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     @Override
     public boolean AddToList(Payment payment) {
         boolean success = false;
-        try {
-            success = payment_list_.add(payment);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Payment found = SearchList(payment.GetPaymentID().toString());
+        if (found == null) {
+            try {
+                success = payment_list_.add(payment);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -211,10 +214,13 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
     @Override
     public boolean RemoveFromList(Payment payment) {
         boolean success = false;
-        try {
-            success = payment_list_.remove(payment);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Payment found = SearchList(payment.GetPaymentID().toString());
+        if (found != null) {
+            try {
+                success = payment_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }

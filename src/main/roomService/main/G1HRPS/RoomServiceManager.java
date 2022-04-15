@@ -36,10 +36,13 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
     @Override
     public boolean AddToList(RoomServiceOrder room_service_order) {
         boolean success = false;
-        try {
-            success = this.room_service_order_list_.add(room_service_order);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        RoomServiceOrder found = SearchList(room_service_order.GetRsoCode().toString());
+        if (found == null) {
+            try {
+                success = this.room_service_order_list_.add(room_service_order);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -53,10 +56,13 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
     @Override
     public boolean RemoveFromList(RoomServiceOrder room_service_order) {
         boolean success = false;
-        try {
-            success = this.room_service_order_list_.remove(room_service_order);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        RoomServiceOrder found = SearchList(room_service_order.GetRsoCode().toString());
+        if (found != null) {
+            try {
+                success = this.room_service_order_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }

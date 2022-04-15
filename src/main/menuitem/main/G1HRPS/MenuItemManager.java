@@ -16,6 +16,7 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
      * Constructor for Menu Item Manager
      */
     public MenuItemManager() {
+        this.menu_item_list_ = new ArrayList<MenuItem>();
     }
 
     /**
@@ -24,12 +25,16 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
      * @param MenuItem obj to be added
      * @return true if success / false if failed
      */
+    @Override
     public boolean AddToList(MenuItem menu_item) {
         boolean success = false;
-        try {
-            success = menu_item_list_.add(menu_item);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        MenuItem found = SearchList(menu_item.GetName());
+        if (found == null) {
+            try {
+                success = menu_item_list_.add(menu_item);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -40,12 +45,16 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
      * @param MenuItem obj to be removed
      * @return true if success / false if failed
      */
+    @Override
     public boolean RemoveFromList(MenuItem menu_item) {
         boolean success = false;
-        try {
-            success = menu_item_list_.remove(menu_item);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        MenuItem found = SearchList(menu_item.GetName());
+        if (found != null) {
+            try {
+                success = menu_item_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
@@ -53,13 +62,14 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
     /**
      * Returns menu item object from search for name of item
      * 
-     * @return MenuItem searched for
+     * @param search_text menu item name to be searched
+     * @return MenuItem if found, else null
      */
+    @Override
     public MenuItem SearchList(String search_text) {
-        // TODO - implement MenuItemManager.SearchList
-        for (int i = 0; i < this.menu_item_list_.size(); i++) {
-            if (this.menu_item_list_.get(i).GetName().toUpperCase() == search_text.toUpperCase()) {
-                return this.menu_item_list_.get(i);
+        for (MenuItem menu_item : this.menu_item_list_) {
+            if (menu_item.GetName().toUpperCase().equals(search_text.toUpperCase())) {
+                return menu_item;
             }
         }
         return null;
@@ -70,32 +80,9 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
      * 
      * @return List containing all menu items
      */
+    @Override
     public List<MenuItem> GetList() {
         return this.menu_item_list_;
-    }
-
-    /**
-     * Prints the list of menu items with price and description
-     */
-    public void DisplayItemMenu() {
-        System.out.println("============ Item Menu =============");
-        for (int i = 0; i < this.menu_item_list_.size(); i++) {
-            System.out.println("Index: " + i + 1 + this.menu_item_list_.get(i));
-        }
-        System.out.println("============ End of Menu =============");
-    }
-
-    /**
-     * Returns MenuItem based on index of item menu
-     * 
-     * @param index
-     * @return MenuItem
-     */
-    public MenuItem GetItemByMenuIndex(int index) {
-        if (index > 0 && (index - 1) < this.menu_item_list_.size()) {
-            return this.menu_item_list_.get(index - 1);
-        }
-        return null;
     }
 
     public void InitializeDB() {
@@ -132,23 +119,5 @@ public class MenuItemManager extends DatabaseHandler implements Supermanager<Men
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Edit price of menu item from menu item list to new value
-     * 
-     * @param item_name
-     * @param new_price
-     */
-    public void EditMenuItemPrice(String item_name, float new_price) {
-        // TODO - implement MenuItemManager.EditMenuItemPrice
-        for (int i = 0; i < this.menu_item_list_.size(); i++) {
-            if (this.menu_item_list_.get(i).GetName() == item_name) {
-                this.menu_item_list_.get(i).SetPrice(new_price);
-                System.out.println("Price for " + item_name + " amended!");
-                return;
-            }
-        }
-        System.out.println("Item not found in Menu!");
     }
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -48,8 +47,7 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
      * Assign a guest to a room, guest is stored as an element in a guest list
      * 
      * @param guest       This is the guest to be added
-     * @param room_number This is the room number of the room that the guest will be
-     *                    added to
+     * @param room_number This is the room number of the room that the guest will be added to
      */
     public void CheckInGuest(Guest guest, int room_number) {
         Room room = SearchList(room_number);
@@ -262,10 +260,13 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
     @Override
     public boolean RemoveFromList(Room room) {
         boolean success = false;
-        try {
-            success = room_list_.remove(room);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        Room found = SearchList(room.GetRoomNumber());
+        if (found != null) {
+            try {
+                success = room_list_.remove(found);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }

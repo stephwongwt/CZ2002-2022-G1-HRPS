@@ -127,10 +127,13 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
     @Override
     public boolean RemoveFromList(Reservation reservation) {
         boolean success = false;
-        try {
-            success = this.reservation_list_.remove(reservation);
-        } catch (Exception e) {
-            e.printStackTrace();
+        Reservation found = SearchList(reservation.GetReservationCode().toString());
+        if (found != null) {
+            try {
+                success = this.reservation_list_.remove(found);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return success;
     }
