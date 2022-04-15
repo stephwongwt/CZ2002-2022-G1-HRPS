@@ -169,10 +169,10 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
     }
 
     /**
-     * Returns the room service order object based on room id
+     * Returns list of room service order object based on room id
      * 
      * @param room_number
-     * @return RoomServiceOrder of interest
+     * @return List of RoomServiceOrders of interest
      */
     public ArrayList<RoomServiceOrder> GetOrderedItemsByRoom(int room_number) {
         ArrayList<RoomServiceOrder> room_service_orders = new ArrayList<>();

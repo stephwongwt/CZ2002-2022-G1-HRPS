@@ -231,13 +231,23 @@ public class AppManager {
                         case 1:
                             System.out.println("|------|Complete Room Service Order|------|");
                             List<RoomServiceOrder> order_list = room_service_manager_.GetOrderedItemsByRoom(search_room.GetRoomNumber());
-                            System.out.println("Select Order to Complete");
-                            for (int i = 0; i < order_list.size(); i++) {
-                                RoomServiceOrder order = order_list.get(i);
-                                System.out.printf("[%d] Status (%s), Items: %", i, order.GetStatus().toString(), order.GetOrderedItemList().toString());
+                            if (!order_list.isEmpty()) {
+                                System.out.println("Room services ordered:");
+                                for (int i = 0; i < order_list.size(); i++) {
+                                    RoomServiceOrder order = order_list.get(i);
+                                    System.out.printf("[%d] Status (%s), Items: %\r\n", i, order.GetStatus().toString(), order.GetOrderedItemList().toString());
+                                }
+                                System.out.println("Select Order to complete:");
+                                int order_index_to_complete = GetIntFromInput(0, order_list.size());
+                                RoomServiceOrder order_to_complete = order_list.get(order_index_to_complete);
+                                if (order_to_complete.GetStatus() != OrderStatus.Delivered) {
+                                    order_to_complete.SetStatus(OrderStatus.Delivered);
+                                } else {
+                                    System.out.println("Order already completed.");
+                                }
+                            } else {
+                                System.out.println("No orders was placed.");
                             }
-                            int order_to_complete = GetIntFromInput(0, order_list.size());
-                            order_list.get(order_to_complete).SetStatus(OrderStatus.Delivered);
                             break;
                         case 2:
                             System.out.println("|------|Edit Room Details|------|");
