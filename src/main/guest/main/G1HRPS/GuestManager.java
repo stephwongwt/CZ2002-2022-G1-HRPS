@@ -25,20 +25,31 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param room_num
      * @param name
      * @param credit_card_number
-     * @param address            Billing address
+     * @param billing_address
      * @param contact
      * @param country
      * @param gender
      * @param nationality
      */
-    public Guest CreateNewGuest(String identity, String name, String credit_card_number, String address, String contact, String country, Gender gender, String nationality) {
-        Guest new_guest = new Guest(identity, name, credit_card_number, address, contact, country, gender, nationality);
+    public Guest CreateNewGuest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
+        Guest new_guest = new Guest(identity, name, credit_card_number, billing_address, contact, country, gender, nationality);
         Guest found_exisiting_guest = SearchList(identity);
         if (found_exisiting_guest == null) {
             AddToList(new_guest);
             return new_guest;
         } else { // cannot create new guest due to existing guest
             return null;
+        }
+    }
+    
+    public boolean VerifyCreditCardNumber(String credit_card_number) {
+        String noSpace_CreditCardNum = credit_card_number.replaceAll("\\s+", "");
+        if (noSpace_CreditCardNum.matches("[0-9]+") &&
+        (noSpace_CreditCardNum.length() >= Guest.MIN_CC_NUMLEN) &&
+        (noSpace_CreditCardNum.length() <= Guest.MAX_CC_NUMLEN)) {
+            return true;
+        } else {
+            return false;
         }
     }
 

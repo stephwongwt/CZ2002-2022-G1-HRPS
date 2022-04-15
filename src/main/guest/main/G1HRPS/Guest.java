@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Guest {
-    private static final int MIN_CC_NUMLEN = 8;
-    private static final int MAX_CC_NUMLEN = 19;
+    public static final int MIN_CC_NUMLEN = 8;
+    public static final int MAX_CC_NUMLEN = 19;
     private static final String EMPTY = "EMPTY";
     private static final UUID EMPTY_UUID = null;
     private static final int EMPTY_ROOM = 0;
@@ -22,22 +22,24 @@ public class Guest {
     private String check_in_date_;
 
     /**
-     * Creates a new guest object.
-     * Payment_id default as null, room_num default 0
-     *
-     * @param identity              Identity Number / Driving License
-     * @param name                 First & Last Name (e.g. John Smith)
-     * @param credit_card_number Any String
-     * @param billing_address    Billing address
-     * @param contact             Any String
-     * @param country             Any String
-     * @param gender             Female/Male/Other
-     * @param nationality         Any String
+     * Create guest obj, used when initializing from DB.
+     * 
+     * @param identity
+     * @param payment_id
+     * @param room_num
+     * @param name
+     * @param credit_card_number
+     * @param billing_address
+     * @param contact
+     * @param country
+     * @param gender
+     * @param nationality
+     * @param check_in_date
      */
-    public Guest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
+    public Guest(String identity, String payment_id, int room_num, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality, String check_in_date) {
         identity_ = identity;
-        payment_id_ = null;
-        room_num_ = 0;
+        payment_id_ = UUID.fromString(payment_id);
+        room_num_ = room_num;
         name_ = name;
         credit_card_number_ = credit_card_number;
         billing_address_ = billing_address;
@@ -45,16 +47,52 @@ public class Guest {
         country_ = country;
         gender_ = gender;
         nationality_ = nationality;
-        LocalDateTime dateTime = LocalDateTime.now();
-        check_in_date_ = AppManager.datetime_formatter.format(dateTime);
+        check_in_date_ = check_in_date;
     }
 
     /**
+     * Create guest obj, used when creating new guests.
+     * 
+     * @param identity
+     * @param name
+     * @param credit_card_number
+     * @param billing_address
+     * @param contact
+     * @param country
+     * @param gender
+     * @param nationality
+     */
+    public Guest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
+        this.identity_ = identity;
+        this.payment_id_ = null;
+        this.room_num_ = 0;
+        this.name_ = name;
+        this.SetCreditCardNumber(credit_card_number);
+        this.billing_address_ = billing_address;
+        this.contact_ = contact;
+        this.country_ = country;
+        this.gender_ = gender;
+        this.nationality_ = nationality;
+        LocalDateTime dateTime = LocalDateTime.now();
+        this.check_in_date_ = AppManager.datetime_formatter.format(dateTime);
+    }
+
+    /**
+     * Gets the check in date of this guest.
      * 
      * @return Check in date timestamp in string
      */
     public String GetCheckInDate() {
-        return check_in_date_;
+        return this.check_in_date_;
+    }
+
+    /**
+     * Sets the check in date of this guest.
+     * 
+     * @return Check in date timestamp in string
+     */
+    public void SetCheckInDate(String check_in_date) {
+        this.check_in_date_ = check_in_date;
     }
 
     /**
@@ -63,7 +101,7 @@ public class Guest {
      * @return String containing identity of this guest.
      */
     public String GetIdentity() {
-        return identity_;
+        return this.identity_;
     }
 
     /**
@@ -72,7 +110,7 @@ public class Guest {
      * @param identity String containing guest's identification.
      */
     public void SetIdentity(String identity) {
-        identity_ = identity;
+        this.identity_ = identity;
     }
 
     /**
@@ -81,7 +119,7 @@ public class Guest {
      * @return String with name of this guest.
      */
     public String GetName() {
-        return name_;
+        return this.name_;
     }
 
     /**
@@ -90,7 +128,7 @@ public class Guest {
      * @param name
      */
     public void SetName(String name) {
-        name_ = name;
+        this.name_ = name;
     }
 
     /**
@@ -99,7 +137,7 @@ public class Guest {
      * @return String containing credit card number.
      */
     public String GetCcNumber() {
-        return credit_card_number_;
+        return this.credit_card_number_;
     }
 
     /**
@@ -111,12 +149,12 @@ public class Guest {
      */
     public boolean SetCreditCardNumber(String credit_card_number) {
         String noSpace_CreditCardNum = credit_card_number.replaceAll("\\s+", "");
-        if (noSpace_CreditCardNum.matches("[0-9]+") && (noSpace_CreditCardNum.length() >= MIN_CC_NUMLEN)
-                && (noSpace_CreditCardNum.length() <= MAX_CC_NUMLEN)) {
-            credit_card_number_ = credit_card_number;
+        if (noSpace_CreditCardNum.matches("[0-9]+") &&
+        (noSpace_CreditCardNum.length() >= MIN_CC_NUMLEN) &&
+        (noSpace_CreditCardNum.length() <= MAX_CC_NUMLEN)) {
+            this.credit_card_number_ = credit_card_number;
             return true;
         } else {
-            System.out.println("Invalid credit card number");
             return false;
         }
     }
@@ -127,7 +165,7 @@ public class Guest {
      * @return String containing billing address of this guest.
      */
     public String GetBillingAddress() {
-        return billing_address_;
+        return this.billing_address_;
     }
 
     /**
@@ -136,7 +174,7 @@ public class Guest {
      * @param billing_address
      */
     public void SetBillingAddress(String billing_address) {
-        billing_address_ = billing_address;
+        this.billing_address_ = billing_address;
     }
 
     /**
@@ -145,7 +183,7 @@ public class Guest {
      * @return String with contact information of this guest
      */
     public String GetContact() {
-        return contact_;
+        return this.contact_;
     }
 
     /**
@@ -154,7 +192,7 @@ public class Guest {
      * @param contact
      */
     public void SetContact(String contact) {
-        contact_ = contact;
+        this.contact_ = contact;
     }
 
     /**
@@ -163,7 +201,7 @@ public class Guest {
      * @return String containing country of residence of this guest.
      */
     public String GetCountry() {
-        return country_;
+        return this.country_;
     }
 
     /**
@@ -172,7 +210,7 @@ public class Guest {
      * @param country
      */
     public void SetCountry(String country) {
-        country_ = country;
+        this.country_ = country;
     }
 
     /**
@@ -181,7 +219,7 @@ public class Guest {
      * @return Gender enum of this guest (Female/Male/Other)
      */
     public Gender GetGender() {
-        return gender_;
+        return this.gender_;
     }
 
     /**
@@ -190,7 +228,7 @@ public class Guest {
      * @param gender Female/Male/Other
      */
     public void SetGender(Gender gender) {
-        gender_ = gender;
+        this.gender_ = gender;
     }
 
     /**
@@ -199,7 +237,7 @@ public class Guest {
      * @return String containing nationality of this guest.
      */
     public String GetNationality() {
-        return nationality_;
+        return this.nationality_;
     }
 
     /**
@@ -208,7 +246,7 @@ public class Guest {
      * @param nationality
      */
     public void SetNationality(String nationality) {
-        nationality_ = nationality;
+        this.nationality_ = nationality;
     }
 
     /**
@@ -217,7 +255,7 @@ public class Guest {
      * @return An int containing room number of this guest.
      */
     public int GetRoomNum() {
-        return room_num_;
+        return this.room_num_;
     }
 
     /**
@@ -226,7 +264,7 @@ public class Guest {
      * @param room_num
      */
     public void SetRoomNum(int room_num) {
-        room_num_ = room_num;
+        this.room_num_ = room_num;
     }
 
     /**
@@ -235,7 +273,7 @@ public class Guest {
      * @return UUID object with payment ID of this guest.
      */
     public UUID GetPaymentId() {
-        return payment_id_;
+        return this.payment_id_;
     }
 
     /**
@@ -244,7 +282,7 @@ public class Guest {
      * @param payment_id a generated UUID
      */
     public void SetPaymentId(UUID payment_id) {
-        payment_id_ = payment_id;
+        this.payment_id_ = payment_id;
     }
 
     /**
@@ -252,17 +290,20 @@ public class Guest {
      */
     @Override
     public String toString() {
-        String room_num = (room_num_ == EMPTY_ROOM) ? EMPTY : String.valueOf(room_num_);
-        String payment_id = (payment_id_ == EMPTY_UUID) ? EMPTY : payment_id_.toString();
+        String room_num = (this.room_num_ == EMPTY_ROOM) ? EMPTY : String.valueOf(this.room_num_);
+        String payment_id = (this.payment_id_ == EMPTY_UUID) ? EMPTY : this.payment_id_.toString();
+        String check_in_date = (this.check_in_date_.isEmpty()) ? EMPTY : this.payment_id_.toString();
         String output = String.format(
                 "|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" +
-                        "|Credit Card #: %s|\n" +
-                        "|Billing Address: %s|\n" +
-                        "|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n",
+                "|Credit Card #: %s|\n" +
+                "|Billing Address: %s|\n" +
+                "|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n" +
+                "|Check In Date: %s\n",
                 identity_, name_, room_num, payment_id,
                 credit_card_number_,
                 billing_address_,
-                contact_, country_, gender_.toString(), nationality_);
+                contact_, country_, gender_.toString(), nationality_,
+                check_in_date);
         return output;
     }
 }
