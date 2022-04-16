@@ -920,10 +920,9 @@ public class AppManager {
 			}
 		}
 		System.out.println("Enter Number of Adults:");
-		adult_num = GetNonZeroIntFromInput();
+		adult_num = GetIntFromInput(1, 5);
 		System.out.println("Enter Number of Children:");
-		children_num = GetIntFromInput();
-		/// TODO: Check limit for number of occupants in the room based on RoomType
+		children_num = GetIntFromInput(0, 5);
 		System.out
 				.println("Enter Reservation Status (Confirmed[0]/Waitlist[1]/CheckedIn[2]/CheckedOut[3]/Expired[4]):");
 		status = GetEnumFromInput(ReservationStatus.values());
