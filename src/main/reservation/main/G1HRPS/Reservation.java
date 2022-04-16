@@ -46,66 +46,130 @@ public class Reservation {
         this.room_num_ = room_num;
     }
 
+    
+    /** 
+     * @param guest_id
+     */
     public void SetGuestId(String guest_id) {
         this.guest_id_ = guest_id;
     }
 
+    
+    /** 
+     * @param check_in_date
+     */
     public void SetCheckInDate(String check_in_date) {
         this.check_in_date_ = check_in_date;
     }
 
+    
+    /** 
+     * @param check_out_date
+     */
     public void SetCheckOutDate(String check_out_date) {
         this.check_out_date_ = check_out_date;
     }
 
+    
+    /** 
+     * @param adult_num
+     */
     public void SetAdultNum(int adult_num) {
         this.adult_num_ = adult_num;
     }
 
+    
+    /** 
+     * @param children_num
+     */
     public void SetChildrenNum(int children_num) {
         this.children_num_ = children_num;
     }
 
+    
+    /** 
+     * @param status
+     */
     public void SetStatus(ReservationStatus status) {
         this.status_ = status;
     }
 
+    
+    /** 
+     * @param room_num
+     */
     public void GetRoomNum(int room_num) {
         this.room_num_ = room_num;
     }
 
+    
+    /** 
+     * @return UUID
+     */
     public UUID GetReservationCode() {
         return reservation_code_;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String GetGuestId() {
         return guest_id_;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String GetCheckInDate() {
         return check_in_date_;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String GetCheckOutDate() {
         return check_out_date_;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int GetAdultNum() {
         return adult_num_;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int GetChildrenNum() {
         return children_num_;
     }
 
+    
+    /** 
+     * @return ReservationStatus
+     */
     public ReservationStatus GetStatus() {
         return status_;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int GetRoomNum() {
         return room_num_;
     }
 
+    
+    /** 
+     * @return String
+     */
     @Override
     public String toString() {
         String output = "|Code: " + this.reservation_code_ +

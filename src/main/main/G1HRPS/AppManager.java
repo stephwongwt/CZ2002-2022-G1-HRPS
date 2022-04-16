@@ -478,6 +478,10 @@ public class AppManager {
         return AppMenuItem.values()[option];
     }
 
+    
+    /** 
+     * @param sub_menu_guest
+     */
     private void PrintGuestSubMenu(Guest sub_menu_guest) {
         if (sub_menu_guest == null) {
             System.out.println("Guest is null, unavailable");
@@ -654,6 +658,10 @@ public class AppManager {
         }
     }
 
+    
+    /** 
+     * @return List<MenuItem>
+     */
     private List<MenuItem> PrintRoomServiceMenu() {
         List<MenuItem> picked_items_list = new ArrayList<>();
         List<MenuItem> menu_list = menu_item_manager_.GetList();
@@ -809,6 +817,10 @@ public class AppManager {
         return picked_room_number;
     }
 
+    
+    /** 
+     * @param guest_id
+     */
     private void CreateNewReservation(String guest_id) {
         LocalDateTime check_in_date;
         LocalDateTime check_out_date;
@@ -847,6 +859,11 @@ public class AppManager {
         }
     }
 
+    
+    /** 
+     * @param date_format
+     * @return LocalDateTime
+     */
     private LocalDateTime GetDatetimeStringFromDateInput(String date_format) {
         DateTimeFormatter localdate_format = DateTimeFormatter.ofPattern(date_format);
         LocalDate input_date;
@@ -867,6 +884,10 @@ public class AppManager {
         return return_localdatetime;
     }
 
+    
+    /** 
+     * @return String
+     */
     private String GetStringFromInput() {
         String value = "";
         while (true) {
@@ -881,6 +902,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return String
+     */
     private String GetUppercaseStringFromInput() {
         String value = "";
         while (true) {
@@ -895,6 +920,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return int
+     */
     private int GetIntFromInput() {
         int value = 0;
         while (true) {
@@ -909,6 +938,12 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @param inclusive_min
+     * @param inclusive_max
+     * @return int
+     */
     private int GetIntFromInput(int inclusive_min, int inclusive_max) {
         int value = 0;
         while (true) {
@@ -926,6 +961,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return int
+     */
     private int GetNonZeroIntFromInput() {
         int value = 0;
         while (true) {
@@ -945,6 +984,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return float
+     */
     private float GetFloatFromInput() {
         float value = 0.0f;
         while (true) {
@@ -959,6 +1002,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return float
+     */
     private float GetNonZeroFloatFromInput() {
         float value = 0.0f;
         while (true) {

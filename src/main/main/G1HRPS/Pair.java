@@ -2,6 +2,12 @@ package main.G1HRPS;
 
 public class Pair<A,B> {
 
+    
+    /** 
+     * @param p
+     * @param q
+     * @return Pair<P, Q>
+     */
     public static <P, Q> Pair<P, Q> makePair(P p, Q q) {
         return new Pair<P, Q>(p, q);
     }
@@ -14,6 +20,10 @@ public class Pair<A,B> {
         this.b = b;
     }
 
+    
+    /** 
+     * @return int
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -23,6 +33,11 @@ public class Pair<A,B> {
         return result;
     }
 
+    
+    /** 
+     * @param obj
+     * @return boolean
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -53,10 +68,23 @@ public class Pair<A,B> {
         return true;
     }
 
+    
+    /** 
+     * @param classA
+     * @param classB
+     * @return boolean
+     */
     public boolean isInstance(Class<?> classA, Class<?> classB) {
         return classA.isInstance(a) && classB.isInstance(b);
     }
 
+    
+    /** 
+     * @param pair
+     * @param pClass
+     * @param qClass
+     * @return Pair<P, Q>
+     */
     @SuppressWarnings("unchecked")
     public static <P, Q> Pair<P, Q> cast(Pair<?, ?> pair, Class<P> pClass, Class<Q> qClass) {
 

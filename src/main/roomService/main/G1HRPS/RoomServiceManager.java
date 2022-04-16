@@ -21,6 +21,14 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
         this.room_service_order_list_ = new ArrayList<RoomServiceOrder>();
     }
 
+    
+    /** 
+     * @param guest_id
+     * @param room_number
+     * @param ordered_item_list
+     * @param remarks
+     * @return RoomServiceOrder
+     */
     public RoomServiceOrder CreateNewRoomServiceOrder(String guest_id, int room_number, List<MenuItem> ordered_item_list, String remarks) {
         RoomServiceOrder new_room_service_order = new RoomServiceOrder(guest_id, room_number, ordered_item_list, remarks);
         if (AddToList(new_room_service_order)) {
