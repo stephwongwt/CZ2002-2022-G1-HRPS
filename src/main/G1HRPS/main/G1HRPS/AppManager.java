@@ -219,8 +219,8 @@ public class AppManager {
 						System.out.println("Select Order to complete:");
 						int order_index_to_complete = GetIntFromInput(0, order_list.size());
 						RoomServiceOrder order_to_complete = order_list.get(order_index_to_complete);
-						if (order_to_complete.GetStatus() != OrderStatus.Delivered) {
-							order_to_complete.SetStatus(OrderStatus.Delivered);
+						if (order_to_complete.GetStatus() != RoomServiceOrderStatus.Delivered) {
+							order_to_complete.SetStatus(RoomServiceOrderStatus.Delivered);
 						} else {
 							System.out.println("Order already completed.");
 						}

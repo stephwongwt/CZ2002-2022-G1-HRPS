@@ -42,6 +42,7 @@ public class PaymentManager extends DatabaseHandler implements Supermanager<Paym
 	 * @param room_charges         Total room charge of this payment
 	 * @param room_service_charges Total room service charge of this payment
 	 * @param status               Status of payment
+	 * @return Payment object if successful, else null
 	 */
 	public Payment CreateNewPayment(String guest_id, int room_num, int discounts, int tax, float room_charges,
 			float room_service_charges, PaymentStatus status) {

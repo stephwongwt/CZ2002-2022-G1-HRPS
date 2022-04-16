@@ -56,7 +56,7 @@ public class RoomServiceOrder {
 	/**
 	 * Status of this order.
 	 */
-	private OrderStatus status_;
+	private RoomServiceOrderStatus status_;
 
 	/**
 	 * Constructor for room service order. Used when initializing from database.
@@ -72,7 +72,7 @@ public class RoomServiceOrder {
 	 * @param status                  Status of order
 	 */
 	public RoomServiceOrder(UUID room_service_order_code, String guest_id, int room_number, String time_created,
-			String time_completed, int quantity, List<MenuItem> ordered_item_list, String remarks, OrderStatus status) {
+			String time_completed, int quantity, List<MenuItem> ordered_item_list, String remarks, RoomServiceOrderStatus status) {
 		this.room_service_order_code_ = room_service_order_code;
 		this.guest_id_ = guest_id;
 		this.room_number_ = room_number;
@@ -101,30 +101,30 @@ public class RoomServiceOrder {
 		LocalDateTime dateTime = LocalDateTime.now();
 		this.time_created_ = AppManager.DATETIME_FORMATTER.format(dateTime);
 		this.time_completed_ = null;
-		this.status_ = OrderStatus.Confirmed;
+		this.status_ = RoomServiceOrderStatus.Confirmed;
 		this.order_quantity_ = this.ordered_item_list_.size();
 	}
 
 	/**
-	 * Gets the room service order code
+	 * Gets the room service order code.
 	 * 
 	 * @return UUID on the code for the room service order
 	 */
-	public UUID GetRsoCode() {
+	public UUID GetRoomServiceOrderCode() {
 		return this.room_service_order_code_;
 	}
 
 	/**
-	 * Sets the ID for room service_order_code
+	 * Sets the ID for room service_order_code.
 	 * 
-	 * @param room_service_order_code_
+	 * @param room_service_order_code_ Unique code to be set
 	 */
-	public void SetRsoCode(String room_service_order_code) {
+	public void SetRoomServiceOrderCode(String room_service_order_code) {
 		this.room_service_order_code_ = UUID.fromString(room_service_order_code);
 	}
 
 	/**
-	 * Get the time stamp when order was delivered
+	 * Get the time stamp when order was delivered.
 	 * 
 	 * @return timestamp of when order was created
 	 */
@@ -133,25 +133,25 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Gets the time stamp when order was delivered
+	 * Gets the time stamp when order was delivered.
 	 * 
-	 * @return timestamp of when order was delivered
+	 * @return time stamp of when order was delivered
 	 */
 	public String GetTimeCompleted() {
 		return this.time_completed_;
 	}
 
 	/**
-	 * Sets the time completed for the room service order
+	 * Sets the time completed for the room service order.
 	 * 
-	 * @param time_completed
+	 * @param time_completed time stamp to be set
 	 */
 	public void SetTimeCompleted(String time_completed) {
 		this.time_completed_ = time_completed;
 	}
 
 	/**
-	 * Gets the list of ordered menu items
+	 * Gets the list of ordered menu items.
 	 * 
 	 * @return List containing the list of MenuItem
 	 */
@@ -160,16 +160,16 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Sets the ordered item list
+	 * Sets the ordered item list.
 	 * 
-	 * @param item_list
+	 * @param item_list list of menu items to be set
 	 */
 	public void SetOrderedItemList(List<MenuItem> item_list) {
 		this.ordered_item_list_ = item_list;
 	}
 
 	/**
-	 * Gets the room number
+	 * Gets the room number.
 	 * 
 	 * @return int containing the room number
 	 */
@@ -178,7 +178,7 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Sets the room number for the room service order
+	 * Sets the room number for the room service order.
 	 * 
 	 * @param room_num
 	 */
@@ -187,7 +187,7 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Return remarks for the room service order
+	 * Return remarks for the room service order.
 	 * 
 	 * @return String containing remarks for the room service order
 	 */
@@ -196,7 +196,7 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Sets remarks for the room service order
+	 * Sets remarks for the room service order.
 	 * 
 	 * @param remarks String for the remarks
 	 */
@@ -205,11 +205,11 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Gets the order status of the room service order
+	 * Gets the order status of the room service order.
 	 * 
-	 * @return OrderStatus status of the order
+	 * @return RoomServiceOrderStatus status of the order
 	 */
-	public OrderStatus GetStatus() {
+	public RoomServiceOrderStatus GetStatus() {
 		return this.status_;
 	}
 
@@ -217,11 +217,11 @@ public class RoomServiceOrder {
 	 * Set the order status of the room service order. Updates time stamp when order
 	 * is delivered.
 	 * 
-	 * @param status enum OrderStatus on the status
+	 * @param status enum RoomServiceOrderStatus on the status
 	 */
-	public void SetStatus(OrderStatus status) {
+	public void SetStatus(RoomServiceOrderStatus status) {
 		this.status_ = status;
-		if (this.status_ == OrderStatus.Delivered) {
+		if (this.status_ == RoomServiceOrderStatus.Delivered) {
 			// create only first time
 			if (this.time_completed_ == null) {
 				LocalDateTime dateTime = LocalDateTime.now();
@@ -232,7 +232,7 @@ public class RoomServiceOrder {
 
 	/**
 	 * Generates string for all the menu items for the room service order in
-	 * separate lines
+	 * separate lines.
 	 * 
 	 * @return String containing the list of menu items
 	 */
@@ -245,7 +245,7 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Returns String for guest ID
+	 * Returns String for guest ID.
 	 * 
 	 * @return String guest ID
 	 */
@@ -254,12 +254,7 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Calculates price of all the menu items in the room service order
-	 * 
-	 * @return float containing the total price
-	 */
-	/**
-	 * Gets number of orders for the room service order
+	 * Gets number of orders for the room service order.
 	 * 
 	 * @return int containing number of orders
 	 */
@@ -269,7 +264,7 @@ public class RoomServiceOrder {
 
 	/**
 	 * Gets total price of room service order based on all the menu items in the
-	 * ordered list
+	 * ordered list.
 	 * 
 	 * @return float containing the total price
 	 */
@@ -282,7 +277,7 @@ public class RoomServiceOrder {
 	}
 
 	/**
-	 * Generate string for printing room service order at search menu
+	 * Generate string for printing room service order at search menu.
 	 */
 	@Override
 	public String toString() {
