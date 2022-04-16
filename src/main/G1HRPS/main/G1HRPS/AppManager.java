@@ -923,20 +923,32 @@ public class AppManager {
 		adult_num = GetIntFromInput(1, 5);
 		System.out.println("Enter Number of Children:");
 		children_num = GetIntFromInput(0, 5);
-		System.out
-				.println("Enter Reservation Status (Confirmed[0]/Waitlist[1]/CheckedIn[2]/CheckedOut[3]/Expired[4]):");
-		status = GetEnumFromInput(ReservationStatus.values());
 		room_num = PickRoom();
-
-		Reservation new_rsvp = reservation_manager_.CreateNewReservation(guest_id, check_in_date.toString(),
-				check_out_date.toString(), adult_num, children_num, status, room_num);
-		if (new_rsvp == null) {
-			System.out.println("Reservation code already exists, did not create.");
+		if (room_num == 0) {
+			status = ReservationStatus.Waitlist;
+			System.out.println("Reservation status set to waitlist.");
 		} else {
-			Room rsvp_room = room_manager_.SearchList(room_num);
+			System.out.println("Enter Reservation Status (Confirmed[0]/Waitlist[1]):");
+			int status_int = GetIntFromInput(0, 1);
+			if (status_int == 0) {
+				status = ReservationStatus.Confirmed;
+			} else {
+				status = ReservationStatus.Waitlist;
+			}
+		}
+		Room rsvp_room = room_manager_.SearchList(room_num);
+		if (rsvp_room.GetStatus() == RoomStatus.Vacant) {
+			Reservation new_rsvp = reservation_manager_.CreateNewReservation(guest_id, check_in_date.toString(),
+				check_out_date.toString(), adult_num, children_num, status, room_num);
+			if (new_rsvp == null) {
+				System.out.println("Reservation code already exists, did not create.");
+			} else {
+				System.out.printf("Reservation successfully created! Details:\n%s\n", new_rsvp.toString());
+			}
 			rsvp_room.SetStatus(RoomStatus.Reserved);
-			System.out.printf("Reservation successfully created! Details:\n%s\n", new_rsvp.toString());
-			System.out.printf("Room Details:\n%s\n", rsvp_room.toString());
+			System.out.printf("Room Details:\n%s\n\n", rsvp_room.toString());
+		} else {
+			System.out.println("Room unavailable, did not create reservation.\n");
 		}
 	}
 
