@@ -20,12 +20,15 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	 * Internally stored list of rooms.
 	 */
 	private List<Room> room_list_;
-	
+
 	/**
 	 * Filename of database file.
 	 */
 	private final String DB_FILENAME = "room_db.txt";
-
+	
+	/**
+	 * Create a Room Manager.
+	 */
 	public RoomManager() {
 		this.room_list_ = new ArrayList<Room>();
 	}
@@ -33,18 +36,20 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	/**
 	 * Takes in user input to create a new Room and add to room_list_.
 	 * 
-	 * @param room_number
-	 * @param room_type
-	 * @param room_price
-	 * @param bed_size
-	 * @param wifi_enabled
-	 * @param w_view
-	 * @param w_smoking
-	 * @param status
+	 * @param room_number  This is room number of the room
+	 * @param room_type    The room types are Single, Standard, VIP, Suite, Deluxe.
+	 * @param room_price   This is price of the room per night
+	 * @param bed_size     Bed size of bed in room
+	 * @param wifi_enabled Whether a room has WIFI or not
+	 * @param with_view    Whether a room has view or not
+	 * @param with_smoking Whether a room allows smoking or not
+	 * @param status       Vacant, Occupied, Reserved, Maintenance
+	 * @return Room if created successfully, else null
 	 */
 	public Room CreateNewRoom(int room_number, RoomType room_type, float room_price, BedSize bed_size,
-			boolean wifi_enabled, boolean w_view, boolean w_smoking, RoomStatus status) {
-		Room new_room = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, w_view, w_smoking, status);
+			boolean wifi_enabled, boolean with_view, boolean with_smoking, RoomStatus status) {
+		Room new_room = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, with_view, with_smoking,
+				status);
 		if (AddToList(new_room)) {
 			return new_room;
 		} else {
@@ -97,13 +102,11 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	/**
 	 * Get occupancy of rooms based on room types
 	 * 
-	 * <!--
-	 * Sample: EnumMap<RoomType.Single, HashMap<15, Vector<Integer>{221, 222}>>
-	 * Standard: Number: 2 out of 15 vacant Available Rooms: 221, 222
-	 * -->
+	 * <!-- Sample: EnumMap<RoomType.Single, Pair<15, Vector<Integer>{221, 222}>>
+	 * Standard: Number: 2 out of 15 vacant Available Rooms: 221, 222 -->
 	 * 
-	 * @return an enum map of room types, with an internal hashmap of total_rooms
-	 *         and int array of vacant room numbers.
+	 * @return An enum map of room types, with an internal Pair of total_rooms and
+	 *         an int Vector of vacant room numbers.
 	 */
 	public EnumMap<RoomType, Pair<Integer, Vector<Integer>>> GetRoomStatisticsByTypeOccupancyRate() {
 		int single_total = 0;
@@ -176,10 +179,11 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	/**
 	 * All room numbers, organized by status.
 	 * 
-	 * <!--
-	 * Sample: EnumMap<RoomStatus.Vacant, Vector<Integer>{220, 221, 222}>> Vacant:
-	 * [220, 221, 222]
-	 * -->
+	 * <!-- Sample: EnumMap<RoomStatus.Vacant, Vector<Integer>{220, 221, 222}>>
+	 * Vacant: [220, 221, 222] -->
+	 * 
+	 * @return An enum map of room statuses, with an internal vector of room numbers
+	 *         with that status.
 	 */
 	public EnumMap<RoomStatus, Vector<Integer>> GetRoomStatisticsByStatus() {
 		EnumMap<RoomStatus, Vector<Integer>> room_stats = new EnumMap<>(RoomStatus.class);
@@ -212,10 +216,11 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 			float room_price = Float.parseFloat(star.nextToken().trim());
 			BedSize bed_size = BedSize.valueOf(star.nextToken().trim());
 			boolean wifi_enabled = Boolean.parseBoolean(star.nextToken().trim());
-			boolean w_view = Boolean.parseBoolean(star.nextToken().trim());
-			boolean w_smoking = Boolean.parseBoolean(star.nextToken().trim());
+			boolean with_view = Boolean.parseBoolean(star.nextToken().trim());
+			boolean with_smoking = Boolean.parseBoolean(star.nextToken().trim());
 			RoomStatus status = RoomStatus.valueOf(star.nextToken().trim());
-			Room obj = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, w_view, w_smoking, status);
+			Room obj = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, with_view, with_smoking,
+					status);
 			dataList.add(obj);
 		}
 		this.room_list_ = dataList;

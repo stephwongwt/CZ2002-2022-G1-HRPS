@@ -9,14 +9,49 @@ import java.util.ArrayList;
  *
  */
 public class Room {
+	/**
+	 * Unique room number.
+	 */
 	private int room_number_;
+
+	/**
+	 * Room type.
+	 */
 	private RoomType room_type_;
+
+	/**
+	 * Room price.
+	 */
 	private float room_price_;
+
+	/**
+	 * Size of bed in room.
+	 */
 	private BedSize bedsize_;
+
+	/**
+	 * If WIFI is provided in room.
+	 */
 	private boolean wifi_enabled_;
-	private boolean w_view_;
-	private boolean w_smoking_;
+
+	/**
+	 * If room comes with a view.
+	 */
+	private boolean with_view_;
+
+	/**
+	 * If room allows smoking.
+	 */
+	private boolean with_smoking_;
+
+	/**
+	 * Status of room.
+	 */
 	private RoomStatus status_;
+
+	/**
+	 * List of guest occupying room.
+	 */
 	private ArrayList<Guest> guest_list_ = new ArrayList<Guest>();
 
 	/**
@@ -27,19 +62,19 @@ public class Room {
 	 * @param room_price   This is price of the room per night
 	 * @param bed_size     Bed size of bed in room
 	 * @param wifi_enabled Whether a room has wifi or not
-	 * @param w_view       Whether a room has view or not
-	 * @param w_smoking    Whether a room allows smoking or not
+	 * @param with_view    Whether a room has view or not
+	 * @param with_smoking Whether a room allows smoking or not
 	 * @param status       Vacant, Occupied, Reserved, Maintenance
 	 */
 	public Room(int room_number, RoomType room_type, float room_price, BedSize bed_size, boolean wifi_enabled,
-			boolean w_view, boolean w_smoking, RoomStatus status) {
+			boolean with_view, boolean with_smoking, RoomStatus status) {
 		room_number_ = room_number;
 		room_type_ = room_type;
 		room_price_ = room_price;
 		bedsize_ = bed_size;
 		wifi_enabled_ = wifi_enabled;
-		w_view_ = w_view;
-		w_smoking_ = w_smoking;
+		with_view_ = with_view;
+		with_smoking_ = with_smoking;
 		status_ = status;
 	}
 
@@ -94,7 +129,7 @@ public class Room {
 	 * @return if room has view
 	 */
 	public Boolean GetView() {
-		return this.w_view_;
+		return this.with_view_;
 	}
 
 	/**
@@ -103,7 +138,7 @@ public class Room {
 	 * @return if room allows smoking
 	 */
 	public Boolean GetSmoking() {
-		return this.w_smoking_;
+		return this.with_smoking_;
 	}
 
 	/**
@@ -154,9 +189,9 @@ public class Room {
 	}
 
 	/**
-	 * Set room num.
+	 * Set room number.
 	 * 
-	 * @param room_num
+	 * @param room_num Room number to be set.
 	 */
 	public void SetRoomNumber(int room_num) {
 		this.room_number_ = room_num;
@@ -165,7 +200,7 @@ public class Room {
 	/**
 	 * Set room type.
 	 * 
-	 * @param room_type
+	 * @param room_type Room type to be set.
 	 */
 	public void SetRoomType(RoomType room_type) {
 		this.room_type_ = room_type;
@@ -174,25 +209,25 @@ public class Room {
 	/**
 	 * Set room price.
 	 * 
-	 * @param room_price
+	 * @param room_price Room price to be set.
 	 */
 	public void SetRoomPrice(float room_price) {
 		this.room_price_ = room_price;
 	}
 
 	/**
-	 * Set room bedsize.
+	 * Set room bed size.
 	 * 
-	 * @param bedsize
+	 * @param bedsize Bed size to be set.
 	 */
 	public void SetBedSize(BedSize bedsize) {
 		this.bedsize_ = bedsize;
 	}
 
 	/**
-	 * Set wifi.
+	 * Set WIFI.
 	 * 
-	 * @param wifi_enabled
+	 * @param wifi_enabled true if WIFI is provided, else false
 	 */
 	public void SetWifi(boolean wifi_enabled) {
 		this.wifi_enabled_ = wifi_enabled;
@@ -201,19 +236,19 @@ public class Room {
 	/**
 	 * Set view.
 	 * 
-	 * @param w_view
+	 * @param with_view true if room has view, else false
 	 */
-	public void SetView(boolean w_view) {
-		this.w_view_ = w_view;
+	public void SetView(boolean with_view) {
+		this.with_view_ = with_view;
 	}
 
 	/**
 	 * Set smoking.
 	 * 
-	 * @param w_smoking
+	 * @param with_smoking true if smoking is allowed, else false
 	 */
-	public void SetSmoking(boolean w_smoking) {
-		this.w_smoking_ = w_smoking;
+	public void SetSmoking(boolean with_smoking) {
+		this.with_smoking_ = with_smoking;
 	}
 
 	/**
@@ -228,7 +263,7 @@ public class Room {
 	/**
 	 * Set guest list.
 	 * 
-	 * @param guest_list
+	 * @param guest_list List of guest staying in room
 	 */
 	public void SetGuestList(ArrayList<Guest> guest_list) {
 		this.guest_list_ = guest_list;
@@ -240,8 +275,8 @@ public class Room {
 	@Override
 	public String toString() {
 		String output = "|Room Number: " + this.room_number_ + "|Room Price: " + this.room_price_ + "|\n|Bed Size: "
-				+ this.bedsize_ + "|wifi Enabled: " + this.wifi_enabled_ + "|with View: " + this.w_view_
-				+ "|\n|with Smoking: " + this.w_smoking_ + "|Room Status: " + this.status_ + "|\n|Guests: \n"
+				+ this.bedsize_ + "|wifi Enabled: " + this.wifi_enabled_ + "|with View: " + this.with_view_
+				+ "|\n|with Smoking: " + this.with_smoking_ + "|Room Status: " + this.status_ + "|\n|Guests: \n"
 				+ this.guest_list_.toString();
 		return output;
 	}

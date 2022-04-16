@@ -18,25 +18,30 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
 	 * Internally stored list of reservations.
 	 */
 	private List<Reservation> reservation_list_;
-	
+
 	/**
 	 * Filename of database file.
 	 */
 	private final String DB_FILENAME = "reservation_db.txt";
 
+	/**
+	 * Creates a reservation manager.
+	 */
 	public ReservationManager() {
 		this.reservation_list_ = new ArrayList<Reservation>();
 	}
 
 	/**
-	 * @param guest_id
-	 * @param check_in_date
-	 * @param check_out_date
-	 * @param adult_num
-	 * @param children_num
-	 * @param status
-	 * @param room_num
-	 * @return Reservation
+	 * Creates new Reservation and adds it to Reservation list.
+	 * 
+	 * @param guest_id       Guest ID of guest that made Reservation
+	 * @param check_in_date  Date the guest would like to check in
+	 * @param check_out_date Date the guest would like to check out
+	 * @param adult_num      Number of adults
+	 * @param children_num   Number of children
+	 * @param status         Status of Reservation
+	 * @param room_num       Reserved room number for this reservation
+	 * @return Reservation object if successful, else null
 	 */
 	public Reservation CreateNewReservation(String guest_id, String check_in_date, String check_out_date, int adult_num,
 			int children_num, ReservationStatus status, int room_num) {

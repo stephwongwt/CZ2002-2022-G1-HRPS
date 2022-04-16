@@ -32,11 +32,13 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	}
 
 	/**
-	 * @param guest_id
-	 * @param room_number
-	 * @param ordered_item_list
-	 * @param remarks
-	 * @return RoomServiceOrder
+	 * Creates new RoomServiceOrder and adds it to internal list.
+	 * 
+	 * @param guest_id          Guest making this order
+	 * @param room_number       Room number of guest
+	 * @param ordered_item_list List of ordered menu items
+	 * @param remarks           Remarks given by guest for this order
+	 * @return RoomServiceOrder object if successful, else null
 	 */
 	public RoomServiceOrder CreateNewRoomServiceOrder(String guest_id, int room_number,
 			List<MenuItem> ordered_item_list, String remarks) {
@@ -50,7 +52,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	}
 
 	/**
-	 * Adds a room service order to the order list
+	 * Adds a room service order to the order list.
 	 * 
 	 * @param room_service_order obj to be added
 	 * @return true if success / false if failed
@@ -58,7 +60,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	@Override
 	public boolean AddToList(RoomServiceOrder room_service_order) {
 		boolean success = false;
-		RoomServiceOrder found = SearchList(room_service_order.GetRsoCode().toString());
+		RoomServiceOrder found = SearchList(room_service_order.GetRoomServiceOrderCode().toString());
 		if (found == null) {
 			try {
 				success = this.room_service_order_list_.add(room_service_order);
@@ -70,7 +72,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	}
 
 	/**
-	 * Removes a room service order to the order list
+	 * Removes a room service order to the order list.
 	 * 
 	 * @param room_service_order obj to be removed
 	 * @return true if success / false if failed
@@ -78,7 +80,7 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	@Override
 	public boolean RemoveFromList(RoomServiceOrder room_service_order) {
 		boolean success = false;
-		RoomServiceOrder found = SearchList(room_service_order.GetRsoCode().toString());
+		RoomServiceOrder found = SearchList(room_service_order.GetRoomServiceOrderCode().toString());
 		if (found != null) {
 			try {
 				success = this.room_service_order_list_.remove(found);
@@ -98,16 +100,16 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	 */
 	@Override
 	public RoomServiceOrder SearchList(String search_text) {
-		for (RoomServiceOrder rso : room_service_order_list_) {
-			if (rso.GetRsoCode() == UUID.fromString(search_text)) {
-				return rso;
+		for (RoomServiceOrder room_service_order : room_service_order_list_) {
+			if (room_service_order.GetRoomServiceOrderCode() == UUID.fromString(search_text)) {
+				return room_service_order;
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Returns the full list of room service orders
+	 * Returns the full list of room service orders.
 	 * 
 	 * @return List of room service orders
 	 */
@@ -141,12 +143,12 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 				ordered_item_list.add(m);
 			}
 			String remarks = star.nextToken().trim();
-			OrderStatus status = OrderStatus.valueOf(star.nextToken().trim());
+			RoomServiceOrderStatus status = RoomServiceOrderStatus.valueOf(star.nextToken().trim());
 			// create object from file data
-			RoomServiceOrder rso = new RoomServiceOrder(room_service_order_code, guest_id, room_number, time_created,
+			RoomServiceOrder room_service_order = new RoomServiceOrder(room_service_order_code, guest_id, room_number, time_created,
 					time_completed, quantity, ordered_item_list, remarks, status);
 			// add to Room service order list
-			dataList.add(rso);
+			dataList.add(room_service_order);
 		}
 		this.room_service_order_list_ = dataList;
 	}
@@ -157,33 +159,33 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	@Override
 	public void SaveDB() {
 		List<String> rsoData = new ArrayList<String>();
-		for (RoomServiceOrder rso : room_service_order_list_) {
+		for (RoomServiceOrder room_service_order : room_service_order_list_) {
 			StringBuilder st = new StringBuilder();
-			int quantity = rso.GetOrderQuantity();
-			st.append(rso.GetRsoCode());
+			int quantity = room_service_order.GetOrderQuantity();
+			st.append(room_service_order.GetRoomServiceOrderCode());
 			st.append(SEPARATOR);
-			st.append(rso.GetGuestId());
+			st.append(room_service_order.GetGuestId());
 			st.append(SEPARATOR);
-			st.append(rso.GetRoomNum());
+			st.append(room_service_order.GetRoomNum());
 			st.append(SEPARATOR);
-			st.append(rso.GetTimeCreated());
+			st.append(room_service_order.GetTimeCreated());
 			st.append(SEPARATOR);
-			st.append(rso.GetTimeCompleted());
+			st.append(room_service_order.GetTimeCompleted());
 			st.append(SEPARATOR);
 			st.append(quantity);
 			st.append(SEPARATOR);
 			for (int i = 0; i < quantity; i++) {
-				st.append(rso.GetOrderedItemList().get(i).GetName());
+				st.append(room_service_order.GetOrderedItemList().get(i).GetName());
 				st.append(SEPARATOR);
-				st.append(rso.GetOrderedItemList().get(i).GetPrice());
+				st.append(room_service_order.GetOrderedItemList().get(i).GetPrice());
 				st.append(SEPARATOR);
-				st.append(rso.GetOrderedItemList().get(i).GetDescription());
+				st.append(room_service_order.GetOrderedItemList().get(i).GetDescription());
 				st.append(SEPARATOR);
 			}
 			st.append(SEPARATOR);
-			st.append(rso.GetRemarks());
+			st.append(room_service_order.GetRemarks());
 			st.append(SEPARATOR);
-			st.append(rso.GetStatus().toString());
+			st.append(room_service_order.GetStatus().toString());
 			rsoData.add(st.toString());
 		}
 		try {
@@ -194,29 +196,29 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	}
 
 	/**
-	 * Sets order status for the room service order
+	 * Sets order status for the room service order.
 	 * 
-	 * @param rso
-	 * @param new_status
+	 * @param room_service_order Object to set status
+	 * @param new_status Status to be set
 	 */
-	public void SetRsoStatus(RoomServiceOrder rso, OrderStatus new_status) {
-		rso.SetStatus(new_status);
+	public void SetRoomServiceRoomServiceOrderStatus(RoomServiceOrder room_service_order, RoomServiceOrderStatus new_status) {
+		room_service_order.SetStatus(new_status);
 	}
 
 	/**
-	 * Gets the Order status of the room service order
+	 * Gets the Order status of the room service order.
 	 * 
-	 * @param rso
-	 * @return OrderStatus on the service order status
+	 * @param room_service_order Object to get status
+	 * @return RoomServiceOrderStatus status of room service order
 	 */
-	public OrderStatus GetRsoStatus(RoomServiceOrder rso) {
-		return rso.GetStatus();
+	public RoomServiceOrderStatus GetRoomServiceRoomServiceOrderStatus(RoomServiceOrder room_service_order) {
+		return room_service_order.GetStatus();
 	}
 
 	/**
-	 * Returns list of room service order object based on room id
+	 * Returns list of room service order object based on room id.
 	 * 
-	 * @param room_number
+	 * @param room_number Number of room that ordered room service
 	 * @return List of RoomServiceOrders of interest
 	 */
 	public ArrayList<RoomServiceOrder> GetOrderedItemsByRoom(int room_number) {
@@ -230,9 +232,9 @@ public class RoomServiceManager extends DatabaseHandler implements Supermanager<
 	}
 
 	/**
-	 * Returns the room service order object based on guest id
+	 * Returns the room service order object based on guest id.
 	 * 
-	 * @param guest_id
+	 * @param guest_id ID of guest that ordered room service
 	 * @return RoomServiceOrder of interest
 	 */
 	public ArrayList<RoomServiceOrder> GetOrderedItemsByGuest(String guest_id) {

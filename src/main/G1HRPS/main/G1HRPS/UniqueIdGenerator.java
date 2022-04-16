@@ -2,6 +2,12 @@ package main.G1HRPS;
 
 import java.util.UUID;
 
+/**
+ * Utility to generate unique id.
+ * 
+ * @author Steph Wong
+ *
+ */
 public class UniqueIdGenerator {
 
 	/***

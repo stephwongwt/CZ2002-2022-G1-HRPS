@@ -6,12 +6,12 @@ package main.G1HRPS;
  * @author Yeo Hong Wei
  *
  */
-public enum OrderStatus {
+public enum RoomServiceOrderStatus {
 	Confirmed(0), Preparing(1), Delivered(2);
 
 	private final int value;
 
-	private OrderStatus(int value) {
+	private RoomServiceOrderStatus(int value) {
 		this.value = value;
 	}
 
