@@ -176,13 +176,13 @@ public class AppManager {
 						search_guest = search_guest_list.get(guest_index);
 					}
 				} else {
-					search_guest = SearchManagerList(guest_manager_);
+					search_guest = SearchManagerList(guest_manager_, "guest identity");
 				}
 				PrintGuestSubMenu(search_guest);
 				break;
 			case SearchRoom:
 				System.out.println("|---|Search Room|---|");
-				Room search_room = SearchManagerList(room_manager_);
+				Room search_room = SearchManagerList(room_manager_, "room number");
 				System.out.println(search_room.toString());
 				System.out.println("What would you like to do with this room?\n" + "[0] Go back\n"
 						+ "[1] Order Room Service\n" + "[2] Complete Room Service Order\n" + "[3] Edit Details\n");
@@ -317,7 +317,7 @@ public class AppManager {
 				break;
 			case SearchReservations:
 				System.out.println("|---|Search Reservations|---|");
-				Reservation search_rsvp = SearchManagerList(reservation_manager_);
+				Reservation search_rsvp = SearchManagerList(reservation_manager_, "reservation code");
 				System.out.println(search_rsvp.toString());
 				System.out.println("What would you like to do with this reservation?\n" + "[0] Go back\n"
 						+ "[1] Check In\n" + "[2] Delete\n");
@@ -354,7 +354,7 @@ public class AppManager {
 				break;
 			case SearchMenuItems:
 				System.out.println("|---|Search Menu Item|---|");
-				MenuItem search_menu_item = SearchManagerList(menu_item_manager_);
+				MenuItem search_menu_item = SearchManagerList(menu_item_manager_, "menu item name");
 				System.out.println(search_menu_item.toString());
 				System.out.println("What would you like to do with this menu item?\n" + "[0] Go back\n"
 						+ "[1] Edit details\n" + "[2] Delete\n");
@@ -1198,18 +1198,19 @@ public class AppManager {
 	 * Example usage: GuestManager guest_manager = new GuestManager();
 	 * SearchList(guest_manager);
 	 *
-	 * @param <T> type which the manager is managing
-	 * @param sm  a generic type manager which has implemented Supermanager
+	 * @param T				Type which the manager is managing
+	 * @param sm  			A generic type manager which has implemented Supermanager
+	 * @param search_term 	Term in which this function will search for, e.g. name
 	 * @return the object matching the search text
 	 */
-	private <T> T SearchManagerList(Supermanager<T> sm) {
+	private <T> T SearchManagerList(Supermanager<T> sm, String search_term) {
 		List<T> sm_list = sm.GetList();
 		if (sm_list.isEmpty()) {
 			System.out.println("List is empty.");
 			return null;
 		}
 		String search_text = "";
-		System.out.println("Enter id to search:");
+		System.out.println("Enter "+ search_term +" to search:");
 		sc_.nextLine();
 		while (true) {
 			try {
