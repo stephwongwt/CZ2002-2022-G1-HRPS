@@ -1,7 +1,5 @@
 package main.G1HRPS;
 
-import java.time.LocalDateTime;
-
 /**
  * Guest class for storing the info of each of the guests of our hotel.
  * 
@@ -120,8 +118,7 @@ public class Guest {
 	}
 
 	/**
-	 * Create guest object, used when creating new guests. Check in date generated
-	 * automatically.
+	 * Create guest object, used when creating new guests. Check in date set to empty.
 	 * 
 	 * @param identity           Either national identity or driving license
 	 *                           information
@@ -145,8 +142,7 @@ public class Guest {
 		this.country_ = country;
 		this.gender_ = gender;
 		this.nationality_ = nationality;
-		LocalDateTime dateTime = LocalDateTime.now();
-		this.check_in_date_ = AppManager.DATETIME_FORMATTER.format(dateTime);
+		this.check_in_date_ = EMPTY;
 	}
 
 	/**

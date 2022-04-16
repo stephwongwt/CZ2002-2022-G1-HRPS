@@ -1,6 +1,7 @@
 package main.G1HRPS;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -158,6 +159,9 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 */
 	public void CheckIntoRoom(Guest guest, int room_num) {
 		guest.SetRoomNum(room_num);
+		LocalDateTime dateTime = LocalDateTime.now();
+		String check_in_date = AppManager.DATETIME_FORMATTER.format(dateTime).toString();
+		guest.SetCheckInDate(check_in_date);
 	}
 
 	/**

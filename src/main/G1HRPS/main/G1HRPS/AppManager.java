@@ -163,7 +163,8 @@ public class AppManager {
 						System.out.println("Pick a guest:");
 						int guest_index;
 						for (int i = 0; i < search_guest_list.size(); i++) {
-							System.out.println("[%d] " + search_guest_list.get(i).GetName());
+							Guest found_guest = search_guest_list.get(i);
+							System.out.printf("[%d] %s\n", i, found_guest.GetName());
 						}
 						guest_index = GetIntFromInput(0, search_guest_list.size());
 						search_guest = search_guest_list.get(guest_index);
@@ -792,7 +793,6 @@ public class AppManager {
 				System.out.println("Invalid credit card number, please try again:");
 			}
 		}
-
 		System.out.println("Enter Address (e.g. 50 Nanyang Ave, S639798):");
 		address = GetUppercaseStringFromInput();
 		System.out.println("Enter Contact (e.g. +6590001000):");
