@@ -63,23 +63,33 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	 * @param guest       This is the guest to be added
 	 * @param room_number This is the room number of the room that the guest will be
 	 *                    added to
+	 * @return true if success, else false
 	 */
-	public void CheckInGuest(Guest guest, int room_number) {
+	public boolean CheckInGuest(Guest guest, int room_number) {
 		Room room = SearchList(room_number);
-		room.AddGuestToRoom(guest);
+		if (room != null) {
+			room.AddGuestToRoom(guest);
+			room.SetStatus(RoomStatus.Occupied);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
 	 * removes all guests elements from the guest list of a room
 	 * 
 	 * @param room_number This is the room number to remove guest elements from.
+	 * @return true if success, else false
 	 */
-	public void CheckOutGuests(int room_number) {
-		for (Room room : room_list_) {
-			if (room.GetRoomNumber() == room_number) {
-				room.ClearGuestList();
-				room.SetStatus(RoomStatus.Vacant);
-			}
+	public boolean CheckOutGuests(int room_number) {
+		Room room = SearchList(room_number);
+		if (room != null) {
+			room.ClearGuestList();
+			room.SetStatus(RoomStatus.Vacant);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -90,12 +100,15 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	 * 
 	 * @param room_number The room to update status
 	 * @param status      The status to be changed into
+	 * @return true if success, else false
 	 */
-	public void SetRoomStatus(int room_number, RoomStatus status) {
-		for (Room room : room_list_) {
-			if (room.GetRoomNumber() == room_number) {
-				room.SetStatus(status);
-			}
+	public boolean SetRoomStatus(int room_number, RoomStatus status) {
+		Room room = SearchList(room_number);
+		if (room != null) {
+			room.SetStatus(status);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
