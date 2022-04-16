@@ -234,11 +234,23 @@ public class Room {
     }
 
     /**
+     * Converts room number to printed format (i.e. 02-01)
+     * 
+     * @return String of room number
+     */
+    public String FormatRoomNum() {
+        int floor_num = this.room_number_ / 100;
+        int room_num = this.room_number_ % 100;
+
+        return String.format("%02d-%02d", floor_num, room_num);
+    }
+
+    /**
      * Prints out general information of the room
      */
     @Override
     public String toString(){
-        String output = "|Room Number: " + this.room_number_ +
+        String output = "|Room Number: " + FormatRoomNum() +
                         "|Room Price: " + this.room_price_ +
                         "|\n|Bed Size: " + this.bedsize_ +
                         "|wifi Enabled: " + this.wifi_enabled_ +
