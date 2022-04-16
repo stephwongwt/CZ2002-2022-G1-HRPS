@@ -1,4 +1,1 @@
-/bin/
-.project
-.classpath
-.metadata
+resources/*_db.txt
