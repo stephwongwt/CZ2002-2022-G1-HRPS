@@ -276,7 +276,7 @@ public class Room {
 	public String toString() {
 		String output = String.format(
 				"|Room Number: %04d|Room Price: %.2f|\n" + "|Bed Size: %s|wifi Enabled: %s|\n"
-						+ "|with Smoking: %s|Room Status: %s|\n" + "|Guests: \n%s",
+						+ "|with View: %s|" + "|with Smoking: %s|Room Status: %s|\n" + "|Guests: \n%s",
 				this.room_number_, this.room_price_, this.bedsize_, this.wifi_enabled_, this.with_view_,
 				this.with_smoking_, this.status_, this.guest_list_.toString());
 		return output;

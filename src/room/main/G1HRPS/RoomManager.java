@@ -67,6 +67,7 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
 	public void CheckInGuest(Guest guest, int room_number) {
 		Room room = SearchList(room_number);
 		room.AddGuestToRoom(guest);
+		room.SetStatus(RoomStatus.Occupied);
 	}
 
 	/**
