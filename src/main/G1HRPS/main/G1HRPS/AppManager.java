@@ -789,7 +789,6 @@ public class AppManager {
 			if (guest_manager_.VerifyCreditCardNumber(credit_card_number)) {
 				break;
 			} else {
-				sc_.nextLine();
 				System.out.println("Invalid credit card number, please try again:");
 			}
 		}
