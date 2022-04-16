@@ -136,8 +136,8 @@ public class Guest {
 	public Guest(String identity, String name, String credit_card_number, String billing_address, String contact,
 			String country, Gender gender, String nationality) {
 		this.identity_ = identity;
-		this.payment_id_ = "";
-		this.room_num_ = 0;
+		this.payment_id_ = EMPTY;
+		this.room_num_ = EMPTY_ROOM;
 		this.name_ = name;
 		this.SetCreditCardNumber(credit_card_number);
 		this.billing_address_ = billing_address;

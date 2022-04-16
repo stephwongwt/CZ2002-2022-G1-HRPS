@@ -597,6 +597,10 @@ public class AppManager {
 			} else {
 				guest_payment = payment_manager_.SearchList(sub_menu_guest.GetPaymentId());
 			}
+			if (guest_payment == null) {
+				System.out.println("System error Guest unable to check out");
+				break;
+			}
 			System.out.println("Payment item:\n" + guest_payment.toString());
 			System.out.println("Making payment for this bill? (False[0]/True[1])");
 			boolean make_payment = GetBooleanFromInput();
@@ -604,7 +608,9 @@ public class AppManager {
 				guest_manager_.CheckOutOfRoom(sub_menu_guest, guest_payment.GetPaymentID().toString());
 				room_manager_.CheckOutGuests(guest_payment.GetRoomNum());
 				Reservation check_out_reservation = reservation_manager_.SearchList(sub_menu_guest);
-				reservation_manager_.CheckOut(check_out_reservation);
+				if (check_out_reservation != null) {
+					reservation_manager_.CheckOut(check_out_reservation);
+				}
 			}
 			break;
 		case 4:
