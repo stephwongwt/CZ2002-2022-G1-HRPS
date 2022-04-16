@@ -85,6 +85,8 @@ public class AppManager {
 
 	/**
 	 * Call InitializeDB for all managers.
+	 * Checks in guests with existing room numbers into respective rooms.
+	 * Checks in reservations of said guests as well.
 	 */
 	public void Initialize() {
 		System.out.println("Initializing Databases...");
@@ -100,6 +102,10 @@ public class AppManager {
 			int room_number = guest.GetRoomNum();
 			if (room_number != 0) {
 				room_manager_.CheckInGuest(guest, room_number);
+				Reservation rsvp = reservation_manager_.SearchList(guest);
+				if (rsvp.GetRoomNum() == room_number) {
+					reservation_manager_.CheckIn(rsvp);
+				}
 			}
 		}
 	}
@@ -322,13 +328,18 @@ public class AppManager {
 					break;
 				case 1:
 					System.out.println("|------| Reservation Check In|------|");
-					reservation_manager_.CheckIn(search_rsvp);
 					Guest rsvp_guest = guest_manager_.SearchList(search_rsvp.GetGuestId());
 					int rsvp_room_num = search_rsvp.GetRoomNum();
-					guest_manager_.CheckIntoRoom(rsvp_guest, rsvp_room_num);
-					room_manager_.CheckInGuest(rsvp_guest, rsvp_room_num);
-					System.out.printf("Guest %s checked into room number %d. \r\n", rsvp_guest.GetName(),
-							rsvp_room_num);
+					boolean success = true;
+					success = (success && (room_manager_.CheckInGuest(rsvp_guest, rsvp_room_num)));
+					success = (success && (guest_manager_.CheckIntoRoom(rsvp_guest, rsvp_room_num)));
+					success = (success && (reservation_manager_.CheckIn(search_rsvp)));
+					if (success) {
+						System.out.printf("Guest %s checked into room number %d, with reservation code %s.\n", rsvp_guest.GetName(),
+								rsvp_room_num, search_rsvp.GetReservationCode().toString());
+					} else {
+						System.err.println("Something went terribly wrong, did not check in guest.");
+					}
 					break;
 				default:
 					System.out.println("|------|Delete Reservation|------|");

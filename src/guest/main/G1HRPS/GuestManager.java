@@ -156,12 +156,19 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * 
 	 * @param guest    Object with details of guest to be checked in.
 	 * @param room_num Room number to check guest into.
+	 * @return true if success, else false
 	 */
-	public void CheckIntoRoom(Guest guest, int room_num) {
-		guest.SetRoomNum(room_num);
-		LocalDateTime dateTime = LocalDateTime.now();
-		String check_in_date = AppManager.DATETIME_FORMATTER.format(dateTime).toString();
-		guest.SetCheckInDate(check_in_date);
+	public boolean CheckIntoRoom(Guest guest, int room_num) {
+		Guest check_guest = SearchList(guest.GetIdentity());
+		if (check_guest != null) {
+			check_guest.SetRoomNum(room_num);
+			LocalDateTime dateTime = LocalDateTime.now();
+			String check_in_date = AppManager.DATETIME_FORMATTER.format(dateTime).toString();
+			check_guest.SetCheckInDate(check_in_date);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -169,9 +176,16 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 	 * 
 	 * @param guest 	 Guest to assign the payment_id
 	 * @param payment_id Id to be assigned to guest
+	 * @return true if success, else false
 	 */
-	public void CheckOutOfRoom(Guest guest, String payment_id) {
-		guest.SetPaymentId(payment_id);
+	public boolean CheckOutOfRoom(Guest guest, String payment_id) {
+		Guest check_guest = SearchList(guest.GetIdentity());
+		if (check_guest != null) {
+			check_guest.SetPaymentId(payment_id);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
