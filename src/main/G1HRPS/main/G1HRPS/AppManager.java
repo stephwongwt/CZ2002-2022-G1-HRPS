@@ -1064,6 +1064,8 @@ public class AppManager {
 				if (value >= inclusive_min && value <= inclusive_max) {
 					sc_.nextLine();
 					break;
+				} else {
+					System.out.println("Min " + inclusive_min + ", Max " + inclusive_max);
 				}
 			} catch (Exception e) {
 				sc_.nextLine();
