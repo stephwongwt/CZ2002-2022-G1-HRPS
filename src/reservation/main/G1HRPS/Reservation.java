@@ -237,10 +237,10 @@ public class Reservation {
 	 */
 	@Override
 	public String toString() {
-		String output = "|Code: " + this.reservation_code_ + "|Guest Id: " + this.guest_id_ + "|\n|Check In Date: "
-				+ this.check_in_date_ + "|Check Out Date: " + this.check_out_date_ + "|\n|Room Number: "
-				+ this.room_num_ + "|\n|Number of Guests: " + (this.adult_num_ + this.children_num_) + "|\n|Status:"
-				+ this.status_ + "|";
+		String output = "| Code: " + this.reservation_code_ + " |\n| Guest Id: " + this.guest_id_ + "|\n| Check In Date: "
+				+ this.check_in_date_ + " | Check Out Date: " + this.check_out_date_ + " |\n| Room Number: "
+				+ this.room_num_ + " |\n| Number of Guests: " + (this.adult_num_ + this.children_num_) + " |\n| Status:"
+				+ this.status_ + " |\n";
 		return output;
 	}
 }

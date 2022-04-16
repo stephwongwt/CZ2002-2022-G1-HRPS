@@ -362,8 +362,8 @@ public class Guest {
 		String payment_id = (this.payment_id_.isEmpty()) ? EMPTY : this.payment_id_.toString();
 		String check_in_date = (this.check_in_date_.isEmpty()) ? EMPTY : this.check_in_date_.toString();
 		String output = String.format(
-				"|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" + "|Credit Card #: %s|\n" + "|Billing Address: %s|\n"
-						+ "|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n" + "|Check In Date: %s|",
+				"| ID: %s | Name: %s | Room #: %s | Payment ID: %s |\n" + "| Credit Card #: %s |\n" + "| Billing Address: %s |\n"
+						+ "| Contact: %s | Country: %s | Gender: %s | Nationality: %s |\n" + "| Check In Date: %s |\n",
 				identity_, name_, room_num, payment_id, credit_card_number_, billing_address_, contact_, country_,
 				gender_.toString(), nationality_, check_in_date);
 		return output;

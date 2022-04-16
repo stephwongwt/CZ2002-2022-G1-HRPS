@@ -275,7 +275,7 @@ public class Room {
 	@Override
 	public String toString() {
 		String output = String.format(
-				"|Room Number: %04d|Room Price: %.2f|\n|Bed Size: %s|wifi Enabled: %s|\n|with View: %s|with Smoking: %s|\nRoom Status: %s|Guests: \n%s",
+				"| Room Number: %04d | Room Price: %.2f |\n| Bed Size: %s | wifi Enabled: %s |\n| with View: %s |with Smoking: %s |\n| Room Status: %s | Guests: \n%s\n",
 				this.room_number_, this.room_price_, this.bedsize_, this.wifi_enabled_, this.with_view_,
 				this.with_smoking_, this.status_, this.guest_list_.toString());
 		return output;

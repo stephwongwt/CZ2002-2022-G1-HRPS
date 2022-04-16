@@ -280,7 +280,7 @@ public class Payment {
 	 */
 	@Override
 	public String toString() {
-		return "ID: " + this.payment_id_ + " Guest Id: " + this.guest_id_ + " Room Num: " + this.room_num_
-				+ " Total: $ " + this.bill_total_;
+		return "| ID: " + this.payment_id_ + " | Guest Id: " + this.guest_id_ + " |\n| Room Num: " + this.room_num_
+				+ " | Total: $ " + this.bill_total_ + " |\n";
 	}
 }
