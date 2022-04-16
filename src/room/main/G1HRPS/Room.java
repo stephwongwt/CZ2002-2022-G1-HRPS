@@ -274,10 +274,11 @@ public class Room {
 	 */
 	@Override
 	public String toString() {
-		String output = "|Room Number: " + this.room_number_ + "|Room Price: " + this.room_price_ + "|\n|Bed Size: "
-				+ this.bedsize_ + "|wifi Enabled: " + this.wifi_enabled_ + "|with View: " + this.with_view_
-				+ "|\n|with Smoking: " + this.with_smoking_ + "|Room Status: " + this.status_ + "|\n|Guests: \n"
-				+ this.guest_list_.toString();
+		String output = String.format(
+				"|Room Number: %04d|Room Price: %.2f|\n" + "|Bed Size: %s|wifi Enabled: %s|\n"
+						+ "|with Smoking: %s|Room Status: %s|\n" + "|Guests: \n%s",
+				this.room_number_, this.room_price_, this.bedsize_, this.wifi_enabled_, this.with_view_,
+				this.with_smoking_, this.status_, this.guest_list_.toString());
 		return output;
 	}
 }
