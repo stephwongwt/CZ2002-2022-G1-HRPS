@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.UUID;
 
 public class GuestManager extends DatabaseHandler implements Supermanager<Guest> {
     private List<Guest> guest_list_;
@@ -21,8 +20,6 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * Creates a new guest and adds it to guest list.
      * 
      * @param identity
-     * @param payment_id
-     * @param room_num
      * @param name
      * @param credit_card_number
      * @param billing_address
@@ -33,11 +30,9 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      */
     public Guest CreateNewGuest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
         Guest new_guest = new Guest(identity, name, credit_card_number, billing_address, contact, country, gender, nationality);
-        Guest found_exisiting_guest = SearchList(identity);
-        if (found_exisiting_guest == null) {
-            AddToList(new_guest);
+        if (AddToList(new_guest)) {
             return new_guest;
-        } else { // cannot create new guest due to existing guest
+        } else {
             return null;
         }
     }
@@ -93,6 +88,16 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
         return success;
     }
 
+    public List<Guest> SearchListByName(String guest_name) {
+        List<Guest> found_guests = new ArrayList<>();
+        for (Guest guest : guest_list_) {
+            if (guest_name.equals(guest.GetName())) {
+                found_guests.add(guest);
+            }
+        }
+        return found_guests;
+    }
+
     /**
      * Uses guest ID as a key to search for corresponding guest
      * in the list.
@@ -142,7 +147,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
      * @param billing_address
      * @param credit_card_number
      */
-    public void CheckOutOfRoom(Guest guest, UUID payment_id) {
+    public void CheckOutOfRoom(Guest guest, String payment_id) {
         guest.SetPaymentId(payment_id);
     }
 
@@ -157,18 +162,17 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
         for (String st : dbArray) {
             StringTokenizer star = new StringTokenizer(st, SEPARATOR);
             String identity = star.nextToken().trim();
-            UUID payment_id = UUID.fromString(star.nextToken().trim());
+            String payment_id = star.nextToken().trim();
             int room_num = Integer.parseInt(star.nextToken().trim());
             String name = star.nextToken().trim();
-            String cc_number = star.nextToken().trim();
-            String address = star.nextToken().trim();
+            String credit_card_number = star.nextToken().trim();
+            String billing_address = star.nextToken().trim();
             String contact = star.nextToken().trim();
             String country = star.nextToken().trim();
             Gender gender = Gender.valueOf(star.nextToken().trim());
             String nationality = star.nextToken().trim();
-            Guest obj = new Guest(identity, name, cc_number, address, contact, country, gender, nationality);
-            obj.SetPaymentId(payment_id);
-            obj.SetRoomNum(room_num);
+            String check_in_date = star.nextToken().trim();
+            Guest obj = new Guest(identity, payment_id, room_num, name, credit_card_number, billing_address, contact, country, gender, nationality, check_in_date);
             dataList.add(obj);
         }
         this.guest_list_ = dataList;
@@ -186,7 +190,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             StringBuilder st = new StringBuilder();
             st.append(guest.GetIdentity());
             st.append(SEPARATOR);
-            st.append(guest.GetPaymentId());
+            String payment_id = guest.GetPaymentId();
+            st.append(payment_id.isEmpty() ? Guest.EMPTY : payment_id);
             st.append(SEPARATOR);
             st.append(guest.GetRoomNum());
             st.append(SEPARATOR);
@@ -203,6 +208,8 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
             st.append(guest.GetGender().toString());
             st.append(SEPARATOR);
             st.append(guest.GetNationality());
+            st.append(SEPARATOR);
+            st.append(guest.GetCheckInDate());
             guestData.add(st.toString());
         }
         try {

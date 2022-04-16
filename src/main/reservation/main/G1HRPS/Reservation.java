@@ -24,9 +24,19 @@ public class Reservation {
      * @param status
      * @param room_num
      */
-    public Reservation(UUID reservation_code, String guest_id, String check_in_date, String check_out_date,
-            int adult_num, int children_num, ReservationStatus status, int room_num) {
+    public Reservation(UUID reservation_code, String guest_id, String check_in_date, String check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
         this.reservation_code_ = reservation_code;
+        this.guest_id_ = guest_id;
+        this.check_in_date_ = check_in_date;
+        this.check_out_date_ = check_out_date;
+        this.adult_num_ = adult_num;
+        this.children_num_ = children_num;
+        this.status_ = status;
+        this.room_num_ = room_num;
+    }
+
+    public Reservation(String guest_id, String check_in_date, String check_out_date, int adult_num, int children_num, ReservationStatus status, int room_num) {
+        this.reservation_code_ = UniqueIdGenerator.Generate();
         this.guest_id_ = guest_id;
         this.check_in_date_ = check_in_date;
         this.check_out_date_ = check_out_date;
@@ -98,9 +108,13 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Code: " + this.reservation_code_ + " Guest Id: " + this.guest_id_ + "\n" +
-        "Check In Date: " + this.check_in_date_ + "Check Out Date: " + this.check_out_date_ + "\n" +
-        "Room Number: " + this.room_num_ + " Number of Guests: " + (this.adult_num_ + this.children_num_) + "\n" +
-        "Status:" + this.status_;
+        String output = "|Code: " + this.reservation_code_ +
+                        "|Guest Id: " + this.guest_id_ +
+                        "|\n|Check In Date: " + this.check_in_date_ +
+                        "|Check Out Date: " + this.check_out_date_ +
+                        "|\n|Room Number: " + this.room_num_ +
+                        "|\n|Number of Guests: " + (this.adult_num_ + this.children_num_) +
+                        "|\n|Status:" + this.status_ + "|";
+        return output;
     }
 }

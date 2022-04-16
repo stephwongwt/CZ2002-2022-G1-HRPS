@@ -39,8 +39,11 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
     public Room CreateNewRoom(int room_number, RoomType room_type, float room_price, BedSize bed_size,
             boolean wifi_enabled, boolean w_view, boolean w_smoking, RoomStatus status) {
         Room new_room = new Room(room_number, room_type, room_price, bed_size, wifi_enabled, w_view, w_smoking, status);
-        AddToList(new_room);
-        return new_room;
+        if (AddToList(new_room)) {
+            return new_room;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -146,14 +149,18 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
         }
         Pair<Integer, Vector<Integer>> single_stats = Pair.makePair(single_total, single_vacant_list);
         room_stats.put(RoomType.Single, single_stats);
+
         Pair<Integer, Vector<Integer>> standard_stats = Pair.makePair(standard_total, standard_vacant_list);
-        room_stats.put(RoomType.Single, standard_stats);
+        room_stats.put(RoomType.Standard, standard_stats);
+
         Pair<Integer, Vector<Integer>> vip_stats = Pair.makePair(vip_total, vip_vacant_list);
-        room_stats.put(RoomType.Single, vip_stats);
+        room_stats.put(RoomType.Vip, vip_stats);
+
         Pair<Integer, Vector<Integer>> suite_stats = Pair.makePair(suite_total, suite_vacant_list);
-        room_stats.put(RoomType.Single, suite_stats);
+        room_stats.put(RoomType.Suite, suite_stats);
+
         Pair<Integer, Vector<Integer>> deluxe_stats = Pair.makePair(deluxe_total, deluxe_vacant_list);
-        room_stats.put(RoomType.Single, deluxe_stats);
+        room_stats.put(RoomType.Deluxe, deluxe_stats);
 
         return room_stats;
     }
@@ -169,7 +176,13 @@ public class RoomManager extends DatabaseHandler implements Supermanager<Room> {
         EnumMap<RoomStatus, Vector<Integer>> room_stats = new EnumMap<>(RoomStatus.class);
         for (Room room : room_list_) {
             RoomStatus room_status = room.GetStatus();
-            room_stats.get(room_status).add(room.GetRoomNumber());
+            if (room_status != null) {
+                if (room_stats.get(room_status) == null) {
+                    Vector<Integer> room_number_vector = new Vector<>();
+                    room_stats.put(room_status, room_number_vector);
+                }
+                room_stats.get(room_status).add(room.GetRoomNumber());
+            }
         }
         return room_stats;
     }

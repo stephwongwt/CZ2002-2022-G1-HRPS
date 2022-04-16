@@ -1,16 +1,14 @@
 package main.G1HRPS;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Guest {
     public static final int MIN_CC_NUMLEN = 8;
     public static final int MAX_CC_NUMLEN = 19;
-    private static final String EMPTY = "EMPTY";
-    private static final UUID EMPTY_UUID = null;
+    public static final String EMPTY = "EMPTY";
     private static final int EMPTY_ROOM = 0;
     private String identity_;
-    private UUID payment_id_;
+    private String payment_id_;
     private int room_num_;
     private String name_;
     private String credit_card_number_;
@@ -38,7 +36,7 @@ public class Guest {
      */
     public Guest(String identity, String payment_id, int room_num, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality, String check_in_date) {
         identity_ = identity;
-        payment_id_ = UUID.fromString(payment_id);
+        payment_id_ = payment_id;
         room_num_ = room_num;
         name_ = name;
         credit_card_number_ = credit_card_number;
@@ -64,7 +62,7 @@ public class Guest {
      */
     public Guest(String identity, String name, String credit_card_number, String billing_address, String contact, String country, Gender gender, String nationality) {
         this.identity_ = identity;
-        this.payment_id_ = null;
+        this.payment_id_ = "";
         this.room_num_ = 0;
         this.name_ = name;
         this.SetCreditCardNumber(credit_card_number);
@@ -272,16 +270,16 @@ public class Guest {
      *
      * @return UUID object with payment ID of this guest.
      */
-    public UUID GetPaymentId() {
+    public String GetPaymentId() {
         return this.payment_id_;
     }
 
     /**
      * Sets new payment ID to this guest.
      *
-     * @param payment_id a generated UUID
+     * @param payment_id a generated UUID in string format
      */
-    public void SetPaymentId(UUID payment_id) {
+    public void SetPaymentId(String payment_id) {
         this.payment_id_ = payment_id;
     }
 
@@ -291,14 +289,14 @@ public class Guest {
     @Override
     public String toString() {
         String room_num = (this.room_num_ == EMPTY_ROOM) ? EMPTY : String.valueOf(this.room_num_);
-        String payment_id = (this.payment_id_ == EMPTY_UUID) ? EMPTY : this.payment_id_.toString();
+        String payment_id = (this.payment_id_.isEmpty()) ? EMPTY : this.payment_id_.toString();
         String check_in_date = (this.check_in_date_.isEmpty()) ? EMPTY : this.check_in_date_.toString();
         String output = String.format(
                 "|ID: %s|Name: %s|Room #: %s|Payment ID: %s|\n" +
                 "|Credit Card #: %s|\n" +
                 "|Billing Address: %s|\n" +
                 "|Contact: %s|Country: %s|Gender: %s|Nationality: %s|\n" +
-                "|Check In Date: %s\n",
+                "|Check In Date: %s|",
                 identity_, name_, room_num, payment_id,
                 credit_card_number_,
                 billing_address_,
