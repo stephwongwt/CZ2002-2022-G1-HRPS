@@ -103,8 +103,10 @@ public class AppManager {
 			if (room_number != 0) {
 				room_manager_.CheckInGuest(guest, room_number);
 				Reservation rsvp = reservation_manager_.SearchList(guest);
-				if (rsvp.GetRoomNum() == room_number) {
-					reservation_manager_.CheckIn(rsvp);
+				if (rsvp != null) {
+					if (rsvp.GetRoomNum() == room_number) {
+						reservation_manager_.CheckIn(rsvp);
+					}
 				}
 			}
 		}
