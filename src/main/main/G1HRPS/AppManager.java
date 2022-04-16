@@ -1,6 +1,5 @@
 package main.G1HRPS;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -83,15 +82,15 @@ public class AppManager {
                     System.out.println("|---|Add Room|---|");
                     CreateNewRoom();
                     break;
-                case AddRoomServiceMenuItem:
-                    System.out.println("|---|Add Room Service Menu Items|---|");
+                case AddMenuItem:
+                    System.out.println("|---|Add Menu Items|---|");
                     sc_.nextLine();
                     System.out.println("Enter name of menu item:");
                     String menu_item_name = GetUppercaseStringFromInput();
                     System.out.println("Enter price:");
                     float menu_item_price = GetNonZeroFloatFromInput();
                     System.out.println("Enter description:");
-                    String menu_item_description = GetUppercaseStringFromInput();
+                    String menu_item_description = GetStringFromInput();
                     MenuItem new_menu_item = menu_item_manager_.CreateNewMenuItem(menu_item_name, menu_item_price, menu_item_description);
                     if (new_menu_item != null) {
                         System.out.println("Item created!");
@@ -136,13 +135,17 @@ public class AppManager {
                                     "[1] Order Room Service\n" +
                                     "[2] Complete Room Service Order\n" +
                                     "[3] Edit Details\n");
-                    int sub_room_option = GetIntFromInput(0, 2);
+                    int sub_room_option = GetIntFromInput(0, 3);
                     switch (sub_room_option) {
                         case 0:
                             System.out.println("Back to previous menu...");
                             break;
                         case 1:
                             System.out.println("|------|Order Room Service|------|");
+                            if (search_room.GetStatus() == RoomStatus.Vacant) {
+                                System.out.println("Unavailable, room is vacant");
+                                break;
+                            }
                             List<MenuItem> ordered_item_list = PrintRoomServiceMenu();
                             System.out.println("Any remarks to add to order?");
                             sc_.nextLine();
@@ -154,6 +157,10 @@ public class AppManager {
                             break;
                         case 2:
                             System.out.println("|------|Complete Room Service Order|------|");
+                            if (search_room.GetStatus() == RoomStatus.Vacant) {
+                                System.out.println("Unavailable, room is vacant");
+                                break;
+                            }
                             List<RoomServiceOrder> order_list = room_service_manager_.GetOrderedItemsByRoom(search_room.GetRoomNumber());
                             if (!order_list.isEmpty()) {
                                 System.out.println("Room services ordered:");
@@ -179,7 +186,8 @@ public class AppManager {
                             System.out.println("[0] Go back | [1] Room Number | [2] Room Type | [3] Room Price");
                             System.out.println("[4] Bed Size | [5] Wifi | [6] View | [7] Smoking | [8] Status");
                             while (continue_editing_room) {
-                                int edit_opt = GetIntFromInput(0, 11);
+                                System.out.println("Pick detail to edit:");
+                                int edit_opt = GetIntFromInput(0, 8);
                                 switch (edit_opt) {
                                     case 0:
                                         System.out.println("Back to previous menu...");
@@ -191,6 +199,7 @@ public class AppManager {
                                         Room found_room = room_manager_.SearchList(edit_room_num);
                                         if (found_room == null) {
                                             search_room.SetRoomNumber(edit_room_num);
+                                            System.out.println("Edit successful.");
                                         } else {
                                             System.out.println("Room number already exists.");
                                         }
@@ -204,37 +213,44 @@ public class AppManager {
                                         System.out.println("Enter new price of room per night (e.g 100.00):");
                                         float room_price = GetNonZeroFloatFromInput();
                                         search_room.SetRoomPrice(room_price);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 4:
                                         System.out.println("Enter new Bed Size (Single[0]/SuperSingle[1]/Double[2]/Queen[3]/King[4]):");
                                         BedSize bed_size = GetEnumFromInput(BedSize.values());
                                         search_room.SetBedSize(bed_size);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 5:
                                         System.out.println("Enter new WiFi (False[0]/True[1]):");
                                         boolean wifi_enabled = GetBooleanFromInput();
                                         search_room.SetWifi(wifi_enabled);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 6:
                                         System.out.println("Enter new View (False[0]/True[1]):");
                                         boolean with_view = GetBooleanFromInput();
                                         search_room.SetView(with_view);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 7:
                                         System.out.println("Enter new Smoking (False[0]/True[1]):");
                                         boolean with_smoking = GetBooleanFromInput();
                                         search_room.SetSmoking(with_smoking);
+                                        System.out.println("Edit successful.");
                                         break;
                                     case 8:
                                         System.out.println("Enter new Room Status (Vacant[0]/Occupied[1]/Reserved[2]/Maintenance[3]):");
                                         RoomStatus status = GetEnumFromInput(RoomStatus.values());
                                         search_room.SetStatus(status);
+                                        System.out.println("Edit successful.");
                                         break;
                                     default:
                                         System.out.println("Unavailable, please try again:");
                                         break;
                                 }
                             }
+                            System.out.println("Edited Room:\n" + search_room.toString());
                             break;
                         default:
                             System.out.println("Unavailable, please try again:");
@@ -255,7 +271,7 @@ public class AppManager {
                             System.out.println("Back to previous menu...");
                             break;
                         case 1:
-                            System.out.println("|------|Check In|------|");
+                            System.out.println("|------| Reservation Check In|------|");
                             reservation_manager_.CheckIn(search_rsvp);
                             Guest rsvp_guest = guest_manager_.SearchList(search_rsvp.GetGuestId());
                             int rsvp_room_num = search_rsvp.GetRoomNum();
@@ -264,13 +280,81 @@ public class AppManager {
                             System.out.printf("Guest %s checked into room number %d. \r\n", rsvp_guest.GetName(), rsvp_room_num);
                             break;
                         default:
-                            System.out.println("|------|Delete|------|");
+                            System.out.println("|------|Delete Reservation|------|");
                             boolean del_rsvp_success = reservation_manager_.RemoveFromList(search_rsvp);
                             if (del_rsvp_success) {
                                 System.out.println("Successfully deleted reservation!");
                             } else {
                                 System.out.println("Failed to delete reservation.");
                             }
+                            break;
+                    }
+                    break;
+                case SearchMenuItems:
+                    System.out.println("|---|Search Menu Item|---|");
+                    MenuItem search_menu_item = SearchManagerList(menu_item_manager_);
+                    System.out.println(search_menu_item.toString());
+                    System.out.println("What would you like to do with this menu item?\n" +
+                                    "[0] Go back\n" +
+                                    "[1] Edit details\n" +
+                                    "[2] Delete\n");
+                    int sub_menu_item_option = GetIntFromInput(0, 2);
+                    switch (sub_menu_item_option) {
+                        case 0:
+                            System.out.println("Back to previous menu...");
+                            break;
+                        case 1:
+                            System.out.println("|------|Edit Menu Item Details|------|");
+                            boolean continue_editing_menu_item = true;
+                            System.out.println("[0] Go back | [1] Name | [2] Price | [3] Description");
+                            while (continue_editing_menu_item) {
+                                System.out.println("Pick detail to edit:");
+                                int edit_opt = GetIntFromInput(0, 3);
+                                switch (edit_opt) {
+                                    case 0:
+                                        System.out.println("Back to previous menu...");
+                                        continue_editing_menu_item = false;
+                                        break;
+                                    case 1:
+                                        System.out.println("Enter new Name:");
+                                        String edit_name = GetUppercaseStringFromInput();
+                                        MenuItem found_menu_item = menu_item_manager_.SearchList(edit_name);
+                                        if (found_menu_item == null) {
+                                            search_menu_item.SetName(edit_name);
+                                            System.out.println("Edit successful.");
+                                        } else {
+                                            System.out.println("Item name already exists.");
+                                        }
+                                        break;
+                                    case 2:
+                                        System.out.println("Enter new price:");
+                                        float item_price = GetNonZeroFloatFromInput();
+                                        search_menu_item.SetPrice(item_price);
+                                        System.out.println("Edit successful.");
+                                        break;
+                                    case 3:
+                                        System.out.println("Enter new description:");
+                                        String item_description = GetStringFromInput();
+                                        search_menu_item.SetDescription(item_description);
+                                        System.out.println("Edit successful.");
+                                        break;
+                                    default:
+                                        System.out.println("Unavailable, please try again:");
+                                        break;
+                                }
+                            }
+                            System.out.println("Edited Menu Item:\n" + search_menu_item.toString());
+                            break;
+                        case 2:
+                            System.out.println("|------|Delete Menu Item|------|");
+                            boolean del_menu_item_success = menu_item_manager_.RemoveFromList(search_menu_item);
+                            if (del_menu_item_success) {
+                                System.out.println("Successfully deleted menu item!");
+                            } else {
+                                System.out.println("Failed to delete menu item.");
+                            }
+                            break;
+                        default:
                             break;
                     }
                     break;
@@ -282,10 +366,11 @@ public class AppManager {
                             "[1] All Rooms\n" +
                             "[2] All Guests\n" +
                             "[3] All Reservations\n" +
-                            "[4] Room Stats by Occupancy Rate\n" +
-                            "[5] Room Stats by Status\n" +
-                            "[6] Room Services Ordered by Guest\n" +
-                            "[7] Room Services Ordered by Room");
+                            "[4] All Menu Items\n" +
+                            "[5] Room Stats by Occupancy Rate\n" +
+                            "[6] Room Stats by Status\n" +
+                            "[7] Room Services Ordered by Guest\n" +
+                            "[8] Room Services Ordered by Room");
                             int option = sc_.nextInt();
                     switch (option) {
                         case 0:
@@ -304,6 +389,10 @@ public class AppManager {
                             DisplayList(reservation_manager_);
                             break;
                         case 4:
+                            System.out.println("|------|All Menu Items|------|");
+                            DisplayList(menu_item_manager_);
+                            break;
+                        case 5:
                             System.out.println("|------|Room Stats by Occupancy Rate|------|");
                             EnumMap<RoomType, Pair<Integer, Vector<Integer>>> room_stats_type = room_manager_.GetRoomStatisticsByTypeOccupancyRate();
                             for (RoomType type : RoomType.values()) {
@@ -316,7 +405,7 @@ public class AppManager {
                                 }
                             }
                             break;
-                        case 5:
+                        case 6:
                             System.out.println("|------|Room Stats by Status|------|");
                             EnumMap<RoomStatus, Vector<Integer>> room_stats_status = room_manager_.GetRoomStatisticsByStatus();
                             for (RoomStatus status : RoomStatus.values()) {
@@ -326,7 +415,7 @@ public class AppManager {
                                 }
                             }
                             break;
-                        case 6:
+                        case 7:
                             System.out.println("|------|Room Services Ordered by Guest|------|");
                             System.out.println("Enter Guest Id: ");
                             sc_.nextLine();
@@ -338,7 +427,7 @@ public class AppManager {
                                 System.out.println(guest_ordered_list.toString());
                             }
                             break;
-                            case 7:
+                        case 8:
                             System.out.println("|------|Room Services Ordered by Room|------|");
                             System.out.println("Enter Room Number: ");
                             sc_.nextLine();
@@ -389,6 +478,10 @@ public class AppManager {
         return AppMenuItem.values()[option];
     }
 
+    
+    /** 
+     * @param sub_menu_guest
+     */
     private void PrintGuestSubMenu(Guest sub_menu_guest) {
         if (sub_menu_guest == null) {
             System.out.println("Guest is null, unavailable");
@@ -404,7 +497,7 @@ public class AppManager {
                 "[3] Check Out\n" +
                 "[4] Order Room Service\n" +
                 "[5] Edit Details");
-        int sub_guest_option = GetIntFromInput(0, 4);
+        int sub_guest_option = GetIntFromInput(0, 5);
 
         switch (sub_guest_option) {
             case 0:
@@ -433,21 +526,29 @@ public class AppManager {
                 break;
             case 3:
                 System.out.println("|------|Guest Check Out|------|");
-                System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
-                int discounts = GetIntFromInput();
-                System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
-                int tax = GetIntFromInput();
-
-                Room guest_room = room_manager_.SearchList(sub_menu_guest);
-                List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
-                Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, LocalDateTime.parse(sub_menu_guest.GetCheckInDate(), DATETIME_FORMATTER), guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
-                System.out.println(bill.a);
-
+                Payment guest_payment;
+                if ((sub_menu_guest.GetPaymentId().isEmpty()) || (sub_menu_guest.GetPaymentId().equals(Guest.EMPTY))) {
+                    System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
+                    int discounts = GetIntFromInput();
+                    System.out.println("Enter tax percentage for Guest (e.g. 10 -> 10%): ");
+                    int tax = GetIntFromInput();
+                    System.out.println("Enter days of stay: ");
+                    int days_of_stay = GetNonZeroIntFromInput();
+    
+                    Room guest_room = room_manager_.SearchList(sub_menu_guest);
+                    List<RoomServiceOrder> room_service_orders = room_service_manager_.GetOrderedItemsByRoom(guest_room_number);
+                    Pair<String, Payment> bill = payment_manager_.GenerateAndPrintBill(guest_id, guest_room_number, days_of_stay, guest_room.GetRoomPrice(), discounts, tax, room_service_orders);
+                    System.out.println("Generated Bill\n" + bill.a.toString());
+                    guest_payment = bill.b;
+                } else {
+                    guest_payment = payment_manager_.SearchList(sub_menu_guest.GetPaymentId());
+                }
+                System.out.println("Payment item:\n" + guest_payment.toString());
                 System.out.println("Making payment for this bill? (False[0]/True[1])");
                 boolean make_payment = GetBooleanFromInput();
                 if (make_payment) {
-                    guest_manager_.CheckOutOfRoom(sub_menu_guest, bill.b.GetPaymentID().toString());
-                    room_manager_.CheckOutGuests(bill.b.GetRoomNum());
+                    guest_manager_.CheckOutOfRoom(sub_menu_guest, guest_payment.GetPaymentID().toString());
+                    room_manager_.CheckOutGuests(guest_payment.GetRoomNum());
                     Reservation check_out_reservation = reservation_manager_.SearchList(sub_menu_guest);
                     reservation_manager_.CheckOut(check_out_reservation);
                 }
@@ -466,11 +567,10 @@ public class AppManager {
             case 5:
                 System.out.println("|------|Guest Edit Details|------|");
                 boolean continue_editing_guest = true;
-                System.out
-                        .println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.");
-                System.out.println(
-                        "[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
+                System.out .println("[0] Go back | [1] ID | [2] PaymentID | [3] RoomNum | [4] Name | [5] Credit Card No.\n" +
+                                    "[6] Billing Address | [7] Contact | [8] Country | [9] Gender | [10] Nationality | [11] Check In Date");
                 while (continue_editing_guest) {
+                    System.out.println("Pick detail to edit:");
                     int edit_opt = GetIntFromInput(0, 11);
                     switch (edit_opt) {
                         case 0:
@@ -479,70 +579,89 @@ public class AppManager {
                             break;
                         case 1:
                             System.out.println("Enter new identity:");
-                            String edit_identity = sc_.nextLine();
+                            String edit_identity = GetUppercaseStringFromInput();
                             sub_menu_guest.SetIdentity(edit_identity);
+                            System.out.println("Edit successful.");
                             break;
                         case 2:
                             System.out.println("Enter new payment id:");
-                            String edit_payment_id = sc_.nextLine();
-                            sub_menu_guest.SetIdentity(edit_payment_id);
+                            String edit_payment_id = GetUppercaseStringFromInput();
+                            sub_menu_guest.SetPaymentId(edit_payment_id);
+                            System.out.println("Edit successful.");
                             break;
                         case 3:
                             System.out.println("Enter new room number:");
                             int edit_room_number = GetNonZeroIntFromInput();
                             sub_menu_guest.SetRoomNum(edit_room_number);
+                            System.out.println("Edit successful.");
                             break;
                         case 4:
                             System.out.println("Enter new name:");
-                            String edit_name = sc_.nextLine();
+                            String edit_name = GetUppercaseStringFromInput();
                             sub_menu_guest.SetName(edit_name);
+                            System.out.println("Edit successful.");
                             break;
                         case 5:
                             System.out.println("Enter new credit card number:");
-                            String edit_cc_number = sc_.nextLine();
-                            sub_menu_guest.SetCreditCardNumber(edit_cc_number);
+                            String edit_cc_number = GetUppercaseStringFromInput();
+                            if (sub_menu_guest.SetCreditCardNumber(edit_cc_number)) {
+                                System.out.println("Edit successful.");
+                            } else {
+                                System.out.println("Edit failed.");
+                            }
                             break;
                         case 6:
                             System.out.println("Enter new billing address:");
-                            String edit_billing = sc_.nextLine();
+                            String edit_billing = GetUppercaseStringFromInput();
                             sub_menu_guest.SetBillingAddress(edit_billing);
+                            System.out.println("Edit successful.");
                             break;
                         case 7:
                             System.out.println("Enter new contact number:");
-                            String edit_contact = sc_.nextLine();
+                            String edit_contact = GetUppercaseStringFromInput();
                             sub_menu_guest.SetContact(edit_contact);
+                            System.out.println("Edit successful.");
                             break;
                         case 8:
                             System.out.println("Enter new country:");
-                            String edit_country = sc_.nextLine();
+                            String edit_country = GetUppercaseStringFromInput();
                             sub_menu_guest.SetCountry(edit_country);
+                            System.out.println("Edit successful.");
                             break;
                         case 9:
                             System.out.println("Enter new gender (e.g. Female[0]/Male[1]/Other[2]):");
                             Gender edit_gender = GetEnumFromInput(Gender.values());
                             sub_menu_guest.SetGender(edit_gender);
+                            System.out.println("Edit successful.");
                             break;
                         case 10:
                             System.out.println("Enter new Nationality:");
                             String edit_nationality = sc_.nextLine();
                             sub_menu_guest.SetNationality(edit_nationality);
+                            System.out.println("Edit successful.");
                             break;
                         case 11:
                             System.out.println("Enter new check in date (e.g. 2022-04-14 16:51:31):");
                             String edit_check_in_date = sc_.nextLine();
                             sub_menu_guest.SetCheckInDate(edit_check_in_date);
+                            System.out.println("Edit successful.");
                             break;
                         default:
                             System.out.println("Unavailable, please try again:");
                             break;
                     }
                 }
+                System.out.println("Edited Guest:\n" + sub_menu_guest.toString());
                 break;
             default:
                 break;
         }
     }
 
+    
+    /** 
+     * @return List<MenuItem>
+     */
     private List<MenuItem> PrintRoomServiceMenu() {
         List<MenuItem> picked_items_list = new ArrayList<>();
         List<MenuItem> menu_list = menu_item_manager_.GetList();
@@ -698,6 +817,10 @@ public class AppManager {
         return picked_room_number;
     }
 
+    
+    /** 
+     * @param guest_id
+     */
     private void CreateNewReservation(String guest_id) {
         LocalDateTime check_in_date;
         LocalDateTime check_out_date;
@@ -731,10 +854,16 @@ public class AppManager {
         } else {
             Room rsvp_room = room_manager_.SearchList(room_num);
             rsvp_room.SetStatus(RoomStatus.Reserved);
-            System.out.printf("Reservation code %s successfully created!\r\n", new_rsvp.GetReservationCode().toString());
+            System.out.printf("Reservation successfully created! Details:\n%s\n", new_rsvp.toString());
+            System.out.printf("Room Details:\n%s\n", rsvp_room.toString());
         }
     }
 
+    
+    /** 
+     * @param date_format
+     * @return LocalDateTime
+     */
     private LocalDateTime GetDatetimeStringFromDateInput(String date_format) {
         DateTimeFormatter localdate_format = DateTimeFormatter.ofPattern(date_format);
         LocalDate input_date;
@@ -755,6 +884,28 @@ public class AppManager {
         return return_localdatetime;
     }
 
+    
+    /** 
+     * @return String
+     */
+    private String GetStringFromInput() {
+        String value = "";
+        while (true) {
+            try {
+                value += sc_.nextLine();
+                break;
+            } catch (Exception e) {
+                sc_.nextLine();
+                System.out.println("Unavailable, please try again:");
+            }
+        }
+        return value;
+    }
+
+    
+    /** 
+     * @return String
+     */
     private String GetUppercaseStringFromInput() {
         String value = "";
         while (true) {
@@ -769,6 +920,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return int
+     */
     private int GetIntFromInput() {
         int value = 0;
         while (true) {
@@ -783,6 +938,12 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @param inclusive_min
+     * @param inclusive_max
+     * @return int
+     */
     private int GetIntFromInput(int inclusive_min, int inclusive_max) {
         int value = 0;
         while (true) {
@@ -800,6 +961,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return int
+     */
     private int GetNonZeroIntFromInput() {
         int value = 0;
         while (true) {
@@ -819,6 +984,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return float
+     */
     private float GetFloatFromInput() {
         float value = 0.0f;
         while (true) {
@@ -833,6 +1002,10 @@ public class AppManager {
         return value;
     }
 
+    
+    /** 
+     * @return float
+     */
     private float GetNonZeroFloatFromInput() {
         float value = 0.0f;
         while (true) {

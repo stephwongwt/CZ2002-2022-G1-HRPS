@@ -227,6 +227,10 @@ public class Payment {
         return status_;
     }
 
+    
+    /** 
+     * @return String
+     */
     @Override
     public String toString() {
         return "ID: " + this.payment_id_ + " Guest Id: " + this.guest_id_ + " Room Num: " + this.room_num_ + " Total: $ " + this.bill_total_;

@@ -37,6 +37,11 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
         }
     }
     
+    
+    /** 
+     * @param credit_card_number
+     * @return boolean
+     */
     public boolean VerifyCreditCardNumber(String credit_card_number) {
         String noSpace_CreditCardNum = credit_card_number.replaceAll("\\s+", "");
         if (noSpace_CreditCardNum.matches("[0-9]+") &&
@@ -88,6 +93,11 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
         return success;
     }
 
+    
+    /** 
+     * @param guest_name
+     * @return List<Guest>
+     */
     public List<Guest> SearchListByName(String guest_name) {
         List<Guest> found_guests = new ArrayList<>();
         for (Guest guest : guest_list_) {
