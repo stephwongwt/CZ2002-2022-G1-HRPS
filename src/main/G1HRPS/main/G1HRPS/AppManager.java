@@ -188,7 +188,7 @@ public class AppManager {
 				System.out.println(search_room.toString());
 				System.out.println("What would you like to do with this room?\n" + "[0] Go back\n"
 						+ "[1] Order Room Service\n" + "[2] Complete Room Service Order\n" + "[3] Edit Details\n");
-				int sub_room_option = GetIntFromInput(0, 3);
+				int sub_room_option = GetIntFromInput();
 				switch (sub_room_option) {
 				case 0:
 					System.out.println("Back to previous menu...");
@@ -244,7 +244,7 @@ public class AppManager {
 					System.out.println("[4] Bed Size | [5] Wifi | [6] View | [7] Smoking | [8] Status");
 					while (continue_editing_room) {
 						System.out.println("Pick detail to edit:");
-						int edit_opt = GetIntFromInput(0, 8);
+						int edit_opt = GetIntFromInput();
 						switch (edit_opt) {
 						case 0:
 							System.out.println("Back to previous menu...");
@@ -323,7 +323,7 @@ public class AppManager {
 				System.out.println(search_rsvp.toString());
 				System.out.println("What would you like to do with this reservation?\n" + "[0] Go back\n"
 						+ "[1] Check In\n" + "[2] Delete\n");
-				int sub_rsvp_option = GetIntFromInput(0, 2);
+				int sub_rsvp_option = GetIntFromInput();
 				switch (sub_rsvp_option) {
 				case 0:
 					System.out.println("Back to previous menu...");
@@ -343,7 +343,7 @@ public class AppManager {
 						System.err.println("Something went terribly wrong, did not check in guest.");
 					}
 					break;
-				default:
+				case 2:
 					System.out.println("|------|Delete Reservation|------|");
 					boolean del_rsvp_success = reservation_manager_.RemoveFromList(search_rsvp);
 					if (del_rsvp_success) {
@@ -351,6 +351,9 @@ public class AppManager {
 					} else {
 						System.out.println("Failed to delete reservation.");
 					}
+					break;
+				default:
+					System.out.println("Unavailable, please try again:");
 					break;
 				}
 				break;
@@ -360,7 +363,7 @@ public class AppManager {
 				System.out.println(search_menu_item.toString());
 				System.out.println("What would you like to do with this menu item?\n" + "[0] Go back\n"
 						+ "[1] Edit details\n" + "[2] Delete\n");
-				int sub_menu_item_option = GetIntFromInput(0, 2);
+				int sub_menu_item_option = GetIntFromInput();
 				switch (sub_menu_item_option) {
 				case 0:
 					System.out.println("Back to previous menu...");
@@ -371,7 +374,7 @@ public class AppManager {
 					System.out.println("[0] Go back | [1] Name | [2] Price | [3] Description");
 					while (continue_editing_menu_item) {
 						System.out.println("Pick detail to edit:");
-						int edit_opt = GetIntFromInput(0, 3);
+						int edit_opt = GetIntFromInput();
 						switch (edit_opt) {
 						case 0:
 							System.out.println("Back to previous menu...");
@@ -417,6 +420,7 @@ public class AppManager {
 					}
 					break;
 				default:
+					System.out.println("Unavailable, please try again:");
 					break;
 				}
 				break;
@@ -424,7 +428,7 @@ public class AppManager {
 				System.out.println("|---|Display|---|");
 				sc_.nextLine();
 				System.out.println("Which to display?\n" + "[0] Go back\n" + "[1] All Rooms\n" + "[2] All Guests\n"
-						+ "[3] All Reservations\n" + "[4] All Menu Items\n" + "[5] Room Stats by Occupancy Rate\n"
+						+ "[3] All Reservations\n" + "[4] All Menu Items\n" + "[5] All Payments\n" + "[6] All Room Service Orders\n" + "[5] Room Stats by Occupancy Rate\n"
 						+ "[6] Room Stats by Status\n" + "[7] Room Services Ordered by Guest\n"
 						+ "[8] Room Services Ordered by Room");
 				int option = sc_.nextInt();
@@ -449,6 +453,14 @@ public class AppManager {
 					DisplayList(menu_item_manager_);
 					break;
 				case 5:
+					System.out.println("|------|All Payments|------|");
+					DisplayList(payment_manager_);
+					break;
+				case 6:
+					System.out.println("|------|All Room Service Orders|------|");
+					DisplayList(room_service_manager_);
+					break;
+				case 7:
 					System.out.println("|------|Room Stats by Occupancy Rate|------|");
 					EnumMap<RoomType, Pair<Integer, Vector<Integer>>> room_stats_type = room_manager_
 							.GetRoomStatisticsByTypeOccupancyRate();
@@ -467,7 +479,7 @@ public class AppManager {
 						}
 					}
 					break;
-				case 6:
+				case 8:
 					System.out.println("|------|Room Stats by Status|------|");
 					EnumMap<RoomStatus, Vector<Integer>> room_stats_status = room_manager_.GetRoomStatisticsByStatus();
 					for (RoomStatus status : RoomStatus.values()) {
@@ -484,7 +496,7 @@ public class AppManager {
 						}
 					}
 					break;
-				case 7:
+				case 9:
 					System.out.println("|------|Room Services Ordered by Guest|------|");
 					System.out.println("Enter Guest Id: ");
 					sc_.nextLine();
@@ -496,7 +508,7 @@ public class AppManager {
 						System.out.println(guest_ordered_list.toString());
 					}
 					break;
-				case 8:
+				case 10:
 					System.out.println("|------|Room Services Ordered by Room|------|");
 					System.out.println("Enter Room Number: ");
 					sc_.nextLine();
@@ -563,7 +575,7 @@ public class AppManager {
 		final int guest_room_number = sub_menu_guest.GetRoomNum();
 		System.out.println("What would you like to do with this guest?\n" + "[0] Go back\n" + "[1] Create Reservation\n"
 				+ "[2] Check In\n" + "[3] Check Out\n" + "[4] Order Room Service\n" + "[5] Edit Details");
-		int sub_guest_option = GetIntFromInput(0, 5);
+		int sub_guest_option = GetIntFromInput();
 
 		switch (sub_guest_option) {
 		case 0:
@@ -742,6 +754,7 @@ public class AppManager {
 			System.out.println("Edited Guest:\n" + sub_menu_guest.toString());
 			break;
 		default:
+			System.out.println("Unavailable, please try again:");
 			break;
 		}
 	}
