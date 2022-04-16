@@ -575,6 +575,11 @@ public class AppManager {
 			break;
 		case 2:
 			System.out.println("|------|Guest Check In|------|");
+			Room guest_in_room = room_manager_.SearchList(sub_menu_guest);
+			if (guest_in_room != null) {
+				System.out.println("Guest already checked into room " + guest_in_room.GetRoomNumber());
+				break;
+			}
 			Reservation check_in_reservation = reservation_manager_.SearchList(sub_menu_guest);
 			int room_to_check_in = 0;
 			if (check_in_reservation != null) {
@@ -592,6 +597,11 @@ public class AppManager {
 			break;
 		case 3:
 			System.out.println("|------|Guest Check Out|------|");
+			Room guest_out_room = room_manager_.SearchList(sub_menu_guest);
+			if (guest_out_room == null) {
+				System.out.println("Guest has yet to check into any room.");
+				break;
+			}
 			Payment guest_payment;
 			if ((sub_menu_guest.GetPaymentId().isEmpty()) || (sub_menu_guest.GetPaymentId().equals(Guest.EMPTY))) {
 				System.out.println("Enter discount percentage (e.g. 10 -> 10%): ");
@@ -629,6 +639,9 @@ public class AppManager {
 			break;
 		case 4:
 			System.out.println("|------|Guest Order Room Service|------|");
+			if (sub_menu_guest.GetRoomNum() == Guest.EMPTY_ROOM) {
+				System.out.println("Guest has yet to check into any room.");
+			}
 			List<MenuItem> ordered_item_list = PrintRoomServiceMenu();
 			System.out.println("Any remarks to add to order?");
 			sc_.nextLine();

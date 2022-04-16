@@ -25,7 +25,7 @@ public class Guest {
 	/**
 	 * Global definition of an unassigned room number.
 	 */
-	private static final int EMPTY_ROOM = 0;
+	public static final int EMPTY_ROOM = 0;
 
 	/**
 	 * Stores identification number of guest, either national identity or driving
