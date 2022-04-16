@@ -24,6 +24,9 @@ public class ReservationManager extends DatabaseHandler implements Supermanager<
 	 */
 	private final String DB_FILENAME = "reservation_db.txt";
 
+	/**
+	 * Creates a reservation manager.
+	 */
 	public ReservationManager() {
 		this.reservation_list_ = new ArrayList<Reservation>();
 	}
