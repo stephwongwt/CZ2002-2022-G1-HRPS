@@ -445,7 +445,11 @@ public class AppManager {
 							Vector<Integer> vacant_rooms = stat.b;
 							System.out.println("." + type.toString() + " Rooms: " + vacant_rooms.size() + " out of "
 									+ type_total_rooms + " vacant");
-							System.out.println("    .Vacancies: " + vacant_rooms.toString());
+							Vector<String> room_numbers = new Vector<>();
+							for (int room_number : vacant_rooms) {
+								room_numbers.add(String.format("%04d", room_number));
+							}
+							System.out.printf("    .Vacancies: %s\n", room_numbers.toString());
 						}
 					}
 					break;
@@ -455,7 +459,14 @@ public class AppManager {
 					for (RoomStatus status : RoomStatus.values()) {
 						if (status != null) {
 							Vector<Integer> stats = room_stats_status.get(status);
-							System.out.println(status.toString() + ": " + stats.toString());
+							if(stats != null)
+							{
+								Vector<String> room_numbers = new Vector<>();
+								for (int room_number : stats) {
+									room_numbers.add(String.format("%04d", room_number));
+								}
+								System.out.printf("%s: %s\n", status.toString(), room_numbers.toString());
+							}
 						}
 					}
 					break;
