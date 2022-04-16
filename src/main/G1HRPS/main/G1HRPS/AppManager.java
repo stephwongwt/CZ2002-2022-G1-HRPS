@@ -186,7 +186,7 @@ public class AppManager {
 					break;
 				case 1:
 					System.out.println("|------|Order Room Service|------|");
-					if (search_room.GetStatus() == RoomStatus.Vacant) {
+					if (search_room.GetStatus() != RoomStatus.Occupied) {
 						System.out.println("Unavailable, room is vacant");
 						break;
 					}
@@ -865,14 +865,22 @@ public class AppManager {
 					+ key_type_total_rooms + " vacant");
 			System.out.println(".Vacant Rooms: " + vacant_rooms.toString());
 		}
-		System.out.println("Enter Room Num:");
+		if (all_vacant_rooms.isEmpty()) {
+			System.out.println("No vacant rooms.");
+			return 0;
+		}
+		System.out.println("Enter Room Num (0 to exit):");
 		while (true) {
 			try {
 				picked_room_number = sc_.nextInt();
-				boolean valid_room = all_vacant_rooms.contains(picked_room_number);
-				if (valid_room) {
-					sc_.nextLine();
+				if (picked_room_number == 0) {
 					break;
+				} else {
+					boolean valid_room = all_vacant_rooms.contains(picked_room_number);
+					if (valid_room) {
+						sc_.nextLine();
+						break;
+					}
 				}
 			} catch (Exception e) {
 				sc_.nextLine();
