@@ -663,7 +663,10 @@ public class AppManager {
 				if (check_out_reservation != null) {
 					reservation_manager_.CheckOut(check_out_reservation);
 				}
+			} else {
+				sub_menu_guest.SetPaymentId(guest_payment.GetPaymentID().toString());
 			}
+			payment_manager_.AddToList(guest_payment);
 			break;
 		case 4:
 			System.out.println("|------|Guest Order Room Service|------|");
