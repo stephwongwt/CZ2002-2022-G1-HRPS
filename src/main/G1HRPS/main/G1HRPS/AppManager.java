@@ -948,6 +948,7 @@ public class AppManager {
 		ReservationStatus status;
 		int room_num;
 		System.out.println("Enter Check In Date (e.g. 2022-04-15):");
+		sc_.nextLine();
 		check_in_date = GetDatetimeStringFromDateInput("yyyy-MM-dd");
 		System.out.println("Enter Check Out Date (e.g. 2022-04-15):");
 		while (true) {
