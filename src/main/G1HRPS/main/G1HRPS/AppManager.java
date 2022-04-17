@@ -222,7 +222,7 @@ public class AppManager {
 						System.out.println("Room services ordered:");
 						for (int i = 0; i < order_list.size(); i++) {
 							RoomServiceOrder order = order_list.get(i);
-							System.out.printf("[%d] Status (%s), Items: %\r\n", i, order.GetStatus().toString(),
+							System.out.printf("[%d] Status (%s), Items: %s\n", i, order.GetStatus().toString(),
 									order.GetOrderedItemList().toString());
 						}
 						System.out.println("Select Order to complete:");
