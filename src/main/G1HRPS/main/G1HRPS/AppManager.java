@@ -180,11 +180,19 @@ public class AppManager {
 				} else {
 					search_guest = SearchManagerList(guest_manager_, "guest identity");
 				}
+				if (search_guest == null) {
+					System.out.println("Guest can't be found.");
+					break;
+				}
 				PrintGuestSubMenu(search_guest);
 				break;
 			case SearchRoom:
 				System.out.println("|---|Search Room|---|");
 				Room search_room = SearchManagerList(room_manager_, "room number");
+				if (search_room == null) {
+					System.out.println("Room can't be found.");
+					break;
+				}
 				System.out.println(search_room.toString());
 				System.out.println("What would you like to do with this room?\n" + "[0] Go back\n"
 						+ "[1] Order Room Service\n" + "[2] Complete Room Service Order\n" + "[3] Edit Details\n");
@@ -320,6 +328,10 @@ public class AppManager {
 			case SearchReservations:
 				System.out.println("|---|Search Reservations|---|");
 				Reservation search_rsvp = SearchManagerList(reservation_manager_, "reservation code");
+				if (search_rsvp == null) {
+					System.out.println("Reservation can't be found.");
+					break;
+				}
 				System.out.println(search_rsvp.toString());
 				System.out.println("What would you like to do with this reservation?\n" + "[0] Go back\n"
 						+ "[1] Check In\n" + "[2] Delete\n");
@@ -360,6 +372,10 @@ public class AppManager {
 			case SearchMenuItems:
 				System.out.println("|---|Search Menu Item|---|");
 				MenuItem search_menu_item = SearchManagerList(menu_item_manager_, "menu item name");
+				if (search_menu_item == null) {
+					System.out.println("Menu item can't be found.");
+					break;
+				}
 				System.out.println(search_menu_item.toString());
 				System.out.println("What would you like to do with this menu item?\n" + "[0] Go back\n"
 						+ "[1] Edit details\n" + "[2] Delete\n");
