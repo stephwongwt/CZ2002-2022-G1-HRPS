@@ -182,6 +182,7 @@ public class GuestManager extends DatabaseHandler implements Supermanager<Guest>
 		Guest check_guest = SearchList(guest.GetIdentity());
 		if (check_guest != null) {
 			check_guest.SetPaymentId(payment_id);
+			check_guest.SetRoomNum(Guest.EMPTY_ROOM);
 			return true;
 		} else {
 			return false;
