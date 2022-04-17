@@ -1228,7 +1228,7 @@ public class AppManager {
 	 * Example usage: GuestManager guest_manager = new GuestManager();
 	 * SearchList(guest_manager);
 	 *
-	 * @param T				Type which the manager is managing
+	 * @param <T>				Type which the manager is managing
 	 * @param sm  			A generic type manager which has implemented Supermanager
 	 * @param search_term 	Term in which this function will search for, e.g. name
 	 * @return the object matching the search text
@@ -1260,8 +1260,8 @@ public class AppManager {
 	 * Example usage: GuestManager guest_manager = new GuestManager();
 	 * DisplayList(guest_manager);
 	 *
-	 * @param <T> type which the manager is managing
-	 * @param sm  a generic type manager which has implemented Supermanager
+	 * @param <T> Type which the manager is managing
+	 * @param sm  A generic type manager which has implemented Supermanager
 	 */
 	private <T> void DisplayList(Supermanager<T> sm) {
 		List<T> sm_list = sm.GetList();
