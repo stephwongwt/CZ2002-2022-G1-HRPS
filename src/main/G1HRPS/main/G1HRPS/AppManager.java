@@ -428,9 +428,9 @@ public class AppManager {
 				System.out.println("|---|Display|---|");
 				sc_.nextLine();
 				System.out.println("Which to display?\n" + "[0] Go back\n" + "[1] All Rooms\n" + "[2] All Guests\n"
-						+ "[3] All Reservations\n" + "[4] All Menu Items\n" + "[5] All Payments\n" + "[6] All Room Service Orders\n" + "[5] Room Stats by Occupancy Rate\n"
-						+ "[6] Room Stats by Status\n" + "[7] Room Services Ordered by Guest\n"
-						+ "[8] Room Services Ordered by Room");
+						+ "[3] All Reservations\n" + "[4] All Menu Items\n" + "[5] All Payments\n" + "[6] All Room Service Orders\n" + "[7] Room Stats by Occupancy Rate\n"
+						+ "[8] Room Stats by Status\n" + "[9] Room Services Ordered by Guest\n"
+						+ "[10] Room Services Ordered by Room");
 				int option = sc_.nextInt();
 				switch (option) {
 				case 0:
